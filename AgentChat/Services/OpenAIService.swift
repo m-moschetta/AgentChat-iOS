@@ -32,14 +32,14 @@ class OpenAIService: ChatServiceProtocol {
     }
     
     func validateConfiguration() async throws -> Bool {
-        guard KeychainService.shared.hasAPIKey(for: "openai") else {
+        guard ConfigurationManager.shared.hasAPIKey(for: .openAI) else {
             throw ChatServiceError.missingAPIKey(providerName)
         }
         return true
     }
     
     private func sendMessageToOpenAI(message: String, model: String) async throws -> String {
-        guard let apiKey = KeychainService.shared.getAPIKey(for: "openai") else {
+        guard let apiKey = ConfigurationManager.shared.getAPIKey(for: .openAI) else {
             throw ChatServiceError.missingAPIKey(providerName)
         }
         

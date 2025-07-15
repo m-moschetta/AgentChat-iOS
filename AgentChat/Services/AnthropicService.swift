@@ -32,14 +32,14 @@ class AnthropicService: ChatServiceProtocol {
     }
     
     func validateConfiguration() async throws -> Bool {
-        guard KeychainService.shared.hasAPIKey(for: "anthropic") else {
+        guard ConfigurationManager.shared.hasAPIKey(for: .claude) else {
             throw ChatServiceError.missingAPIKey(providerName)
         }
         return true
     }
     
     private func sendMessageToAnthropic(message: String, model: String) async throws -> String {
-        guard let apiKey = KeychainService.shared.getAPIKey(for: "anthropic") else {
+        guard let apiKey = ConfigurationManager.shared.getAPIKey(for: .claude) else {
             throw ChatServiceError.missingAPIKey(providerName)
         }
         

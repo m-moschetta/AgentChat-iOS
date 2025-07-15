@@ -32,14 +32,14 @@ class PerplexityService: ChatServiceProtocol {
     }
     
     func validateConfiguration() async throws -> Bool {
-        guard KeychainService.shared.hasAPIKey(for: "perplexity") else {
+        guard ConfigurationManager.shared.hasAPIKey(for: .perplexity) else {
             throw ChatServiceError.missingAPIKey(providerName)
         }
         return true
     }
     
     private func sendMessageToPerplexity(message: String, model: String) async throws -> String {
-        guard let apiKey = KeychainService.shared.getAPIKey(for: "perplexity") else {
+        guard let apiKey = ConfigurationManager.shared.getAPIKey(for: .perplexity) else {
             throw ChatServiceError.missingAPIKey(providerName)
         }
         

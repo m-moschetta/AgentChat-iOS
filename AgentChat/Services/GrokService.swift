@@ -32,14 +32,14 @@ class GrokService: ChatServiceProtocol {
     }
     
     func validateConfiguration() async throws -> Bool {
-        guard KeychainService.shared.hasAPIKey(for: "grok") else {
+        guard ConfigurationManager.shared.hasAPIKey(for: .grok) else {
             throw ChatServiceError.missingAPIKey(providerName)
         }
         return true
     }
     
     private func sendMessageToGrok(message: String, model: String) async throws -> String {
-        guard let apiKey = KeychainService.shared.getAPIKey(for: "grok") else {
+        guard let apiKey = ConfigurationManager.shared.getAPIKey(for: .grok) else {
             throw ChatServiceError.missingAPIKey(providerName)
         }
         

@@ -42,7 +42,7 @@ class CustomProviderService: ChatServiceProtocol {
     
     func sendMessage(message: String, provider: AssistantProvider, model: String) async throws -> String {
         // For custom providers, we'll try to use a generic OpenAI-compatible format
-        guard let apiKey = KeychainService.shared.getAPIKey(for: provider.id) else {
+        guard let apiKey = ConfigurationManager.shared.getAPIKey(for: provider.id) else {
             throw ChatServiceError.missingAPIKey("API key missing for provider: \(provider.name)")
         }
         

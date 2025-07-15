@@ -94,23 +94,23 @@ class LocalAssistantConfiguration: ObservableObject {
     // MARK: - API Key Management
     func hasValidAPIKey(for provider: AssistantProvider) -> Bool {
         guard provider.apiKeyRequired else { return true }
-        // Use provider type as keychain ID to match what services expect
-        return KeychainService.shared.hasAPIKey(for: provider.type.rawValue)
+        // Use provider type as identifier for ConfigurationManager
+        return ConfigurationManager.shared.hasAPIKey(for: provider.type.rawValue)
     }
     
     func setAPIKey(_ key: String, for provider: AssistantProvider) -> Bool {
-        // Use provider type as keychain ID to match what services expect
-        return KeychainService.shared.saveAPIKey(key, for: provider.type.rawValue)
+        // Use provider type as identifier for ConfigurationManager
+        return ConfigurationManager.shared.setAPIKey(key, for: provider.type.rawValue)
     }
     
     func getAPIKey(for provider: AssistantProvider) -> String? {
-        // Use provider type as keychain ID to match what services expect
-        return KeychainService.shared.getAPIKey(for: provider.type.rawValue)
+        // Use provider type as identifier for ConfigurationManager
+        return ConfigurationManager.shared.getAPIKey(for: provider.type.rawValue)
     }
     
     func removeAPIKey(for provider: AssistantProvider) -> Bool {
-        // Use provider type as keychain ID to match what services expect
-        return KeychainService.shared.deleteAPIKey(for: provider.type.rawValue)
+        // Use provider type as identifier for ConfigurationManager
+        return ConfigurationManager.shared.removeAPIKey(for: provider.type.rawValue)
     }
     
     // MARK: - Validation
@@ -191,7 +191,7 @@ class LocalAssistantConfiguration: ObservableObject {
     func resetToDefaults() {
         userDefaults.removeObject(forKey: customProvidersKey)
         userDefaults.removeObject(forKey: disabledProvidersKey)
-        KeychainService.shared.clearAllAPIKeys()
+        ConfigurationManager.shared.clearAllAPIKeys()
         
         customProviders.removeAll()
         setupDefaultProviders()
