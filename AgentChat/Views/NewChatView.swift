@@ -21,13 +21,9 @@ struct NewChatView: View {
     @State private var showingAPIKeyConfig = false
     @State private var showingAgentConfig = false
     @State private var providerNeedingAPIKey: AssistantProvider?
-    
+
     let onChatCreated: (AssistantProvider, String?, N8NWorkflow?) -> Void
     let onAgentChatCreated: ((AgentConfiguration) -> Void)?
-    
-    var availableProviders: [AssistantProvider] {
-        config.activeProviders
-    }
     
     var multiAgentProviders: [AssistantProvider] {
         [
@@ -63,6 +59,15 @@ struct NewChatView: View {
     var body: some View {
         NavigationView {
             Form {
+                CustomAgentsSection(
+                    selectedAgent: $selectedAgent,
+                    selectedProvider: $selectedProvider,
+                    selectedModel: $selectedModel,
+                    selectedWorkflow: $selectedWorkflow,
+                    showingAgentConfig: $showingAgentConfig,
+                    agentConfigManager: agentConfigManager
+                )
+                
                 TraditionalAssistantsSection(
                     selectedProvider: $selectedProvider,
                     selectedModel: $selectedModel,
@@ -80,15 +85,6 @@ struct NewChatView: View {
                     selectedAgent: $selectedAgent,
                     selectedWorkflow: $selectedWorkflow,
                     multiAgentProviders: multiAgentProviders
-                )
-                
-                CustomAgentsSection(
-                    selectedAgent: $selectedAgent,
-                    selectedProvider: $selectedProvider,
-                    selectedModel: $selectedModel,
-                    selectedWorkflow: $selectedWorkflow,
-                    showingAgentConfig: $showingAgentConfig,
-                    agentConfigManager: agentConfigManager
                 )
                 
                 if !workflowManager.availableWorkflows.isEmpty {
@@ -139,52 +135,22 @@ struct NewChatView: View {
             .disabled(selectedModel == nil && selectedWorkflow == nil)
         } else if let workflow = selectedWorkflow {
             Button("Inizia") {
-                // Assumiamo che un workflow non richieda un provider specifico per iniziare
-                // Potrebbe essere necessario un provider fittizio o una gestione diversa
+                // Un provider fittizio per gestire le chat basate solo su workflow
                 let dummyProvider = AssistantProvider(id: "n8n_workflow_runner", name: "N8N Runner", type: .custom, endpoint: "", apiKeyRequired: false, supportedModels: [], icon: "figure.flowchart", description: "")
                 onChatCreated(dummyProvider, nil, workflow)
                 dismiss()
             }
         } else {
             Button("Inizia") {
-                // Non dovrebbe accadere se la UI è corretta
+                // Logica per stato non previsto
             }
             .disabled(true)
         }
     }
 }
 
-// MARK: - N8N Workflows Section
-struct N8NWorkflowsSection: View {
-    @Binding var selectedWorkflow: N8NWorkflow?
-    @Binding var selectedProvider: AssistantProvider?
-    @Binding var selectedModel: String?
-    @Binding var selectedAgent: AgentConfiguration?
-    
-    @ObservedObject var workflowManager: N8NWorkflowManager
-    
-    var body: some View {
-        Section {
-            ForEach(workflowManager.availableWorkflows, id: \.id) { workflow in
-                WorkflowRow(
-                    workflow: workflow,
-                    isSelected: selectedWorkflow?.id == workflow.id
-                ) {
-                    selectedWorkflow = workflow
-                    selectedProvider = nil
-                    selectedModel = nil
-                    selectedAgent = nil
-                }
-            }
-        } header: {
-            Text("Workflow n8n")
-        } footer: {
-            Text("Automatizza i task con i workflow di n8n")
-        }
-    }
-}
+// MARK: - Sections
 
-// MARK: - Custom Agents Section
 struct CustomAgentsSection: View {
     @Binding var selectedAgent: AgentConfiguration?
     @Binding var selectedProvider: AssistantProvider?
@@ -239,38 +205,6 @@ struct CustomAgentsSection: View {
     }
 }
 
-// MARK: - Multi-Agent Systems Section
-struct MultiAgentSystemsSection: View {
-    @Binding var selectedProvider: AssistantProvider?
-    @Binding var selectedModel: String?
-    @Binding var selectedAgent: AgentConfiguration?
-    @Binding var selectedWorkflow: N8NWorkflow?
-    
-    let multiAgentProviders: [AssistantProvider]
-    
-    var body: some View {
-        Section {
-            ForEach(multiAgentProviders) { provider in
-                ProviderRow(
-                    provider: provider,
-                    isSelected: selectedProvider?.id == provider.id,
-                    hasValidAPIKey: true
-                ) {
-                    selectedProvider = provider
-                    selectedModel = provider.defaultModel
-                    selectedWorkflow = nil
-                    selectedAgent = nil
-                }
-            }
-        } header: {
-            Text("Sistemi Multi-Agente")
-        } footer: {
-            Text("Sistemi avanzati che utilizzano più agenti per elaborazioni complesse e collaborative")
-        }
-    }
-}
-
-// MARK: - Traditional Assistants Section
 struct TraditionalAssistantsSection: View {
     @Binding var selectedProvider: AssistantProvider?
     @Binding var selectedModel: String?
@@ -282,7 +216,7 @@ struct TraditionalAssistantsSection: View {
     
     @ObservedObject var config: LocalAssistantConfiguration
     
-    var availableProviders: [AssistantProvider] {
+    private var availableProviders: [AssistantProvider] {
         config.activeProviders
     }
     
@@ -338,6 +272,182 @@ struct TraditionalAssistantsSection: View {
                 .font(.footnote)
             }
         }
+    }
+}
+
+struct MultiAgentSystemsSection: View {
+    @Binding var selectedProvider: AssistantProvider?
+    @Binding var selectedModel: String?
+    @Binding var selectedAgent: AgentConfiguration?
+    @Binding var selectedWorkflow: N8NWorkflow?
+    
+    let multiAgentProviders: [AssistantProvider]
+    
+    var body: some View {
+        Section {
+            ForEach(multiAgentProviders) { provider in
+                ProviderRow(
+                    provider: provider,
+                    isSelected: selectedProvider?.id == provider.id,
+                    hasValidAPIKey: true // Questi sistemi non richiedono API key esterna
+                ) {
+                    selectedProvider = provider
+                    selectedModel = provider.defaultModel
+                    selectedWorkflow = nil
+                    selectedAgent = nil
+                }
+            }
+        } header: {
+            Text("Sistemi Multi-Agente")
+        } footer: {
+            Text("Sistemi avanzati che utilizzano più agenti per elaborazioni complesse e collaborative")
+        }
+    }
+}
+
+struct N8NWorkflowsSection: View {
+    @Binding var selectedWorkflow: N8NWorkflow?
+    @Binding var selectedProvider: AssistantProvider?
+    @Binding var selectedModel: String?
+    @Binding var selectedAgent: AgentConfiguration?
+    
+    @ObservedObject var workflowManager: N8NWorkflowManager
+    
+    var body: some View {
+        Section {
+            ForEach(workflowManager.availableWorkflows, id: \.id) { workflow in
+                WorkflowRow(
+                    workflow: workflow,
+                    isSelected: selectedWorkflow?.id == workflow.id
+                ) {
+                    selectedWorkflow = workflow
+                    selectedProvider = nil
+                    selectedModel = nil
+                    selectedAgent = nil
+                }
+            }
+        } header: {
+            Text("Workflow n8n")
+        } footer: {
+            Text("Automatizza i task con i workflow di n8n")
+        }
+    }
+}
+
+// MARK: - Row Views
+
+struct AgentRow: View {
+    let agent: AgentConfiguration
+    let isSelected: Bool
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack {
+                Text(agent.avatarEmoji)
+                    .font(.title2)
+                    .frame(width: 24)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(agent.name)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    Text(agent.providerName)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                Spacer()
+
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.accentColor)
+                }
+            }
+            .padding(.vertical, 4)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+struct ProviderRow: View {
+    let provider: AssistantProvider
+    let isSelected: Bool
+    let hasValidAPIKey: Bool
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack {
+                Image(systemName: provider.icon)
+                    .font(.title2)
+                    .frame(width: 30, height: 30)
+                    .foregroundColor(isSelected ? .accentColor : .secondary)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(provider.name)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    Text(provider.description)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                }
+
+                Spacer()
+
+                if provider.apiKeyRequired && !hasValidAPIKey {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundColor(.orange)
+                        .help("API Key richiesta")
+                }
+
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.accentColor)
+                }
+            }
+            .padding(.vertical, 4)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+struct WorkflowRow: View {
+    let workflow: N8NWorkflow
+    let isSelected: Bool
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack {
+                Image(systemName: "figure.flowchart")
+                    .font(.title2)
+                    .frame(width: 30, height: 30)
+                    .foregroundColor(isSelected ? .accentColor : .secondary)
+                
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(workflow.name)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    if let description = workflow.description, !description.isEmpty {
+                        Text(description)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+
+                Spacer()
+
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.accentColor)
+                }
+            }
+            .padding(.vertical, 4)
+        }
+        .buttonStyle(.plain)
     }
 }
 

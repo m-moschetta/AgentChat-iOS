@@ -13,13 +13,16 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var configuration = LocalAssistantConfiguration()
     @ObservedObject var workflowManager: N8NWorkflowManager
-    
+    @StateObject private var agentManager = AgentManager.shared
+
     @State private var showingCustomProviderView = false
     @State private var showingAPIKeyConfig = false
     @State private var selectedProviderForAPIKey: AssistantProvider?
     @State private var showingResetAlert = false
     @State private var showingAddWorkflowView = false
     @State private var selectedWorkflowForEdit: N8NWorkflow?
+    @State private var showingAddAgentView = false
+    @State private var selectedAgentForEdit: Agent?
     
     var body: some View {
         NavigationView {
@@ -44,6 +47,12 @@ struct SettingsView: View {
                 .sheet(item: $selectedWorkflowForEdit) { workflow in
                     AddN8NWorkflowView(workflowManager: workflowManager)
                 }
+                .sheet(isPresented: $showingAddAgentView) {
+                    AddAgentView(agentManager: agentManager)
+                }
+                .sheet(item: $selectedAgentForEdit) { agent in
+                    AddAgentView(agentManager: agentManager, agent: agent)
+                }
                 .alert("Ripristina Configurazione", isPresented: $showingResetAlert) {
                     Button("Annulla", role: .cancel) { }
                     Button("Ripristina", role: .destructive) {
@@ -59,6 +68,7 @@ struct SettingsView: View {
         Form {
             providersSection
             addProviderSection
+            agentsSection
             workflowsSection
             statisticsSection
             resetSection
@@ -101,6 +111,29 @@ struct SettingsView: View {
             Text("Gestione Provider")
         }
     }
+
+    private var agentsSection: some View {
+        Section {
+            ForEach(agentManager.agents) { agent in
+                AgentSettingsRow(
+                    agent: agent,
+                    onToggle: { agentManager.toggleAgent(agent) },
+                    onEdit: { selectedAgentForEdit = agent },
+                    onRemove: { agentManager.removeAgent(id: agent.id) }
+                )
+            }
+
+            Button {
+                showingAddAgentView = true
+            } label: {
+                Label("Aggiungi Agente", systemImage: "plus.circle")
+            }
+        } header: {
+            Text("Agenti Personalizzati")
+        } footer: {
+            Text("Crea agenti con prompt personalizzati selezionando il provider preferito.")
+        }
+    }
     
     private var workflowsSection: some View {
         Section {
@@ -139,6 +172,9 @@ struct SettingsView: View {
                 Text("Workflow n8n Attivi: \(workflowManager.activeWorkflows)")
                 Text("Workflow n8n Totali: \(workflowManager.availableWorkflows.count)")
                 Text("Workflow Personalizzati: \(workflowManager.customWorkflows)")
+                Divider()
+                Text("Agenti Attivi: \(agentManager.activeAgents.count)")
+                Text("Agenti Totali: \(agentManager.agents.count)")
             }
             .font(.subheadline)
             .foregroundColor(.secondary)
@@ -386,6 +422,68 @@ struct WorkflowSettingsRow: View {
             }
         } message: {
             Text("Sei sicuro di voler rimuovere il workflow \"\(workflow.name)\"? Questa azione non può essere annullata.")
+        }
+    }
+}
+
+// MARK: - AgentSettingsRow
+struct AgentSettingsRow: View {
+    let agent: Agent
+    let onToggle: () -> Void
+    let onEdit: () -> Void
+    let onRemove: () -> Void
+
+    @State private var showingRemoveAlert = false
+
+    var body: some View {
+        VStack(spacing: 12) {
+            HStack {
+                Text(agent.avatar)
+                    .font(.title2)
+                    .frame(width: 28)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(agent.name)
+                        .font(.headline)
+                    Text(agent.provider.name)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                Spacer()
+
+                Toggle("", isOn: Binding(
+                    get: { agent.isActive },
+                    set: { _ in onToggle() }
+                ))
+                .labelsHidden()
+            }
+
+            if agent.isActive {
+                HStack {
+                    Button { onEdit() } label: {
+                        Image(systemName: "pencil")
+                    }
+                    .buttonStyle(.bordered)
+
+                    Spacer()
+
+                    Button {
+                        showingRemoveAlert = true
+                    } label: {
+                        Image(systemName: "trash")
+                            .foregroundColor(.red)
+                    }
+                    .buttonStyle(.bordered)
+                }
+            }
+        }
+        .padding(.vertical, 4)
+        .alert("Rimuovi Agente", isPresented: $showingRemoveAlert) {
+            Button("Annulla", role: .cancel) { }
+            Button("Rimuovi", role: .destructive) { onRemove() }
+        } message: {
+            Text("Sei sicuro di voler rimuovere l'agente \"\(agent.name)\"?")
         }
     }
 }
