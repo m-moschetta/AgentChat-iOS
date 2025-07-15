@@ -46,8 +46,7 @@ struct AddN8NWorkflowView: View {
                     TextField("Nome workflow", text: $name)
                         .autocorrectionDisabled()
                     
-                    TextField("Descrizione", text: $description, axis: .vertical)
-                        .lineLimit(2...4)
+                    TextField("Descrizione", text: $description)
                     
                     Picker("Categoria", selection: $category) {
                         ForEach(WorkflowCategory.allCases, id: \.self) { category in

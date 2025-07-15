@@ -1,456 +1,142 @@
 //
-//  SettingsView.swift
+//  ChatService.swift
 //  AgentChat
 //
 //  Created by Mario Moschetta on 04/07/25.
 //
 
-import SwiftUI
 import Foundation
-import UniformTypeIdentifiers
+import Combine
+import SwiftUI
 
-// MARK: - Settings View
-struct SettingsView: View {
-    @Environment(\.dismiss) private var dismiss
-    @StateObject private var configuration = LocalAssistantConfiguration()
-    @ObservedObject var workflowManager: N8NWorkflowManager
-    @ObservedObject var chatManager: ChatManager
+// Import the protocol and error definitions
+// ChatServiceProtocol is defined in Protocols/ChatServiceProtocol.swift
+// ChatServiceError is defined in Models/ChatServiceError.swift
+
+// Import required models
+// These imports are needed for the types used in this file
+
+// MARK: - Chat Manager
+class ChatManager: ObservableObject {
+    static let shared = ChatManager()
     
-    @State private var showingCustomProviderView = false
-    @State private var showingAPIKeyConfig = false
-    @State private var selectedProviderForAPIKey: AssistantProvider?
-    @State private var showingResetAlert = false
-    @State private var showingAddWorkflowView = false
-    @State private var selectedWorkflowForEdit: N8NWorkflow?
-    @State private var showExport = false
-    @State private var showImport = false
-    @State private var exportURL: URL?
+    @Published var chats: [Chat] = []
+    private let serviceFactory = ServiceFactory()
     
-    var body: some View {
-        NavigationStack {
-            formContent
-                .navigationTitle("Impostazioni")
-                .toolbar {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("Fine") {
-                            dismiss()
-                        }
-                    }
-                }
-                .sheet(isPresented: $showingCustomProviderView) {
-                    CustomProviderView()
-                }
-                .sheet(item: $selectedProviderForAPIKey) { provider in
-                    APIKeyConfigView(provider: provider)
-                }
-                .sheet(isPresented: $showingAddWorkflowView) {
-                    AddN8NWorkflowView(workflowManager: workflowManager)
-                }
-                .sheet(item: $selectedWorkflowForEdit) { workflow in
-                    AddN8NWorkflowView(workflowManager: workflowManager)
-                }
-                .alert("Ripristina Configurazione", isPresented: $showingResetAlert) {
-                    Button("Annulla", role: .cancel) { }
-                    Button("Ripristina", role: .destructive) {
-                        configuration.resetToDefaults()
-                    }
-                } message: {
-                    Text("Sei sicuro di voler ripristinare la configurazione predefinita? Questa azione non può essere annullata.")
-                }
-                .fileExporter(isPresented: $showExport, document: ChatsDocument(chats: chatManager.chats), contentType: .json) { result in
-                    if case .success(let url) = result {
-                        exportURL = url
-                    }
-                }
-                .fileImporter(isPresented: $showImport, allowedContentTypes: [.json]) { result in
-                    if case .success(let url) = result {
-                        chatManager.importChats(from: url)
-                    }
-                }
-        }
+    private init() {
+        // Carica le chat salvate all'avvio dell'applicazione
+        chats = ChatPersistenceManager.shared.loadChats()
     }
     
-    private var formContent: some View {
-        Form {
-            providersSection
-            addProviderSection
-            workflowsSection
-            conversationsSection
-            statisticsSection
-            resetSection
-        }
+    /// Crea una nuova chat basata su un provider e un modello specifici.
+    func createNewChat(with provider: AssistantProvider, model: String?, workflow: N8NWorkflow? = nil) {
+        let agentType: AgentType = {
+            switch provider.type {
+            case .openai:
+                return .openAI
+            case .anthropic:
+                return .claude
+            case .mistral:
+                return .mistral
+            case .perplexity:
+                return .perplexity
+            case .grok:
+                return .grok
+            case .n8n:
+                return .n8n
+            case .custom:
+                return .custom
+            }
+        }()
+        
+        let newChat = Chat(
+            agentType: agentType,
+            provider: provider,
+            selectedModel: model,
+            n8nWorkflow: workflow
+        )
+        
+        chats.append(newChat)
+        ChatPersistenceManager.shared.saveChats(chats)
     }
     
-    private var providersSection: some View {
-        Section {
-            ForEach(configuration.availableProviders) { provider in
-                ProviderSettingsRow(
-                    provider: provider,
-                    hasValidAPIKey: configuration.hasValidAPIKey(for: provider),
-                    onToggle: {
-                        configuration.toggleProvider(provider)
-                    },
-                    onConfigureAPIKey: {
-                        selectedProviderForAPIKey = provider
-                        showingAPIKeyConfig = true
-                    },
-                    onRemove: provider.type == .custom ? {
-                        configuration.removeCustomProvider(withId: provider.id)
-                    } : Optional<() -> Void>.none
-                )
-            }
-        } header: {
-            Text("Provider Configurati")
-        } footer: {
-            Text("Abilita o disabilita i provider AI. I provider disabilitati non appariranno nella selezione delle nuove chat.")
-        }
+    /// Crea una nuova chat basata su una configurazione di agente personalizzata.
+    func createNewChat(with agentConfiguration: AgentConfiguration) {
+        let newChat = Chat(agentConfiguration: agentConfiguration)
+        chats.append(newChat)
+        ChatPersistenceManager.shared.saveChats(chats)
     }
     
-    private var addProviderSection: some View {
-        Section {
-            Button {
-                showingCustomProviderView = true
-            } label: {
-                Label("Aggiungi Provider Personalizzato", systemImage: "plus.circle")
-            }
-        } header: {
-            Text("Gestione Provider")
-        }
+    /// Elimina una o più chat in base ai loro indici.
+    func deleteChat(at offsets: IndexSet) {
+        chats.remove(atOffsets: offsets)
+        ChatPersistenceManager.shared.saveChats(chats)
     }
-    
-    private var workflowsSection: some View {
-        Section {
-            ForEach(workflowManager.availableWorkflows) { workflow in
-                WorkflowSettingsRow(
-                    workflow: workflow,
-                    workflowManager: workflowManager,
-                    onEdit: {
-                        selectedWorkflowForEdit = workflow
-                    },
-                    onRemove: !workflow.isDefault ? {
-                        workflowManager.removeWorkflow(withId: workflow.id)
-                    } : Optional<() -> Void>.none
-                )
-            }
-            
-            Button {
-                showingAddWorkflowView = true
-            } label: {
-                Label("Aggiungi Workflow n8n", systemImage: "plus.circle")
-            }
-        } header: {
-            Text("Workflow n8n")
-        } footer: {
-            Text("Gestisci i workflow n8n personalizzati. I workflow predefiniti non possono essere rimossi.")
+
+    /// Aggiunge un nuovo messaggio a una chat esistente.
+    func addMessage(to chat: Chat, message: Message) {
+        if let index = chats.firstIndex(where: { $0.id == chat.id }) {
+            chats[index].messages.append(message)
+            ChatPersistenceManager.shared.saveChats(chats)
         }
     }
 
-    private var conversationsSection: some View {
-        Section {
-            Button {
-                showExport = true
-            } label: {
-                Label("Esporta Conversazioni", systemImage: "square.and.arrow.up")
-            }
+    // MARK: - Import/Export
+    
+    /// Esporta tutte le chat in un file e restituisce l'URL del file.
+    func exportChats() -> URL? {
+        return ChatPersistenceManager.shared.exportChats(chats)
+    }
 
-            Button {
-                showImport = true
-            } label: {
-                Label("Importa Conversazioni", systemImage: "square.and.arrow.down")
-            }
-        } header: {
-            Text("Conversazioni")
-        } footer: {
-            Text("Esporta tutte le chat in un file JSON o importa conversazioni precedenti.")
+    /// Importa le chat da un file JSON e sovrascrive quelle correnti.
+    func importChats(from url: URL) {
+        if let imported = ChatPersistenceManager.shared.importChats(from: url) {
+            chats = imported
+            ChatPersistenceManager.shared.saveChats(chats)
         }
     }
     
-    private var statisticsSection: some View {
-        Section {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Provider Attivi: \(configuration.activeProviders.count)")
-                Text("Provider Totali: \(configuration.availableProviders.count)")
-                Text("Provider Personalizzati: \(configuration.customProviders.count)")
-                Divider()
-                Text("Workflow n8n Attivi: \(workflowManager.activeWorkflows)")
-                Text("Workflow n8n Totali: \(workflowManager.availableWorkflows.count)")
-                Text("Workflow Personalizzati: \(workflowManager.customWorkflows)")
-            }
-            .font(.subheadline)
-            .foregroundColor(.secondary)
-        } header: {
-            Text("Statistiche")
-        }
+    /// Restituisce l'istanza del servizio di chat per un dato tipo di agente.
+    func getChatService(for agentType: AgentType) -> ChatServiceProtocol? {
+        return serviceFactory.createChatService(for: agentType)
     }
     
-    private var resetSection: some View {
-        Section {
-            Button("Ripristina Configurazione", role: .destructive) {
-                showingResetAlert = true
-            }
-        } header: {
-            Text("Reset")
-        } footer: {
-            Text("Questo rimuoverà tutti i provider personalizzati e le API key salvate, ripristinando la configurazione predefinita.")
-        }
+    /// Restituisce l'istanza del servizio di chat per un dato provider (identificato da una stringa).
+    func getChatService(for provider: String) -> ChatServiceProtocol? {
+        return serviceFactory.createChatService(for: provider)
     }
 }
 
-// MARK: - Provider Settings Row
-struct ProviderSettingsRow: View {
-    let provider: AssistantProvider
-    let hasValidAPIKey: Bool
-    let onToggle: () -> Void
-    let onConfigureAPIKey: () -> Void
-    let onRemove: (() -> Void)?
+// MARK: - Chat Service Utilities
+extension ChatManager {
+    /// Restituisce tutti i servizi disponibili.
+    func getAllServices() -> [ChatServiceProtocol] {
+        let agentTypes: [AgentType] = [.openAI, .claude, .mistral, .perplexity, .grok, .n8n, .custom, .hybridMultiAgent, .agentGroup, .productTeam]
+        return agentTypes.compactMap { serviceFactory.createChatService(for: $0) }
+    }
     
-    @State private var showingRemoveAlert = false
+    /// Verifica se un provider è disponibile e configurato correttamente.
+    func isProviderAvailable(_ agentType: AgentType) async -> Bool {
+        guard let service = serviceFactory.createChatService(for: agentType) else {
+            return false
+        }
+        
+        do {
+            return try await service.validateConfiguration()
+        } catch {
+            return false
+        }
+    }
     
-    var body: some View {
-        VStack(spacing: 12) {
-            HStack {
-                Image(systemName: provider.icon)
-                    .foregroundColor(provider.isActive ? .accentColor : .secondary)
-                    .frame(width: 24)
-                
-                VStack(alignment: .leading, spacing: 2) {
-                    HStack {
-                        Text(provider.name)
-                            .font(.headline)
-                        
-                        if provider.type == .custom {
-                            Text("CUSTOM")
-                                .font(.caption2)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(Color.blue.opacity(0.2))
-                                .foregroundColor(.blue)
-                                .cornerRadius(4)
-                        }
-                    }
-                    
-                    Text(provider.description)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .lineLimit(2)
-                }
-                
-                Spacer()
-                
-                Toggle("", isOn: Binding(
-                    get: { provider.isActive },
-                    set: { _ in onToggle() }
-                ))
-                .labelsHidden()
-            }
-            
-            if provider.isActive {
-                HStack {
-                    if provider.apiKeyRequired {
-                        Button {
-                            onConfigureAPIKey()
-                        } label: {
-                            HStack {
-                                Image(systemName: hasValidAPIKey ? "checkmark.circle.fill" : "key")
-                                    .foregroundColor(hasValidAPIKey ? .green : .orange)
-                                Text(hasValidAPIKey ? "API Key Configurata" : "Configura API Key")
-                            }
-                        }
-                        .font(.caption)
-                        .buttonStyle(.bordered)
-                    } else {
-                        HStack {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(.green)
-                            Text("Nessuna API Key richiesta")
-                        }
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    }
-                    
-                    Spacer()
-                    
-                    if let onRemove {
-                        Button {
-                            showingRemoveAlert = true
-                        } label: {
-                            Image(systemName: "trash")
-                                .foregroundColor(.red)
-                        }
-                        .buttonStyle(.bordered)
-                    }
-                }
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Endpoint: \(provider.endpoint)")
-                    Text("Modelli: \(provider.supportedModels.joined(separator: ", "))")
-                    if let defaultModel = provider.defaultModel {
-                        Text("Modello predefinito: \(defaultModel)")
-                    }
-                }
-                .font(.caption2)
-                .foregroundColor(.secondary)
-                .padding(.top, 4)
-            }
+    /// Restituisce i modelli supportati per un tipo di agente.
+    func getSupportedModels(for agentType: AgentType) -> [String] {
+        guard let service = serviceFactory.createChatService(for: agentType) else {
+            return []
         }
-        .padding(.vertical, 4)
-        .alert("Rimuovi Provider", isPresented: $showingRemoveAlert) {
-            Button("Annulla", role: .cancel) { }
-            Button("Rimuovi", role: .destructive) {
-                onRemove?()
-            }
-        } message: {
-            Text("Sei sicuro di voler rimuovere il provider \"\(provider.name)\"? Questa azione non può essere annullata.")
-        }
+        return service.supportedModels
     }
 }
 
-// MARK: - WorkflowSettingsRow
-struct WorkflowSettingsRow: View {
-    let workflow: N8NWorkflow
-    let workflowManager: N8NWorkflowManager
-    let onEdit: () -> Void
-    let onRemove: (() -> Void)?
-    
-    @State private var showingRemoveAlert = false
-    
-    var body: some View {
-        VStack(spacing: 12) {
-            HStack {
-                Text(workflow.icon)
-                    .font(.title2)
-                    .frame(width: 32)
-                
-                VStack(alignment: .leading, spacing: 2) {
-                    HStack {
-                        Text(workflow.name)
-                            .font(.headline)
-                        
-                        Text(workflow.category.displayName)
-                            .font(.caption2)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Color.blue.opacity(0.2))
-                            .foregroundColor(.blue)
-                            .cornerRadius(4)
-                        
-                        if !workflow.isDefault {
-                            Text("CUSTOM")
-                                .font(.caption2)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(Color.orange.opacity(0.2))
-                                .foregroundColor(.orange)
-                                .cornerRadius(4)
-                        }
-                    }
-                    
-                    Text(workflow.description)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .lineLimit(2)
-                }
-                
-                Spacer()
-                
-                Toggle("", isOn: Binding(
-                    get: { workflow.isActive },
-                    set: { _ in
-                        workflowManager.toggleWorkflowStatus(workflow)
-                    }
-                ))
-                .labelsHidden()
-            }
-            
-            if workflow.isActive {
-                HStack {
-                    if workflow.requiresAuthentication {
-                        HStack {
-                            Image(systemName: "key")
-                                .foregroundColor(.orange)
-                            Text("Autenticazione richiesta")
-                        }
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    } else {
-                        HStack {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(.green)
-                            Text("Nessuna autenticazione richiesta")
-                        }
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    }
-                    
-                    Spacer()
-                    
-                    Button {
-                        onEdit()
-                    } label: {
-                        Image(systemName: "pencil")
-                    }
-                    .buttonStyle(.bordered)
-                    
-                    if let onRemove {
-                        Button {
-                            showingRemoveAlert = true
-                        } label: {
-                            Image(systemName: "trash")
-                                .foregroundColor(.red)
-                        }
-                        .buttonStyle(.bordered)
-                    }
-                }
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Endpoint: \(workflow.endpoint)")
-                    Text("Parametri: \(workflow.parameters.count)")
-                    if !workflow.parameters.isEmpty {
-                        Text("Parametri obbligatori: \(workflow.parameters.filter { $0.isRequired }.count)")
-                    }
-                }
-                .font(.caption2)
-                .foregroundColor(.secondary)
-                .padding(.top, 4)
-            }
-        }
-        .padding(.vertical, 4)
-        .alert("Rimuovi Workflow", isPresented: $showingRemoveAlert) {
-            Button("Annulla", role: .cancel) { }
-            Button("Rimuovi", role: .destructive) {
-                onRemove?()
-            }
-        } message: {
-            Text("Sei sicuro di voler rimuovere il workflow \"\(workflow.name)\"? Questa azione non può essere annullata.")
-        }
-    }
-}
-
-// MARK: - Preview
-#Preview {
-    SettingsView(workflowManager: N8NWorkflowManager.shared, chatManager: ChatManager())
-}
-
-// MARK: - Chats Document
-struct ChatsDocument: FileDocument {
-    static var readableContentTypes: [UTType] { [.json] }
-
-    var chats: [Chat]
-
-    init(chats: [Chat]) {
-        self.chats = chats
-    }
-
-    init(configuration: ReadConfiguration) throws {
-        if let data = configuration.file.regularFileContents {
-            chats = (try? JSONDecoder().decode([Chat].self, from: data)) ?? []
-        } else {
-            chats = []
-        }
-    }
-
-    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        let data = try JSONEncoder().encode(chats)
-        return .init(regularFileWithContents: data)
-    }
-}
+// MARK: - Legacy Support
+// ChatServiceFactory is now defined in ChatServiceFactory.swift
+// This extension provides backward compatibility through ChatManager.shared

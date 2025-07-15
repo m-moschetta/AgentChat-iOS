@@ -41,22 +41,15 @@ struct AddParameterView: View {
                     TextField("Nome parametro", text: $name)
                         .autocorrectionDisabled()
                     
-                    TextField("Descrizione (opzionale)", text: $description, axis: .vertical)
-                        .lineLimit(2...4)
+                    TextField("Descrizione (opzionale)", text: $description)
+                        .lineLimit(4)
                     
                     Picker("Tipo", selection: $type) {
                         ForEach(ParameterType.allCases, id: \.self) { type in
                             Text(type.displayName).tag(type)
                         }
                     }
-                    .onChange(of: type) { _, newType in
-                        // Reset select options when changing away from select type
-                        if newType != .select {
-                            selectOptions.removeAll()
-                        }
-                        // Update placeholder based on type
-                        updatePlaceholderForType(newType)
-                    }
+
                 }
                 
                 // Sezione Configurazione
@@ -85,9 +78,6 @@ struct AddParameterView: View {
                         
                         HStack {
                             TextField("Nuova opzione", text: $newOption)
-                                .onSubmit {
-                                    addSelectOption()
-                                }
                             
                             Button(action: addSelectOption) {
                                 Image(systemName: "plus.circle.fill")
@@ -121,13 +111,13 @@ struct AddParameterView: View {
             }
             .navigationTitle("Nuovo Parametro")
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
+                ToolbarItem(placement: .navigation) {
                     Button("Annulla") {
                         dismiss()
                     }
                 }
                 
-                ToolbarItem(placement: .confirmationAction) {
+                ToolbarItem(placement: .primaryAction) {
                     Button("Salva") {
                         saveParameter()
                     }
@@ -278,9 +268,9 @@ struct ParameterPreviewView: View {
                 }
                     
             case .multiline:
-                TextField(placeholder, text: $previewValue, axis: .vertical)
+                TextField(placeholder, text: $previewValue)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .lineLimit(3...6)
+                    .lineLimit(6)
                     .disabled(true)
             }
             

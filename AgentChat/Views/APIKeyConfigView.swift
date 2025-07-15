@@ -50,7 +50,7 @@ struct APIKeyConfigView: View {
     }
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             Form {
                 Section {
                     VStack(alignment: .leading, spacing: 12) {
