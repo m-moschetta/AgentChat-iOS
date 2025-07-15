@@ -7,12 +7,14 @@
 
 import SwiftUI
 import Foundation
+import UniformTypeIdentifiers
 
 // MARK: - Settings View
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var configuration = LocalAssistantConfiguration()
     @ObservedObject var workflowManager: N8NWorkflowManager
+    @ObservedObject var chatManager: ChatManager
     
     @State private var showingCustomProviderView = false
     @State private var showingAPIKeyConfig = false
@@ -20,6 +22,9 @@ struct SettingsView: View {
     @State private var showingResetAlert = false
     @State private var showingAddWorkflowView = false
     @State private var selectedWorkflowForEdit: N8NWorkflow?
+    @State private var showExport = false
+    @State private var showImport = false
+    @State private var exportURL: URL?
     
     var body: some View {
         NavigationStack {
@@ -52,6 +57,16 @@ struct SettingsView: View {
                 } message: {
                     Text("Sei sicuro di voler ripristinare la configurazione predefinita? Questa azione non può essere annullata.")
                 }
+                .fileExporter(isPresented: $showExport, document: ChatsDocument(chats: chatManager.chats), contentType: .json) { result in
+                    if case .success(let url) = result {
+                        exportURL = url
+                    }
+                }
+                .fileImporter(isPresented: $showImport, allowedContentTypes: [.json]) { result in
+                    if case .success(let url) = result {
+                        chatManager.importChats(from: url)
+                    }
+                }
         }
     }
     
@@ -60,6 +75,7 @@ struct SettingsView: View {
             providersSection
             addProviderSection
             workflowsSection
+            conversationsSection
             statisticsSection
             resetSection
         }
@@ -126,6 +142,26 @@ struct SettingsView: View {
             Text("Workflow n8n")
         } footer: {
             Text("Gestisci i workflow n8n personalizzati. I workflow predefiniti non possono essere rimossi.")
+        }
+    }
+
+    private var conversationsSection: some View {
+        Section {
+            Button {
+                showExport = true
+            } label: {
+                Label("Esporta Conversazioni", systemImage: "square.and.arrow.up")
+            }
+
+            Button {
+                showImport = true
+            } label: {
+                Label("Importa Conversazioni", systemImage: "square.and.arrow.down")
+            }
+        } header: {
+            Text("Conversazioni")
+        } footer: {
+            Text("Esporta tutte le chat in un file JSON o importa conversazioni precedenti.")
         }
     }
     
@@ -392,5 +428,29 @@ struct WorkflowSettingsRow: View {
 
 // MARK: - Preview
 #Preview {
-    SettingsView(workflowManager: N8NWorkflowManager.shared)
+    SettingsView(workflowManager: N8NWorkflowManager.shared, chatManager: ChatManager())
+}
+
+// MARK: - Chats Document
+struct ChatsDocument: FileDocument {
+    static var readableContentTypes: [UTType] { [.json] }
+
+    var chats: [Chat]
+
+    init(chats: [Chat]) {
+        self.chats = chats
+    }
+
+    init(configuration: ReadConfiguration) throws {
+        if let data = configuration.file.regularFileContents {
+            chats = (try? JSONDecoder().decode([Chat].self, from: data)) ?? []
+        } else {
+            chats = []
+        }
+    }
+
+    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        let data = try JSONEncoder().encode(chats)
+        return .init(regularFileWithContents: data)
+    }
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - Message
-struct Message: Identifiable, Equatable {
+struct Message: Identifiable, Equatable, Codable {
     let id: UUID
     let content: String
     let isUser: Bool

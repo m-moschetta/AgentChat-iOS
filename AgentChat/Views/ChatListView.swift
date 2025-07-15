@@ -66,7 +66,7 @@ struct ChatListView: View {
                 }
             }
         .sheet(isPresented: $showingSettings) {
-            SettingsView(workflowManager: workflowManager)
+            SettingsView(workflowManager: workflowManager, chatManager: chatService)
         }
         .onAppear {
             workflowManager.loadWorkflows()

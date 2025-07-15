@@ -16,6 +16,10 @@ import SwiftUI
 // MARK: - Chat Manager
 class ChatManager: ObservableObject {
     @Published var chats: [Chat] = []
+
+    init() {
+        chats = ChatPersistenceManager.shared.loadChats()
+    }
     
     func createNewChat(with provider: AssistantProvider, model: String?, workflow: N8NWorkflow? = nil) {
         let agentType: AgentType = {
@@ -45,15 +49,30 @@ class ChatManager: ObservableObject {
         )
         
         chats.append(newChat)
+        ChatPersistenceManager.shared.saveChats(chats)
     }
-    
+
     func deleteChat(at offsets: IndexSet) {
         chats.remove(atOffsets: offsets)
+        ChatPersistenceManager.shared.saveChats(chats)
     }
-    
+
     func addMessage(to chat: Chat, message: Message) {
         if let index = chats.firstIndex(where: { $0.id == chat.id }) {
             chats[index].messages.append(message)
+            ChatPersistenceManager.shared.saveChats(chats)
+        }
+    }
+
+    // MARK: - Import/Export
+    func exportChats() -> URL? {
+        ChatPersistenceManager.shared.exportChats(chats)
+    }
+
+    func importChats(from url: URL) {
+        if let imported = ChatPersistenceManager.shared.importChats(from: url) {
+            chats = imported
+            ChatPersistenceManager.shared.saveChats(chats)
         }
     }
 }
