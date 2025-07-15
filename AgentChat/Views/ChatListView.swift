@@ -246,7 +246,7 @@ struct ChatListView: View {
                 )
             }
         .sheet(isPresented: $showingSettings) {
-            SettingsView(workflowManager: workflowManager)
+            SettingsView(workflowManager: workflowManager, chatManager: chatService)
         }
         .sheet(isPresented: $showingAgentConfig) {
             AgentConfigurationView()
