@@ -25,7 +25,7 @@ struct SettingsView: View {
     @State private var selectedAgentForEdit: Agent?
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             formContent
                 .navigationTitle("Impostazioni")
                 .toolbar {

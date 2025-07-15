@@ -39,7 +39,7 @@ struct CustomProviderView: View {
     }
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             Form {
                 Section {
                     TextField("Nome del provider", text: $name)
@@ -61,8 +61,8 @@ struct CustomProviderView: View {
                 }
                 
                 Section {
-                    TextField("Modelli supportati", text: $models, axis: .vertical)
-                        .lineLimit(3...6)
+                    TextField("Modelli supportati", text: $models)
+                        .lineLimit(6)
                     
                     if !modelsList.isEmpty {
                         Picker("Modello predefinito", selection: $defaultModel) {
@@ -103,8 +103,8 @@ struct CustomProviderView: View {
                         }
                     }
                     
-                    TextField("Descrizione", text: $description, axis: .vertical)
-                        .lineLimit(2...4)
+                    TextField("Descrizione", text: $description)
+                        .lineLimit(4)
                 } header: {
                     Text("Personalizzazione")
                 }
@@ -146,13 +146,13 @@ struct CustomProviderView: View {
             }
             .navigationTitle("Nuovo Provider")
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
+                ToolbarItem(placement: .navigation) {
                     Button("Annulla") {
                         dismiss()
                     }
                 }
                 
-                ToolbarItem(placement: .confirmationAction) {
+                ToolbarItem(placement: .primaryAction) {
                     Button("Salva") {
                         saveProvider()
                     }
