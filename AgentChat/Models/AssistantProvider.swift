@@ -61,6 +61,16 @@ struct AssistantProvider: Codable, Identifiable, Equatable {
     }
 }
 
+// MARK: - Helper Methods
+extension AssistantProvider {
+    static func fromString(_ providerName: String) -> AssistantProvider? {
+        return defaultProviders.first { provider in
+            provider.name.lowercased() == providerName.lowercased() ||
+            provider.type.displayName.lowercased() == providerName.lowercased()
+        }
+    }
+}
+
 // MARK: - Default Providers
 extension AssistantProvider {
     static let defaultProviders: [AssistantProvider] = [

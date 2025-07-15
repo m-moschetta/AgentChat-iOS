@@ -17,11 +17,16 @@ struct ChatDetailView: View {
     @State private var errorMessage: String?
     @State private var showParameterSheet = false
     @State private var showModelSelector = false
+    @State private var showAgentConfig = false
     @State private var workflowParameters: [String: String] = [:]
+    
+    @StateObject private var agentConfigManager = AgentConfigurationManager.shared
+    @StateObject private var memoryManager = AgentMemoryManager.shared
+    @StateObject private var chatManager = ChatManager.shared
     
     var body: some View {
         chatContent
-            .navigationTitle(chat.n8nWorkflow?.name ?? chat.agentType.rawValue)
+            .navigationTitle(chatTitle)
              .toolbar {
                  ToolbarItem(placement: .principal) {
                      titleView
@@ -29,6 +34,14 @@ struct ChatDetailView: View {
                  
                  ToolbarItem(placement: .primaryAction) {
                      HStack {
+                         if chat.agentConfiguration != nil {
+                             Button {
+                                 showAgentConfig = true
+                             } label: {
+                                 Image(systemName: "person.crop.circle.badge.plus")
+                             }
+                         }
+                         
                          if chat.n8nWorkflow == nil {
                              Button {
                                  showModelSelector = true
@@ -59,6 +72,16 @@ struct ChatDetailView: View {
             .sheet(isPresented: $showModelSelector) {
                 ModelSelectorView(chat: chat)
             }
+            .sheet(isPresented: $showAgentConfig) {
+                if let agentConfig = chat.agentConfiguration {
+                    AgentEditView(agent: agentConfig, onSave: { updatedAgent in
+                        chat.agentConfiguration = updatedAgent
+                        agentConfigManager.updateAgent(updatedAgent)
+                    })
+                } else {
+                    AgentConfigurationView()
+                }
+            }
     }
     
     private var chatContent: some View {
@@ -74,13 +97,13 @@ struct ChatDetailView: View {
         ScrollViewReader { proxy in
             List(chat.messages) { message in
                 messageRow(message)
-                    .listRowSeparator(.hidden)
+    
             }
             .listStyle(.plain)
             .onAppear {
                 scrollToLastMessage(proxy)
             }
-            .onChange(of: chat.messages) { _, newValue in
+            .onChange(of: chat.messages) { oldValue, newValue in
                 scrollToLastMessageAnimated(proxy, messages: newValue)
             }
         }
@@ -117,10 +140,10 @@ struct ChatDetailView: View {
     
     private var inputSection: some View {
         HStack {
-            TextField("Scrivi un messaggio...", text: $inputText, axis: .vertical)
+            TextField("Scrivi un messaggio...", text: $inputText)
                 .textFieldStyle(.roundedBorder)
                 .focused($isInputFocused)
-                .lineLimit(1...5)
+
                 .disabled(isAwaitingAssistant)
             
             sendButton
@@ -144,6 +167,18 @@ struct ChatDetailView: View {
         .padding(.leading, 4)
     }
     
+    private var chatTitle: String {
+        if let workflow = chat.n8nWorkflow {
+            return workflow.name
+        } else if let agentConfig = chat.agentConfiguration {
+            return agentConfig.name
+        } else if let groupTemplate = chat.groupTemplate {
+            return groupTemplate.name
+        } else {
+            return chat.title
+        }
+    }
+    
     private var titleView: some View {
         VStack {
             HStack {
@@ -152,14 +187,34 @@ struct ChatDetailView: View {
                         .font(.caption)
                     Text(workflow.name)
                         .font(.headline)
+                } else if let agentConfig = chat.agentConfiguration {
+                    Text(agentConfig.icon)
+                        .font(.caption)
+                    Text(agentConfig.name)
+                        .font(.headline)
+                } else if let groupTemplate = chat.groupTemplate {
+                    Text(groupTemplate.icon)
+                        .font(.caption)
+                    Text(groupTemplate.name)
+                        .font(.headline)
                 } else {
-                    Text(chat.agentType.rawValue)
+                    Text(chat.agentType.icon)
+                        .font(.caption)
+                    Text(chat.agentType.displayName)
                         .font(.headline)
                 }
             }
             
             if let workflow = chat.n8nWorkflow {
                 Text(workflow.category.displayName)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            } else if let agentConfig = chat.agentConfiguration {
+                Text(agentConfig.role)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            } else if let groupTemplate = chat.groupTemplate {
+                Text(groupTemplate.description)
                     .font(.caption)
                     .foregroundColor(.secondary)
             } else if let model = chat.selectedModel {
@@ -191,7 +246,10 @@ struct ChatDetailView: View {
         guard !trimmed.isEmpty, !isAwaitingAssistant else { return }
         
         let userMsg = Message(id: UUID(), content: trimmed, isUser: true, timestamp: Date())
-        chat.messages.append(userMsg)
+        
+        // Aggiungi il messaggio alla chat con analisi e memorizzazione
+        chat.addMessage(userMsg)
+        
         inputText = ""
         errorMessage = nil
         
@@ -216,6 +274,14 @@ struct ChatDetailView: View {
                     chatId: chat.id.uuidString
                 )
                 response = n8nResponse.message ?? "Nessuna risposta dal workflow"
+            } else if let agentConfig = chat.agentConfiguration {
+                // Usa l'agente configurabile
+                let contextualPrompt = chat.buildContextualPrompt(for: trimmed)
+                response = try await sendMessageToConfigurableAgent(
+                    message: trimmed,
+                    agentConfig: agentConfig,
+                    contextualPrompt: contextualPrompt
+                )
             } else {
                 // Usa il servizio universale per inviare il messaggio
                 response = try await UniversalAssistantService.shared.sendMessage(
@@ -239,10 +305,11 @@ struct ChatDetailView: View {
             }
             
             let assistantMessage = Message(id: UUID(), content: responseText, isUser: false, timestamp: Date())
-            chat.messages.append(assistantMessage)
+            
+            // Aggiungi il messaggio dell'assistente con analisi e memorizzazione
+            chat.addMessage(assistantMessage)
             
         } catch {
-            // Rimuovi il placeholder in caso di errore
             if let idx = chat.messages.firstIndex(where: { $0.id == placeholderId }) {
                 chat.messages.remove(at: idx)
             }
@@ -299,6 +366,53 @@ struct ChatDetailView: View {
         }
         
         isAwaitingAssistant = false
+    }
+    
+    // MARK: - Configurable Agent Message
+    private func sendMessageToConfigurableAgent(
+        message: String,
+        agentConfig: AgentConfiguration,
+        contextualPrompt: String
+    ) async throws -> String {
+        // Determina il provider da utilizzare
+        let providerName = agentConfig.preferredProvider
+        guard let provider = AssistantProvider.defaultProviders.first(where: { $0.name == providerName }) ?? AssistantProvider.defaultProviders.first else {
+            throw ChatServiceError.unsupportedModel("Provider non trovato: \(providerName)")
+        }
+        
+        // Costruisci il messaggio completo con il prompt contestuale
+        let fullMessage = "\(contextualPrompt)\n\nUser: \(message)"
+        
+        // Determina il tipo di agente dal provider
+        let agentType: AgentType = {
+            switch provider.type {
+            case .openai:
+                return .openAI
+            case .anthropic:
+                return .claude
+            case .mistral:
+                return .mistral
+            case .perplexity:
+                return .perplexity
+            case .grok:
+                return .grok
+            case .n8n:
+                return .n8n
+            case .custom:
+                return .custom
+            }
+        }()
+        
+        // Ottieni il servizio appropriato tramite ChatManager
+        guard let service = chatManager.getChatService(for: agentType) else {
+            throw ChatServiceError.unsupportedModel("Servizio non disponibile per \(agentType.displayName)")
+        }
+        
+        // Invia il messaggio usando il servizio
+        return try await service.sendMessage(
+            fullMessage,
+            model: provider.defaultModel
+        )
     }
     
     // MARK: - Format N8N Response
@@ -359,7 +473,7 @@ struct WorkflowParameterSheet: View {
                       Button("Salva") {
                           dismiss()
                       }
-                      .fontWeight(.semibold)
+                      .font(.system(size: 17, weight: .semibold))
                   }
               }
         }
@@ -435,9 +549,8 @@ struct WorkflowParameterSheet: View {
             TextField(parameter.placeholder, text: Binding(
                 get: { parameters[parameter.name] ?? "" },
                 set: { parameters[parameter.name] = $0 }
-            ), axis: .vertical)
+            ))
             .textFieldStyle(.roundedBorder)
-            .lineLimit(3...6)
             
         case .number:
             TextField(parameter.placeholder, text: Binding(
@@ -480,7 +593,7 @@ struct WorkflowParameterSheet: View {
         ]
     )
     
-    NavigationStack {
+    NavigationView {
         ChatDetailView(chat: sampleChat)
     }
 }

@@ -13,9 +13,17 @@ import SwiftUI
 // ChatServiceProtocol is defined in Protocols/ChatServiceProtocol.swift
 // ChatServiceError is defined in Models/ChatServiceError.swift
 
+// Import required models
+// These imports are needed for the types used in this file
+
 // MARK: - Chat Manager
 class ChatManager: ObservableObject {
+    static let shared = ChatManager()
+    
     @Published var chats: [Chat] = []
+    private let serviceFactory = ServiceFactory()
+    
+    private init() {}
     
     func createNewChat(with provider: AssistantProvider, model: String?, workflow: N8NWorkflow? = nil) {
         let agentType: AgentType = {
@@ -47,6 +55,11 @@ class ChatManager: ObservableObject {
         chats.append(newChat)
     }
     
+    func createNewChat(with agentConfiguration: AgentConfiguration) {
+        let newChat = Chat(agentConfiguration: agentConfiguration)
+        chats.append(newChat)
+    }
+    
     func deleteChat(at offsets: IndexSet) {
         chats.remove(atOffsets: offsets)
     }
@@ -56,45 +69,27 @@ class ChatManager: ObservableObject {
             chats[index].messages.append(message)
         }
     }
-}
-
-// MARK: - Chat Service Factory
-class ChatServiceFactory {
-    static func createService(for agentType: AgentType) -> ChatServiceProtocol? {
-        switch agentType {
-        case .openAI:
-            return OpenAIService.shared
-        case .claude:
-            return AnthropicService.shared
-        case .mistral:
-            return MistralService.shared
-        case .perplexity:
-            return PerplexityService.shared
-        case .grok:
-            return GrokService.shared
-        case .n8n:
-            return N8NService.shared
-        case .custom:
-            return CustomProviderService.shared
-        }
+    
+    func getChatService(for agentType: AgentType) -> ChatServiceProtocol? {
+        return serviceFactory.createChatService(for: agentType)
     }
     
+    func getChatService(for provider: String) -> ChatServiceProtocol? {
+        return serviceFactory.createChatService(for: provider)
+    }
+}
+
+// MARK: - Chat Service Utilities
+extension ChatManager {
     /// Restituisce tutti i servizi disponibili
-    static func getAllServices() -> [ChatServiceProtocol] {
-        return [
-            OpenAIService.shared,
-            AnthropicService.shared,
-            MistralService.shared,
-            PerplexityService.shared,
-            GrokService.shared,
-            N8NService.shared,
-            CustomProviderService.shared
-        ]
+    func getAllServices() -> [ChatServiceProtocol] {
+        let agentTypes: [AgentType] = [.openAI, .claude, .mistral, .perplexity, .grok, .n8n, .custom, .hybridMultiAgent, .agentGroup, .productTeam]
+        return agentTypes.compactMap { serviceFactory.createChatService(for: $0) }
     }
     
     /// Verifica se un provider è disponibile e configurato
-    static func isProviderAvailable(_ agentType: AgentType) async -> Bool {
-        guard let service = createService(for: agentType) else {
+    func isProviderAvailable(_ agentType: AgentType) async -> Bool {
+        guard let service = serviceFactory.createChatService(for: agentType) else {
             return false
         }
         
@@ -106,10 +101,14 @@ class ChatServiceFactory {
     }
     
     /// Restituisce i modelli supportati per un tipo di agente
-    static func getSupportedModels(for agentType: AgentType) -> [String] {
-        guard let service = createService(for: agentType) else {
+    func getSupportedModels(for agentType: AgentType) -> [String] {
+        guard let service = serviceFactory.createChatService(for: agentType) else {
             return []
         }
         return service.supportedModels
     }
 }
+
+// MARK: - Legacy Support
+// ChatServiceFactory is now defined in ChatServiceFactory.swift
+// This extension provides backward compatibility through ChatManager.shared

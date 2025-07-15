@@ -304,11 +304,7 @@ struct GenericAIResponse {
     let metadata: [String: Any]?
 }
 
-struct TokenUsage {
-    let promptTokens: Int?
-    let completionTokens: Int?
-    let totalTokens: Int?
-}
+// TokenUsage is defined in BaseHTTPService.swift
 
 // MARK: - Error Models
 struct AIProviderError: Codable, Error {

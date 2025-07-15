@@ -14,7 +14,7 @@ class UniversalAssistantService {
     private init() {}
     
     func sendMessage(_ message: String, agentType: AgentType, model: String?) async throws -> String {
-        guard let service = ChatServiceFactory.createService(for: agentType) else {
+        guard let service = ServiceLocator.shared.getChatService(for: agentType) else {
             throw UniversalAssistantError.unsupportedProvider
         }
         
@@ -30,12 +30,12 @@ class UniversalAssistantService {
     
     /// Verifica se un provider è disponibile e configurato
     func isProviderAvailable(_ agentType: AgentType) async -> Bool {
-        return await ChatServiceFactory.isProviderAvailable(agentType)
+        return await ChatManager.shared.isProviderAvailable(agentType)
     }
     
     /// Restituisce i modelli supportati per un provider
     func getSupportedModels(for agentType: AgentType) -> [String] {
-        return ChatServiceFactory.getSupportedModels(for: agentType)
+        return ChatManager.shared.getSupportedModels(for: agentType)
     }
     
     /// Restituisce tutti i provider disponibili
