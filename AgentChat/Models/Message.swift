@@ -13,11 +13,14 @@ struct Message: Identifiable, Equatable {
     let content: String
     let isUser: Bool
     let timestamp: Date
-    
-    init(id: UUID = UUID(), content: String, isUser: Bool, timestamp: Date = Date()) {
+    /// Agent that generated the message. Nil for user messages.
+    let agent: Agent?
+
+    init(id: UUID = UUID(), content: String, isUser: Bool, timestamp: Date = Date(), agent: Agent? = nil) {
         self.id = id
         self.content = content
         self.isUser = isUser
         self.timestamp = timestamp
+        self.agent = agent
     }
 }

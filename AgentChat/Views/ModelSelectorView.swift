@@ -200,7 +200,8 @@ struct ModelRow: View {
     let sampleChat = Chat(
         agentType: .openAI,
         provider: AssistantProvider.defaultProviders.first(where: { $0.type == .openai }),
-        selectedModel: "gpt-4o"
+        selectedModel: "gpt-4o",
+        agents: [Agent(provider: AssistantProvider.defaultProviders.first(where: { $0.type == .openai })!, model: "gpt-4o")]
     )
     
     ModelSelectorView(chat: sampleChat)

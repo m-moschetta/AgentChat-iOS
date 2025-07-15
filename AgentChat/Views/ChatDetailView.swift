@@ -10,6 +10,7 @@ import SwiftUI
 // MARK: - ChatDetailView
 struct ChatDetailView: View {
     @ObservedObject var chat: Chat
+    @StateObject private var conversationController: AgentConversationController
     @Environment(\.dismiss) private var dismiss
     @State private var inputText = ""
     @FocusState private var isInputFocused: Bool
@@ -18,6 +19,11 @@ struct ChatDetailView: View {
     @State private var showParameterSheet = false
     @State private var showModelSelector = false
     @State private var workflowParameters: [String: String] = [:]
+
+    init(chat: Chat) {
+        self.chat = chat
+        _conversationController = StateObject(wrappedValue: AgentConversationController(chat: chat))
+    }
     
     var body: some View {
         chatContent
@@ -87,21 +93,33 @@ struct ChatDetailView: View {
     }
     
     private func messageRow(_ message: Message) -> some View {
-        HStack {
-            if message.isUser {
-                Spacer()
-                Text(message.content)
-                    .padding(10)
-                    .background(Color.accentColor.opacity(0.2))
-                    .cornerRadius(16)
-                    .id(message.id)
-            } else {
-                Text(message.content)
-                    .padding(10)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(16)
-                    .id(message.id)
-                Spacer()
+        VStack(alignment: message.isUser ? .trailing : .leading, spacing: 2) {
+            if let agent = message.agent, !message.isUser {
+                Text(agent.name)
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            } else if message.isUser {
+                Text("You")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
+
+            HStack {
+                if message.isUser {
+                    Spacer()
+                    Text(message.content)
+                        .padding(10)
+                        .background(Color.accentColor.opacity(0.2))
+                        .cornerRadius(16)
+                        .id(message.id)
+                } else {
+                    Text(message.content)
+                        .padding(10)
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(16)
+                        .id(message.id)
+                    Spacer()
+                }
             }
         }
     }
@@ -122,8 +140,16 @@ struct ChatDetailView: View {
                 .focused($isInputFocused)
                 .lineLimit(1...5)
                 .disabled(isAwaitingAssistant)
-            
+
             sendButton
+            if chat.agents.count > 1 {
+                Button {
+                    Task { await conversationController.startConversation(initialPrompt: inputText, turns: chat.agents.count) }
+                } label: {
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                }
+                .disabled(inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isAwaitingAssistant)
+            }
         }
         .padding(12)
         .background(.ultraThinMaterial)
@@ -190,7 +216,7 @@ struct ChatDetailView: View {
         let trimmed = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, !isAwaitingAssistant else { return }
         
-        let userMsg = Message(id: UUID(), content: trimmed, isUser: true, timestamp: Date())
+        let userMsg = Message(id: UUID(), content: trimmed, isUser: true, timestamp: Date(), agent: nil)
         chat.messages.append(userMsg)
         inputText = ""
         errorMessage = nil
@@ -198,7 +224,7 @@ struct ChatDetailView: View {
         isAwaitingAssistant = true
         
         let placeholderId = UUID()
-        let placeholderMsg = Message(id: placeholderId, content: "...", isUser: false, timestamp: Date())
+        let placeholderMsg = Message(id: placeholderId, content: "...", isUser: false, timestamp: Date(), agent: chat.agents.first)
         chat.messages.append(placeholderMsg)
         
         do {
@@ -238,7 +264,7 @@ struct ChatDetailView: View {
                 responseText = response
             }
             
-            let assistantMessage = Message(id: UUID(), content: responseText, isUser: false, timestamp: Date())
+            let assistantMessage = Message(id: UUID(), content: responseText, isUser: false, timestamp: Date(), agent: chat.agents.first)
             chat.messages.append(assistantMessage)
             
         } catch {
@@ -476,8 +502,9 @@ struct WorkflowParameterSheet: View {
         agentType: .openAI,
         messages: [
             Message(content: "Ciao!", isUser: true),
-            Message(content: "Ciao! Come posso aiutarti oggi?", isUser: false)
-        ]
+            Message(content: "Ciao! Come posso aiutarti oggi?", isUser: false, agent: Agent(provider: AssistantProvider.defaultProviders[0], model: nil))
+        ],
+        agents: [Agent(provider: AssistantProvider.defaultProviders[0], model: nil)]
     )
     
     NavigationStack {

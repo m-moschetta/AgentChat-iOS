@@ -37,8 +37,11 @@ class ChatManager: ObservableObject {
             }
         }()
         
+        let agent = Agent(provider: provider, model: model)
         let newChat = Chat(
             agentType: agentType,
+            messages: [],
+            agents: [agent],
             provider: provider,
             selectedModel: model,
             n8nWorkflow: workflow
