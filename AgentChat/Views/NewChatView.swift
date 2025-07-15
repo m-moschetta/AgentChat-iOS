@@ -12,18 +12,25 @@ struct NewChatView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var config = LocalAssistantConfiguration()
     @ObservedObject var workflowManager: N8NWorkflowManager
-    
+    @StateObject private var agentManager = AgentManager.shared
+
     @State private var selectedProvider: AssistantProvider?
     @State private var selectedModel: String?
     @State private var selectedWorkflow: N8NWorkflow?
+    @State private var selectedAgent: Agent?
     @State private var showingCustomProviderView = false
     @State private var showingAPIKeyConfig = false
     @State private var providerNeedingAPIKey: AssistantProvider?
-    
+    @State private var showingAddAgentView = false
+
     let onChatCreated: (AssistantProvider, String?, N8NWorkflow?) -> Void
     
     var availableProviders: [AssistantProvider] {
         config.activeProviders
+    }
+
+    var availableAgents: [Agent] {
+        agentManager.activeAgents
     }
     
     var selectedProviderModels: [String] {
@@ -33,6 +40,28 @@ struct NewChatView: View {
     var body: some View {
         NavigationStack {
             Form {
+                // Agents Section
+                if !availableAgents.isEmpty {
+                    Section {
+                        ForEach(availableAgents) { agent in
+                            AgentRow(
+                                agent: agent,
+                                isSelected: selectedAgent?.id == agent.id
+                            ) {
+                                selectedAgent = agent
+                                selectedProvider = agent.provider
+                                selectedModel = agent.provider.defaultModel
+                                selectedWorkflow = nil
+                            }
+                        }
+                    } header: {
+                        Text("Agenti")
+                    } footer: {
+                        Button("Nuovo agente") { showingAddAgentView = true }
+                            .font(.footnote)
+                    }
+                }
+
                 Section {
                     if availableProviders.isEmpty {
                         VStack(spacing: 16) {
@@ -62,6 +91,7 @@ struct NewChatView: View {
                                 isSelected: selectedProvider?.id == provider.id,
                                 hasValidAPIKey: config.hasValidAPIKey(for: provider)
                             ) {
+                                selectedAgent = nil
                                 selectedProvider = provider
                                 selectedModel = provider.defaultModel
                                 
@@ -93,6 +123,7 @@ struct NewChatView: View {
                                 isSelected: selectedWorkflow?.id == workflow.id
                             ) {
                                 selectedWorkflow = workflow
+                                selectedAgent = nil
                                 selectedProvider = nil
                                 selectedModel = nil
                             }
@@ -234,6 +265,9 @@ struct NewChatView: View {
             .sheet(isPresented: $showingCustomProviderView) {
                 CustomProviderView()
             }
+            .sheet(isPresented: $showingAddAgentView) {
+                AddAgentView(agentManager: agentManager)
+            }
             .sheet(item: $providerNeedingAPIKey) { provider in
                 APIKeyConfigView(provider: provider)
             }
@@ -251,6 +285,14 @@ struct NewChatView: View {
             return true
         }
         
+        if let selectedAgent {
+            let provider = selectedAgent.provider
+            if provider.apiKeyRequired {
+                return config.hasValidAPIKey(for: provider)
+            }
+            return true
+        }
+
         // Se è selezionato un provider tradizionale
         guard let selectedProvider else { return false }
         
@@ -277,6 +319,10 @@ struct NewChatView: View {
                 description: selectedWorkflow.description
             )
             onChatCreated(n8nProvider, nil, selectedWorkflow)
+        } else if let selectedAgent {
+            let provider = selectedAgent.provider
+            let model = selectedModel ?? provider.defaultModel
+            onChatCreated(provider, model, nil)
         } else if let selectedProvider {
             // Crea chat con provider tradizionale
             let model = selectedModel ?? selectedProvider.defaultModel
@@ -284,6 +330,45 @@ struct NewChatView: View {
         }
         
         dismiss()
+    }
+}
+
+// MARK: - Agent Row
+struct AgentRow: View {
+    let agent: Agent
+    let isSelected: Bool
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack {
+                Text(agent.avatar)
+                    .font(.title2)
+                    .frame(width: 24)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(agent.name)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    Text(agent.provider.name)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                Spacer()
+
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.accentColor)
+                }
+            }
+            .padding(.vertical, 4)
+        }
+        .buttonStyle(.plain)
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(isSelected ? Color.accentColor.opacity(0.1) : Color.clear)
+        )
     }
 }
 
