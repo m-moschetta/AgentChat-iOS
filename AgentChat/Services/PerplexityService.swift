@@ -14,7 +14,7 @@ class PerplexityService: ChatServiceProtocol {
     private init() {}
     
     var supportedModels: [String] {
-        return ["sonar-pro", "sonar", "sonar-reasoning-pro", "sonar-reasoning", "sonar-deep-research"]
+        return ["sonar-pro", "sonar", "sonar-reasoning-pro", "sonar-reasoning", "sonar-deep-research", "sonar-large"]
     }
     
     var providerName: String {

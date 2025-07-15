@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		EDB593B12E17BB850075B302 /* AgentChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AgentChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EDB593B12E17BB850075B302 /* AgentChatv2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AgentChatv2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -40,7 +40,7 @@
 		EDB593B22E17BB850075B302 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EDB593B12E17BB850075B302 /* AgentChat.app */,
+				EDB593B12E17BB850075B302 /* AgentChatv2.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		EDB593B02E17BB850075B302 /* AgentChat */ = {
+		EDB593B02E17BB850075B302 /* AgentChatv2 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = EDB593BC2E17BB860075B302 /* Build configuration list for PBXNativeTarget "AgentChat" */;
+			buildConfigurationList = EDB593BC2E17BB860075B302 /* Build configuration list for PBXNativeTarget "AgentChatv2" */;
 			buildPhases = (
 				EDB593AD2E17BB850075B302 /* Sources */,
 				EDB593AE2E17BB850075B302 /* Frameworks */,
@@ -63,9 +63,9 @@
 			fileSystemSynchronizedGroups = (
 				EDB593B32E17BB850075B302 /* AgentChat */,
 			);
-			name = AgentChat;
+			name = AgentChatv2;
 			productName = AgentChat;
-			productReference = EDB593B12E17BB850075B302 /* AgentChat.app */;
+			productReference = EDB593B12E17BB850075B302 /* AgentChatv2.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -97,7 +97,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				EDB593B02E17BB850075B302 /* AgentChat */,
+				EDB593B02E17BB850075B302 /* AgentChatv2 */,
 			);
 		};
 /* End PBXProject section */
@@ -156,6 +156,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -217,6 +218,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Apple Development: kayren@hotmail.it (95YPFUG3KN)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -243,6 +245,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5RQLC57A8N;
@@ -287,6 +290,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5RQLC57A8N;
@@ -337,7 +341,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		EDB593BC2E17BB860075B302 /* Build configuration list for PBXNativeTarget "AgentChat" */ = {
+		EDB593BC2E17BB860075B302 /* Build configuration list for PBXNativeTarget "AgentChatv2" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EDB593BD2E17BB860075B302 /* Debug */,

@@ -129,23 +129,39 @@ struct ModelRow: View {
     private func modelDescription(for model: String) -> String {
         // Descrizioni dei modelli basate sul nome
         switch model.lowercased() {
-        // OpenAI
+        // OpenAI - Modelli più recenti
+        case let m where m.contains("o3") && !m.contains("mini"):
+            return "Modello di ragionamento più avanzato di OpenAI (2025)"
+        case let m where m.contains("o4-mini"):
+            return "Modello di ragionamento veloce e ottimizzato (2025)"
+        case let m where m.contains("gpt-4.1") && m.contains("nano"):
+            return "Modello ultra-veloce per classificazione e autocompletamento"
+        case let m where m.contains("gpt-4.1") && m.contains("mini"):
+            return "Modello piccolo con prestazioni eccezionali"
+        case let m where m.contains("gpt-4.1"):
+            return "Modello specializzato per coding e istruzioni precise (2025)"
         case let m where m.contains("gpt-4o"):
-            return "Modello multimodale avanzato di OpenAI"
+            return "Modello multimodale flagship di OpenAI"
+        case let m where m.contains("o1-mini"):
+            return "Modello di ragionamento veloce ed efficiente"
         case let m where m.contains("o1"):
-            return "Modello di ragionamento avanzato"
-        case let m where m.contains("gpt-3.5"):
-            return "Modello veloce ed efficiente"
+            return "Modello di ragionamento per problemi complessi"
             
-        // Anthropic
-        case let m where m.contains("claude-4"):
-            return "Ultima generazione di Claude"
+        // Anthropic - Modelli più recenti
+        case let m where m.contains("claude-opus-4"):
+            return "Modello più capace e intelligente di Anthropic (2025)"
+        case let m where m.contains("claude-sonnet-4"):
+            return "Modello ad alte prestazioni con ragionamento eccezionale (2025)"
+        case let m where m.contains("claude-3-7-sonnet"):
+            return "Modello con ragionamento esteso e finestra di contesto 1M"
         case let m where m.contains("claude-3-5-sonnet"):
-            return "Bilanciato tra velocità e capacità"
+            return "Modello bilanciato con capacità di computer use"
+        case let m where m.contains("claude-3-5-haiku"):
+            return "Modello velocissimo che supera Claude 3 Opus"
         case let m where m.contains("claude-3-opus"):
-            return "Modello più potente di Claude 3"
+            return "Modello legacy di Claude 3 (deprecato)"
         case let m where m.contains("claude-3-haiku"):
-            return "Modello veloce e leggero"
+            return "Modello legacy veloce (deprecato)"
             
         // Mistral
         case let m where m.contains("large"):
@@ -159,11 +175,19 @@ struct ModelRow: View {
         case let m where m.contains("pixtral"):
             return "Modello multimodale con visione"
             
-        // Perplexity
+        // Perplexity - Modelli più recenti (2025)
+        case let m where m.contains("sonar-reasoning-pro"):
+            return "Modello di ragionamento premium con ricerca web avanzata"
+        case let m where m.contains("sonar-reasoning"):
+            return "Modello di ragionamento con capacità di ricerca"
+        case let m where m.contains("sonar-deep-research"):
+            return "Ricerca approfondita e sintesi di report esperti"
         case let m where m.contains("sonar-pro"):
-            return "Modello premium con ricerca web"
+            return "Modello premium con ricerca web e citazioni multiple"
+        case let m where m.contains("sonar-large"):
+            return "Modello Sonar ottimizzato per Perplexity (basato su Llama 3.3)"
         case let m where m.contains("sonar"):
-            return "Modello con capacità di ricerca"
+            return "Modello veloce con capacità di ricerca web"
             
         default:
             return "Modello AI avanzato"

@@ -14,7 +14,7 @@ class OpenAIService: ChatServiceProtocol {
     private init() {}
     
     var supportedModels: [String] {
-        return ["gpt-4o", "gpt-4o-mini", "o1-preview", "o1-mini", "gpt-3.5-turbo"]
+        return ["o3", "o4-mini", "gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o", "gpt-4o-mini", "o1", "o1-mini"]
     }
     
     var providerName: String {

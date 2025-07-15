@@ -68,10 +68,10 @@ extension AssistantProvider {
             name: "OpenAI",
             type: .openai,
             endpoint: "https://api.openai.com/v1/chat/completions",
-            supportedModels: ["gpt-4.1", "gpt-4.1-mini", "o3", "o4-mini", "gpt-4o", "gpt-4o-mini"],
-            defaultModel: "gpt-4o",
+            supportedModels: ["o3", "o4-mini", "gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o", "gpt-4o-mini", "o1", "o1-mini"],
+            defaultModel: "o3",
             icon: "brain.head.profile",
-            description: "OpenAI's advanced language models including GPT-4.1 and o3"
+            description: "OpenAI's latest models including o3 reasoning and GPT-4.1 series (2025)"
         ),
         AssistantProvider(
             name: "Anthropic",
@@ -95,10 +95,10 @@ extension AssistantProvider {
             name: "Perplexity",
             type: .perplexity,
             endpoint: "https://api.perplexity.ai/chat/completions",
-            supportedModels: ["sonar-pro", "sonar", "sonar-reasoning-pro", "sonar-reasoning", "sonar-deep-research"],
-            defaultModel: "sonar-pro",
+            supportedModels: ["sonar-pro", "sonar", "sonar-reasoning-pro", "sonar-reasoning", "sonar-deep-research", "sonar-large"],
+            defaultModel: "sonar-reasoning-pro",
             icon: "magnifyingglass.circle",
-            description: "Perplexity's search-enhanced AI models with real-time information"
+            description: "Perplexity's latest search-enhanced AI models with reasoning and deep research (2025)"
         ),
         AssistantProvider(
             name: "Grok",

@@ -55,7 +55,7 @@ class OpenAIAssistantService {
     ]
     
     private var apiKey: String {
-        return KeychainService.shared.getAPIKey(for: .openAI) ?? ""
+        return KeychainService.shared.getAPIKey(for: "openai") ?? ""
     }
     private var threadIds: [UUID: String] = [:] // Associa chat locali a thread OpenAI
     
