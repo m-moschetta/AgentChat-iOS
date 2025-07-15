@@ -294,6 +294,8 @@ struct GrokUsage: Codable {
     }
 }
 
+// MARK: - N8N Models (moved to N8NWorkflow.swift)
+
 // MARK: - Generic Response
 struct GenericAIResponse {
     let content: String

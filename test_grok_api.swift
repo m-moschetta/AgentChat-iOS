@@ -1,13 +1,15 @@
+#!/usr/bin/env swift
+
 import Foundation
 
-// Strutture per la richiesta Grok
+// Strutture per testare l'API Grok
 struct GrokRequest: Codable {
     let model: String
     let messages: [GrokMessage]
     let temperature: Double?
     let maxTokens: Int?
     let topP: Double?
-    let stream: Bool
+    let stream: Bool?
     
     enum CodingKeys: String, CodingKey {
         case model, messages, temperature, stream
@@ -21,7 +23,6 @@ struct GrokRequest: Codable {
         try container.encode(messages, forKey: .messages)
         try container.encode(stream, forKey: .stream)
         
-        // Codifica condizionale per parametri opzionali
         if let temperature = temperature {
             try container.encode(temperature, forKey: .temperature)
         }
@@ -71,72 +72,68 @@ struct GrokUsage: Codable {
     }
 }
 
-// Funzione di test per l'API Grok
-func testGrokAPI() {
-    // Configurazione della richiesta
+// Funzione di test
+func testGrokAPI() async {
+    // Nota: Sostituisci "YOUR_API_KEY" con la tua chiave API reale
+    let apiKey = "YOUR_API_KEY"
+    
     let request = GrokRequest(
-        model: "grok-2-latest",
-        messages: [
-            GrokMessage(role: "user", content: "Ciao! Come stai?")
-        ],
+        model: "grok-4",
+        messages: [GrokMessage(role: "user", content: "Ciao, come stai?")],
         temperature: nil,
         maxTokens: nil,
         topP: nil,
         stream: false
     )
     
-    // URL dell'endpoint Grok
     guard let url = URL(string: "https://api.x.ai/v1/chat/completions") else {
-        print("URL non valido")
+        print("❌ URL non valido")
         return
     }
     
-    // Configurazione della richiesta HTTP
     var urlRequest = URLRequest(url: url)
     urlRequest.httpMethod = "POST"
     urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    urlRequest.setValue("Bearer YOUR_API_KEY_HERE", forHTTPHeaderField: "Authorization")
+    urlRequest.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
     
-    // Codifica del corpo della richiesta
     do {
         let jsonData = try JSONEncoder().encode(request)
         urlRequest.httpBody = jsonData
         
-        // Stampa il JSON per debug
+        // Stampa il JSON della richiesta per debug
         if let jsonString = String(data: jsonData, encoding: .utf8) {
-            print("JSON della richiesta:")
+            print("📤 JSON della richiesta:")
             print(jsonString)
         }
         
-        // Invio della richiesta
-        let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
-            if let error = error {
-                print("Errore: \(error.localizedDescription)")
-                return
+        let (data, response) = try await URLSession.shared.data(for: urlRequest)
+        
+        if let httpResponse = response as? HTTPURLResponse {
+            print("📊 Status Code: \(httpResponse.statusCode)")
+            
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("📥 Risposta del server:")
+                print(responseString)
             }
             
-            if let httpResponse = response as? HTTPURLResponse {
-                print("Codice di stato: \(httpResponse.statusCode)")
-            }
-            
-            if let data = data {
-                if let responseString = String(data: data, encoding: .utf8) {
-                    print("Risposta del server:")
-                    print(responseString)
-                }
+            if httpResponse.statusCode == 200 {
+                let grokResponse = try JSONDecoder().decode(GrokResponse.self, from: data)
+                print("✅ Test riuscito!")
+                print("💬 Risposta: \(grokResponse.choices.first?.message.content ?? "Nessuna risposta")")
+            } else {
+                print("❌ Test fallito con status code \(httpResponse.statusCode)")
             }
         }
-        
-        task.resume()
-        
     } catch {
-        print("Errore nella codifica JSON: \(error)")
+        print("❌ Errore: \(error)")
     }
 }
 
-// Esecuzione del test
-print("Test dell'API Grok...")
-testGrokAPI()
+// Esegui il test
+Task {
+    await testGrokAPI()
+    exit(0)
+}
 
-// Mantieni il programma in esecuzione per permettere alla richiesta di completarsi
+// Mantieni il programma in esecuzione
 RunLoop.main.run()

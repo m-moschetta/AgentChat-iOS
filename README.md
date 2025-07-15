@@ -4,7 +4,7 @@ Un'applicazione iOS/macOS per chat con assistenti AI multipli, sviluppata in Swi
 
 ## Caratteristiche
 
-- **Provider AI Multipli**: Supporta OpenAI, Anthropic, Mistral, Perplexity, Grok, n8n e provider personalizzati
+- **Provider AI Multipli**: Supporta OpenAI, Anthropic, Mistral, Perplexity, n8n e provider personalizzati
 - **Gestione Sicura delle API Key**: Utilizza il Keychain di iOS per memorizzare le chiavi API
 - **Interfaccia Moderna**: Sviluppata con SwiftUI per iOS e macOS
 - **Configurazione Flessibile**: Possibilità di aggiungere provider personalizzati
@@ -21,7 +21,6 @@ AgentChat/
 │   ├── KeychainService.swift       # Gestione sicura delle API key
 │   ├── LocalAssistantConfiguration.swift # Configurazione provider
 │   ├── N8NService.swift            # Servizio per workflow n8n
-│   ├── GrokService.swift           # Servizio per Grok AI
 │   └── UniversalAssistantService.swift   # Servizio unificato AI
 ├── Views/
 │   ├── APIKeyConfigView.swift      # Configurazione API key
@@ -40,9 +39,8 @@ AgentChat/
 2. **Anthropic**: Claude-3-opus, Claude-3-sonnet, Claude-3-haiku
 3. **Mistral**: mistral-large, mistral-medium, mistral-small
 4. **Perplexity**: llama-3.1-sonar-large, llama-3.1-sonar-small
-5. **Grok**: grok-4, grok-2-latest, grok-2-1212
-6. **n8n**: Workflow personalizzati
-7. **Provider Personalizzati**: Endpoint API configurabili
+5. **n8n**: Workflow personalizzati
+6. **Provider Personalizzati**: Endpoint API configurabili
 
 ## Funzionalità Principali
 
@@ -89,7 +87,6 @@ AgentChat/
 - Implementa ObservableObject per la reattività SwiftUI
 - Gestione errori centralizzata
 - Architettura modulare e estensibile
-- Integrazione completa con Grok AI di xAI
 
 ## Licenza
 

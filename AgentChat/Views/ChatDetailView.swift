@@ -1,0 +1,486 @@
+//
+//  ChatDetailView.swift
+//  AgentChat
+//
+//  Created by Mario Moschetta on 04/07/25.
+//
+
+import SwiftUI
+
+// MARK: - ChatDetailView
+struct ChatDetailView: View {
+    @ObservedObject var chat: Chat
+    @Environment(\.dismiss) private var dismiss
+    @State private var inputText = ""
+    @FocusState private var isInputFocused: Bool
+    @State private var isAwaitingAssistant = false
+    @State private var errorMessage: String?
+    @State private var showParameterSheet = false
+    @State private var showModelSelector = false
+    @State private var workflowParameters: [String: String] = [:]
+    
+    var body: some View {
+        chatContent
+            .navigationTitle(chat.n8nWorkflow?.name ?? chat.agentType.rawValue)
+             .toolbar {
+                 ToolbarItem(placement: .principal) {
+                     titleView
+                 }
+                 
+                 ToolbarItem(placement: .primaryAction) {
+                     HStack {
+                         if chat.n8nWorkflow == nil {
+                             Button {
+                                 showModelSelector = true
+                             } label: {
+                                 Image(systemName: "cpu")
+                             }
+                         }
+                         
+                         if let workflow = chat.n8nWorkflow, !workflow.parameters.isEmpty {
+                             Button {
+                                 showParameterSheet = true
+                             } label: {
+                                 Image(systemName: "slider.horizontal.3")
+                             }
+                         }
+                     }
+                 }
+             }
+            .onAppear {
+                isInputFocused = true
+            }
+            .sheet(isPresented: $showParameterSheet) {
+                WorkflowParameterSheet(
+                    workflow: chat.n8nWorkflow!,
+                    parameters: $workflowParameters
+                )
+            }
+            .sheet(isPresented: $showModelSelector) {
+                ModelSelectorView(chat: chat)
+            }
+    }
+    
+    private var chatContent: some View {
+        VStack(spacing: 0) {
+            messagesList
+            errorView
+            Divider()
+            inputSection
+        }
+    }
+    
+    private var messagesList: some View {
+        ScrollViewReader { proxy in
+            List(chat.messages) { message in
+                messageRow(message)
+                    .listRowSeparator(.hidden)
+            }
+            .listStyle(.plain)
+            .onAppear {
+                scrollToLastMessage(proxy)
+            }
+            .onChange(of: chat.messages) { _, newValue in
+                scrollToLastMessageAnimated(proxy, messages: newValue)
+            }
+        }
+    }
+    
+    private func messageRow(_ message: Message) -> some View {
+        HStack {
+            if message.isUser {
+                Spacer()
+                Text(message.content)
+                    .padding(10)
+                    .background(Color.accentColor.opacity(0.2))
+                    .cornerRadius(16)
+                    .id(message.id)
+            } else {
+                Text(message.content)
+                    .padding(10)
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(16)
+                    .id(message.id)
+                Spacer()
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var errorView: some View {
+        if let errorMessage {
+            Text(errorMessage)
+                .foregroundColor(.red)
+                .padding(.horizontal)
+        }
+    }
+    
+    private var inputSection: some View {
+        HStack {
+            TextField("Scrivi un messaggio...", text: $inputText, axis: .vertical)
+                .textFieldStyle(.roundedBorder)
+                .focused($isInputFocused)
+                .lineLimit(1...5)
+                .disabled(isAwaitingAssistant)
+            
+            sendButton
+        }
+        .padding(12)
+        .background(.ultraThinMaterial)
+    }
+    
+    private var sendButton: some View {
+        Button {
+            Task { await sendMessage() }
+        } label: {
+            if isAwaitingAssistant {
+                ProgressView()
+                    .scaleEffect(0.8)
+            } else {
+                Image(systemName: "paperplane.fill")
+            }
+        }
+        .disabled(inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isAwaitingAssistant)
+        .padding(.leading, 4)
+    }
+    
+    private var titleView: some View {
+        VStack {
+            HStack {
+                if let workflow = chat.n8nWorkflow {
+                    Text(workflow.icon)
+                        .font(.caption)
+                    Text(workflow.name)
+                        .font(.headline)
+                } else {
+                    Text(chat.agentType.rawValue)
+                        .font(.headline)
+                }
+            }
+            
+            if let workflow = chat.n8nWorkflow {
+                Text(workflow.category.displayName)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            } else if let model = chat.selectedModel {
+                Text(model)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+    }
+    
+    private func scrollToLastMessage(_ proxy: ScrollViewProxy) {
+        if let last = chat.messages.last {
+            proxy.scrollTo(last.id, anchor: UnitPoint.bottom)
+        }
+    }
+    
+    private func scrollToLastMessageAnimated(_ proxy: ScrollViewProxy, messages: [Message]) {
+        guard let last = messages.last else { return }
+        DispatchQueue.main.async {
+            withAnimation {
+                proxy.scrollTo(last.id, anchor: UnitPoint.bottom)
+            }
+        }
+    }
+    
+    // MARK: - Send Message
+    func sendMessage() async {
+        let trimmed = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, !isAwaitingAssistant else { return }
+        
+        let userMsg = Message(id: UUID(), content: trimmed, isUser: true, timestamp: Date())
+        chat.messages.append(userMsg)
+        inputText = ""
+        errorMessage = nil
+        
+        isAwaitingAssistant = true
+        
+        let placeholderId = UUID()
+        let placeholderMsg = Message(id: placeholderId, content: "...", isUser: false, timestamp: Date())
+        chat.messages.append(placeholderMsg)
+        
+        do {
+            let response: String
+            
+            // Gestione workflow n8n
+            if let workflow = chat.n8nWorkflow {
+                // Prepara i parametri per il workflow
+                var parameters = workflowParameters
+                parameters["userMessage"] = trimmed
+                
+                let n8nResponse = try await N8NService.shared.executeWorkflow(
+                    workflow,
+                    parameters: parameters,
+                    chatId: chat.id.uuidString
+                )
+                response = n8nResponse.message ?? "Nessuna risposta dal workflow"
+            } else {
+                // Usa il servizio universale per inviare il messaggio
+                response = try await UniversalAssistantService.shared.sendMessage(
+                    trimmed,
+                    agentType: chat.agentType,
+                    model: chat.selectedModel
+                )
+            }
+            
+            // Rimuovi il placeholder
+            if let idx = chat.messages.firstIndex(where: { $0.id == placeholderId }) {
+                chat.messages.remove(at: idx)
+            }
+            
+            // Formatta la risposta
+            let responseText: String
+            if chat.n8nWorkflow != nil {
+                responseText = formatN8NResponse(response)
+            } else {
+                responseText = response
+            }
+            
+            let assistantMessage = Message(id: UUID(), content: responseText, isUser: false, timestamp: Date())
+            chat.messages.append(assistantMessage)
+            
+        } catch {
+            // Rimuovi il placeholder in caso di errore
+            if let idx = chat.messages.firstIndex(where: { $0.id == placeholderId }) {
+                chat.messages.remove(at: idx)
+            }
+            
+            // Gestione errori specifici
+            if let n8nError = error as? N8NError {
+                switch n8nError {
+                case .invalidURL:
+                    errorMessage = "URL endpoint non valido."
+                case .missingRequiredParameter(let param):
+                    errorMessage = "Parametro obbligatorio mancante: \(param)"
+                case .authenticationRequired:
+                    errorMessage = "Autenticazione richiesta per questo workflow."
+                case .networkError(let error):
+                    errorMessage = "Errore di rete: \(error.localizedDescription)"
+                case .invalidResponse:
+                    errorMessage = "Risposta non valida dal workflow."
+                case .workflowNotFound:
+                    errorMessage = "Workflow non trovato."
+                case .serverError(let message):
+                    errorMessage = "Errore del server: \(message)"
+                }
+            } else if let assistantError = error as? UniversalAssistantError {
+                switch assistantError {
+                case .unsupportedProvider:
+                    errorMessage = "Provider non supportato."
+                case .configurationError(let message):
+                    errorMessage = "Errore di configurazione: \(message)"
+                case .serviceError(let chatError):
+                    errorMessage = chatError.localizedDescription
+                }
+            } else if let chatError = error as? ChatServiceError {
+                switch chatError {
+                case .missingAPIKey(let message):
+                    errorMessage = "API Key mancante: \(message)"
+                case .invalidConfiguration:
+                    errorMessage = "Configurazione non valida."
+                case .unsupportedModel(let model):
+                    errorMessage = "Modello non supportato: \(model)"
+                case .invalidResponse:
+                    errorMessage = "Risposta non valida dal provider."
+                case .authenticationFailed:
+                    errorMessage = "Autenticazione fallita. Verifica le credenziali."
+                case .rateLimitExceeded:
+                    errorMessage = "Limite di richieste superato. Riprova più tardi."
+                case .serverError(let message):
+                    errorMessage = "Errore del server: \(message)"
+                case .networkError(let error):
+                    errorMessage = "Errore di rete: \(error.localizedDescription)"
+                }
+            } else {
+                errorMessage = "Errore: \(error.localizedDescription)"
+            }
+        }
+        
+        isAwaitingAssistant = false
+    }
+    
+    // MARK: - Format N8N Response
+    private func formatN8NResponse(_ response: String) -> String {
+        // Prova a decodificare la risposta come JSON per n8n
+        if let data = response.data(using: .utf8),
+           let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+            
+            var formattedResponse = ""
+            
+            if let responseText = jsonObject["response"] as? String {
+                formattedResponse += responseText
+            }
+            
+            if let status = jsonObject["status"] as? String {
+                formattedResponse += "\n\n📊 Status: \(status)"
+            }
+            
+            if let actionRequired = jsonObject["actionRequired"] as? String {
+                formattedResponse += "\n\n⚡ Azione richiesta: \(actionRequired)"
+            }
+            
+            if let publishedUrl = jsonObject["publishedUrl"] as? String {
+                formattedResponse += "\n\n🔗 URL pubblicato: \(publishedUrl)"
+            }
+            
+            return formattedResponse.isEmpty ? response : formattedResponse
+        }
+        
+        return response
+    }
+}
+
+// MARK: - WorkflowParameterSheet
+struct WorkflowParameterSheet: View {
+    let workflow: N8NWorkflow
+    @Binding var parameters: [String: String]
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        NavigationView {
+            Form {
+                workflowSection
+                
+                if !workflow.parameters.isEmpty {
+                    parametersSection
+                }
+            }
+            .navigationTitle("Configura Parametri")
+            .toolbar {
+                  ToolbarItem(placement: .cancellationAction) {
+                      Button("Annulla") {
+                          dismiss()
+                      }
+                  }
+                  
+                  ToolbarItem(placement: .confirmationAction) {
+                      Button("Salva") {
+                          dismiss()
+                      }
+                      .fontWeight(.semibold)
+                  }
+              }
+        }
+    }
+    
+    private var workflowSection: some View {
+        Section {
+            HStack {
+                Text(workflow.icon)
+                    .font(.title2)
+                VStack(alignment: .leading) {
+                    Text(workflow.name)
+                        .font(.headline)
+                    Text(workflow.description)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                Spacer()
+            }
+            .padding(.vertical, 4)
+        } header: {
+            Text("Workflow")
+        }
+    }
+    
+    private var parametersSection: some View {
+        Section {
+            ForEach(workflow.parameters, id: \.id) { parameter in
+                parameterRow(parameter)
+            }
+        } header: {
+            Text("Parametri")
+        } footer: {
+            Text("Configura i parametri per questo workflow. I campi contrassegnati con * sono obbligatori.")
+        }
+    }
+    
+    private func parameterRow(_ parameter: N8NParameter) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Text(parameter.name)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                if parameter.isRequired {
+                    Text("*")
+                        .foregroundColor(.red)
+                }
+                Spacer()
+            }
+            
+            if !parameter.description.isEmpty {
+                Text(parameter.description)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            parameterInput(parameter)
+        }
+        .padding(.vertical, 2)
+    }
+    
+    @ViewBuilder
+    private func parameterInput(_ parameter: N8NParameter) -> some View {
+        switch parameter.type {
+        case .text:
+            TextField(parameter.placeholder, text: Binding(
+                get: { parameters[parameter.name] ?? "" },
+                set: { parameters[parameter.name] = $0 }
+            ))
+            .textFieldStyle(.roundedBorder)
+            
+        case .multiline:
+            TextField(parameter.placeholder, text: Binding(
+                get: { parameters[parameter.name] ?? "" },
+                set: { parameters[parameter.name] = $0 }
+            ), axis: .vertical)
+            .textFieldStyle(.roundedBorder)
+            .lineLimit(3...6)
+            
+        case .number:
+            TextField(parameter.placeholder, text: Binding(
+                get: { parameters[parameter.name] ?? "" },
+                set: { parameters[parameter.name] = $0 }
+            ))
+             .textFieldStyle(.roundedBorder)
+            
+        case .boolean:
+            Toggle(isOn: Binding(
+                get: { parameters[parameter.name] == "true" },
+                set: { parameters[parameter.name] = $0 ? "true" : "false" }
+            )) {
+                Text(parameter.placeholder)
+            }
+            
+        case .select:
+            if let selectOptions = parameter.selectOptions, !selectOptions.isEmpty {
+                Picker(parameter.placeholder, selection: Binding(
+                    get: { parameters[parameter.name] ?? selectOptions.first ?? "" },
+                    set: { parameters[parameter.name] = $0 }
+                )) {
+                    ForEach(selectOptions, id: \.self) { option in
+                        Text(option).tag(option)
+                    }
+                }
+                .pickerStyle(.menu)
+            }
+         }
+    }
+}
+
+// MARK: - Preview
+#Preview {
+    let sampleChat = Chat(
+        agentType: .openAI,
+        messages: [
+            Message(content: "Ciao!", isUser: true),
+            Message(content: "Ciao! Come posso aiutarti oggi?", isUser: false)
+        ]
+    )
+    
+    NavigationStack {
+        ChatDetailView(chat: sampleChat)
+    }
+}
