@@ -32,14 +32,14 @@ class MistralService: ChatServiceProtocol {
     }
     
     func validateConfiguration() async throws -> Bool {
-        guard KeychainService.shared.hasAPIKey(for: "mistral") else {
+        guard ConfigurationManager.shared.hasAPIKey(for: .mistral) else {
             throw ChatServiceError.missingAPIKey(providerName)
         }
         return true
     }
     
     private func sendMessageToMistral(message: String, model: String) async throws -> String {
-        guard let apiKey = KeychainService.shared.getAPIKey(for: "mistral") else {
+        guard let apiKey = ConfigurationManager.shared.getAPIKey(for: .mistral) else {
             throw ChatServiceError.missingAPIKey(providerName)
         }
         

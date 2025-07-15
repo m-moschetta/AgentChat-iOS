@@ -12,7 +12,6 @@ class N8NService: ChatServiceProtocol {
     static let shared = N8NService()
     
     private var sessionIds: [String: String] = [:] // chatId -> sessionId
-    private let keychainService = KeychainService.shared
     
     private init() {}
     
@@ -252,17 +251,17 @@ class N8NService: ChatServiceProtocol {
     
     func saveAPIKey(_ apiKey: String, for workflowId: String) {
         let key = "n8n_workflow_\(workflowId)"
-        _ = keychainService.saveAPIKey(apiKey, for: key)
+        _ = ConfigurationManager.shared.setAPIKey(apiKey, for: key)
     }
     
     func getAPIKey(for workflowId: String) -> String? {
         let key = "n8n_workflow_\(workflowId)"
-        return keychainService.getAPIKey(for: key)
+        return ConfigurationManager.shared.getAPIKey(for: key)
     }
     
     func removeAPIKey(for workflowId: String) {
         let key = "n8n_workflow_\(workflowId)"
-        _ = keychainService.deleteAPIKey(for: key)
+        _ = ConfigurationManager.shared.removeAPIKey(for: key)
     }
     
     // MARK: - Private Methods

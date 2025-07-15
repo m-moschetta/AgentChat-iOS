@@ -246,7 +246,7 @@ struct NewChatView: View {
         if let selectedWorkflow {
             if selectedWorkflow.requiresAuthentication {
                 // Verifica se c'è una API key per n8n nel keychain
-                return KeychainService.shared.getAPIKey(for: "n8n_\(selectedWorkflow.id)") != nil
+                return ConfigurationManager.shared.getAPIKey(for: "n8n_\(selectedWorkflow.id)") != nil
             }
             return true
         }

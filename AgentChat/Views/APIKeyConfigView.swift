@@ -262,10 +262,10 @@ struct APIKeyConfigView: View {
         let keychainId = provider.type.rawValue
         
         // Store the existing key if any
-        let existingKey = KeychainService.shared.getAPIKey(for: keychainId)
+        let existingKey = ConfigurationManager.shared.getAPIKey(for: keychainId)
         
         // Temporarily save the new key for testing with the correct provider type ID
-        let tempSaved = KeychainService.shared.saveAPIKey(trimmedKey, for: keychainId)
+        let tempSaved = ConfigurationManager.shared.setAPIKey(trimmedKey, for: keychainId)
         
         guard tempSaved else {
             testResult = .failure("Errore nel salvare temporaneamente l'API key")
@@ -307,10 +307,10 @@ struct APIKeyConfigView: View {
         // Restore the original key or remove the temporary one
         if let existingKey = existingKey {
             // Restore the original key
-            KeychainService.shared.saveAPIKey(existingKey, for: keychainId)
+            ConfigurationManager.shared.setAPIKey(existingKey, for: keychainId)
         } else {
             // Remove the temporary key since there was no existing key
-            KeychainService.shared.deleteAPIKey(for: keychainId)
+            ConfigurationManager.shared.removeAPIKey(for: keychainId)
         }
         
         isTestingConnection = false

@@ -15,7 +15,6 @@ class N8NWorkflowManager: ObservableObject {
     @Published var errorMessage: String?
     
     private let userDefaultsKey = "n8n_workflows"
-    private let keychainService = KeychainService.shared
     
     // MARK: - Singleton
     static let shared = N8NWorkflowManager()
@@ -202,17 +201,17 @@ class N8NWorkflowManager: ObservableObject {
     /// Salva/rimuove API key per workflow che richiedono autenticazione
     func saveAPIKey(_ apiKey: String, for workflowId: String) {
         let key = "n8n_workflow_\(workflowId)"
-        _ = keychainService.saveAPIKey(apiKey, for: key)
+        _ = ConfigurationManager.shared.setAPIKey(apiKey, for: key)
     }
     
     func getAPIKey(for workflowId: String) -> String? {
         let key = "n8n_workflow_\(workflowId)"
-        return keychainService.getAPIKey(for: key)
+        return ConfigurationManager.shared.getAPIKey(for: key)
     }
     
     func removeAPIKey(for workflowId: String) {
         let key = "n8n_workflow_\(workflowId)"
-        _ = keychainService.deleteAPIKey(for: key)
+        _ = ConfigurationManager.shared.removeAPIKey(for: key)
     }
     
     // MARK: - Private Methods
