@@ -14,13 +14,15 @@ class Chat: Identifiable, ObservableObject, Hashable {
     @Published var messages: [Message]
     let agentType: AgentType
     let provider: AssistantProvider?
+    @Published var agents: [AssistantProvider]
     @Published var selectedModel: String?
     let n8nWorkflow: N8NWorkflow?
-    
-    init(id: UUID = UUID(), agentType: AgentType, messages: [Message] = [], provider: AssistantProvider? = nil, selectedModel: String? = nil, n8nWorkflow: N8NWorkflow? = nil) {
+
+    init(id: UUID = UUID(), agentType: AgentType, messages: [Message] = [], provider: AssistantProvider? = nil, agents: [AssistantProvider] = [], selectedModel: String? = nil, n8nWorkflow: N8NWorkflow? = nil) {
         self.id = id
         self.agentType = agentType
         self.provider = provider
+        self.agents = agents
         self.n8nWorkflow = n8nWorkflow
         self.messages = messages
         self.selectedModel = selectedModel

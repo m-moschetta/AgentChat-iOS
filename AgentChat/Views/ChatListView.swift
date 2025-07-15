@@ -60,8 +60,8 @@ struct ChatListView: View {
             }
         }
         .sheet(isPresented: $showingNewChatSheet) {
-                NewChatView(workflowManager: workflowManager) { provider, model, workflow in
-                    createNewChat(with: provider, model: model, workflow: workflow)
+                NewChatView(workflowManager: workflowManager) { providers, model, workflow in
+                    createNewChat(with: providers, model: model, workflow: workflow)
                     showingNewChatSheet = false
                 }
             }
@@ -77,8 +77,8 @@ struct ChatListView: View {
     
     
     
-    func createNewChat(with provider: AssistantProvider, model: String?, workflow: N8NWorkflow? = nil) {
-        chatService.createNewChat(with: provider, model: model, workflow: workflow)
+    func createNewChat(with providers: [AssistantProvider], model: String?, workflow: N8NWorkflow? = nil) {
+        chatService.createNewChat(with: providers, model: model, workflow: workflow)
         selectedChat = chatService.chats.last
     }
     
