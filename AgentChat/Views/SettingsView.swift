@@ -20,6 +20,7 @@ struct SettingsView: View {
     @State private var showingResetAlert = false
     @State private var showingAddWorkflowView = false
     @State private var selectedWorkflowForEdit: N8NWorkflow?
+    @State private var showingAgents = false
     
     var body: some View {
         NavigationStack {
@@ -44,6 +45,9 @@ struct SettingsView: View {
                 .sheet(item: $selectedWorkflowForEdit) { workflow in
                     AddN8NWorkflowView(workflowManager: workflowManager)
                 }
+                .sheet(isPresented: $showingAgents) {
+                    AgentListView()
+                }
                 .alert("Ripristina Configurazione", isPresented: $showingResetAlert) {
                     Button("Annulla", role: .cancel) { }
                     Button("Ripristina", role: .destructive) {
@@ -60,6 +64,7 @@ struct SettingsView: View {
             providersSection
             addProviderSection
             workflowsSection
+            agentsSection
             statisticsSection
             resetSection
         }
@@ -126,6 +131,18 @@ struct SettingsView: View {
             Text("Workflow n8n")
         } footer: {
             Text("Gestisci i workflow n8n personalizzati. I workflow predefiniti non possono essere rimossi.")
+        }
+    }
+
+    private var agentsSection: some View {
+        Section {
+            Button {
+                showingAgents = true
+            } label: {
+                Label("Gestisci Agenti", systemImage: "person.3")
+            }
+        } header: {
+            Text("Agenti")
         }
     }
     

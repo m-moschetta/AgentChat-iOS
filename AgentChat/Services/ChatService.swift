@@ -16,10 +16,15 @@ import SwiftUI
 // MARK: - Chat Manager
 class ChatManager: ObservableObject {
     @Published var chats: [Chat] = []
-    
+
     func createNewChat(with provider: AssistantProvider, model: String?, workflow: N8NWorkflow? = nil) {
+        createNewChat(with: [provider], model: model, workflow: workflow)
+    }
+
+    func createNewChat(with providers: [AssistantProvider], model: String?, workflow: N8NWorkflow? = nil) {
+        guard let first = providers.first else { return }
         let agentType: AgentType = {
-            switch provider.type {
+            switch first.type {
             case .openai:
                 return .openAI
             case .anthropic:
@@ -39,11 +44,12 @@ class ChatManager: ObservableObject {
         
         let newChat = Chat(
             agentType: agentType,
-            provider: provider,
+            provider: first,
+            agents: providers,
             selectedModel: model,
             n8nWorkflow: workflow
         )
-        
+
         chats.append(newChat)
     }
     

@@ -13,21 +13,25 @@ struct NewChatView: View {
     @StateObject private var config = LocalAssistantConfiguration()
     @ObservedObject var workflowManager: N8NWorkflowManager
     
-    @State private var selectedProvider: AssistantProvider?
+    @State private var selectedProviders: [AssistantProvider] = []
     @State private var selectedModel: String?
     @State private var selectedWorkflow: N8NWorkflow?
     @State private var showingCustomProviderView = false
     @State private var showingAPIKeyConfig = false
     @State private var providerNeedingAPIKey: AssistantProvider?
     
-    let onChatCreated: (AssistantProvider, String?, N8NWorkflow?) -> Void
+    let onChatCreated: ([AssistantProvider], String?, N8NWorkflow?) -> Void
     
     var availableProviders: [AssistantProvider] {
         config.activeProviders
     }
     
     var selectedProviderModels: [String] {
-        selectedProvider?.supportedModels ?? []
+        selectedProviders.count == 1 ? selectedProviders.first?.supportedModels ?? [] : []
+    }
+
+    var selectedProvider: AssistantProvider? {
+        selectedProviders.count == 1 ? selectedProviders.first : nil
     }
     
     var body: some View {
@@ -59,16 +63,20 @@ struct NewChatView: View {
                         ForEach(availableProviders) { provider in
                             ProviderRow(
                                 provider: provider,
-                                isSelected: selectedProvider?.id == provider.id,
+                                isSelected: selectedProviders.contains(where: { $0.id == provider.id }),
                                 hasValidAPIKey: config.hasValidAPIKey(for: provider)
                             ) {
-                                selectedProvider = provider
-                                selectedModel = provider.defaultModel
-                                
-                                // Check if API key is needed
-                                if provider.apiKeyRequired && !config.hasValidAPIKey(for: provider) {
-                                    providerNeedingAPIKey = provider
-                                    showingAPIKeyConfig = true
+                                if let index = selectedProviders.firstIndex(where: { $0.id == provider.id }) {
+                                    selectedProviders.remove(at: index)
+                                } else {
+                                    selectedProviders.append(provider)
+                                    if selectedProviders.count == 1 {
+                                        selectedModel = provider.defaultModel
+                                        if provider.apiKeyRequired && !config.hasValidAPIKey(for: provider) {
+                                            providerNeedingAPIKey = provider
+                                            showingAPIKeyConfig = true
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -93,7 +101,7 @@ struct NewChatView: View {
                                 isSelected: selectedWorkflow?.id == workflow.id
                             ) {
                                 selectedWorkflow = workflow
-                                selectedProvider = nil
+                                selectedProviders.removeAll()
                                 selectedModel = nil
                             }
                         }
@@ -251,13 +259,16 @@ struct NewChatView: View {
             return true
         }
         
-        // Se è selezionato un provider tradizionale
-        guard let selectedProvider else { return false }
-        
-        if selectedProvider.apiKeyRequired {
-            return config.hasValidAPIKey(for: selectedProvider)
+        // Se è selezionato almeno un provider tradizionale
+        guard !selectedProviders.isEmpty else { return false }
+
+        if selectedProviders.count == 1 {
+            let provider = selectedProviders.first!
+            if provider.apiKeyRequired {
+                return config.hasValidAPIKey(for: provider)
+            }
         }
-        
+
         return true
     }
     
@@ -276,11 +287,11 @@ struct NewChatView: View {
                 icon: "gear.badge",
                 description: selectedWorkflow.description
             )
-            onChatCreated(n8nProvider, nil, selectedWorkflow)
-        } else if let selectedProvider {
-            // Crea chat con provider tradizionale
-            let model = selectedModel ?? selectedProvider.defaultModel
-            onChatCreated(selectedProvider, model, nil)
+            onChatCreated([n8nProvider], nil, selectedWorkflow)
+        } else if !selectedProviders.isEmpty {
+            // Crea chat con provider tradizionale o multi-agente
+            let model = selectedProviders.count == 1 ? (selectedModel ?? selectedProviders.first?.defaultModel) : nil
+            onChatCreated(selectedProviders, model, nil)
         }
         
         dismiss()

@@ -477,7 +477,8 @@ struct WorkflowParameterSheet: View {
         messages: [
             Message(content: "Ciao!", isUser: true),
             Message(content: "Ciao! Come posso aiutarti oggi?", isUser: false)
-        ]
+        ],
+        agents: []
     )
     
     NavigationStack {
