@@ -278,7 +278,7 @@ class CustomAgentService: BaseAgentService {
         
         if let agentId = agentConfiguration?.id {
             let context = ConversationContext(chatId: UUID(), agentId: agentId)
-            saveConversationContext(context)
+            try await saveConversationContext(context)
         }
         
         return response.content

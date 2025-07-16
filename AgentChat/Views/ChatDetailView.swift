@@ -12,6 +12,7 @@ struct ChatDetailView: View {
     @ObservedObject var chat: Chat
     @Environment(\.dismiss) private var dismiss
     @State private var inputText = ""
+    @State private var textEditorHeight: CGFloat = 30
     @FocusState private var isInputFocused: Bool
     @State private var isAwaitingAssistant = false
     @State private var errorMessage: String?
@@ -140,8 +141,19 @@ struct ChatDetailView: View {
     
     private var inputSection: some View {
         HStack {
-            TextField("Scrivi un messaggio...", text: $inputText)
-                .textFieldStyle(.roundedBorder)
+            TextEditor(text: $inputText)
+                .onChange(of: inputText) {
+                    updateTextEditorHeight()
+                }
+                .frame(height: textEditorHeight)
+                .padding(4)
+                .background(Color.white)
+                .cornerRadius(10)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                )
+
                 .focused($isInputFocused)
 
                 .disabled(isAwaitingAssistant)
@@ -152,6 +164,13 @@ struct ChatDetailView: View {
         .background(.ultraThinMaterial)
     }
     
+    private func updateTextEditorHeight() {
+        let newHeight = min(150, max(30, inputText.heightForWidth(width: UIScreen.main.bounds.width - 80, font: .systemFont(ofSize: 17))))
+        if newHeight != textEditorHeight {
+            textEditorHeight = newHeight
+        }
+    }
+
     private var sendButton: some View {
         Button {
             Task { await sendMessage() }

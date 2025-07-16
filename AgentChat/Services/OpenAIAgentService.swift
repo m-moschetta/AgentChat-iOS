@@ -24,25 +24,85 @@ class OpenAIRequestTransformer: RequestTransformer {
 
 class OpenAIResponseParser: ResponseParser {
     func parse(_ data: Data) throws -> UnifiedChatResponse {
-        let openAIResponse = try JSONDecoder().decode(OpenAIResponse.self, from: data)
-        
-        guard let choice = openAIResponse.choices.first else {
-            throw ChatServiceError.invalidResponse
+        // Prima prova a decodificare come errore
+        if let errorResponse = try? JSONDecoder().decode(OpenAIErrorResponse.self, from: data) {
+            throw parseOpenAIError(errorResponse)
         }
         
-        let message = choice.message
-        
-        return UnifiedChatResponse(
-            content: message.content,
-            model: openAIResponse.model,
-            usage: openAIResponse.usage.map { (usage: OpenAIUsage) in
-                TokenUsage(
-                    promptTokens: usage.promptTokens,
-                    completionTokens: usage.completionTokens,
-                    totalTokens: usage.totalTokens
-                )
+        // Se non è un errore, prova a decodificare come risposta normale
+        do {
+            let openAIResponse = try JSONDecoder().decode(OpenAIResponse.self, from: data)
+            
+            guard let choice = openAIResponse.choices.first else {
+                throw ChatServiceError.invalidResponse
             }
-        )
+            
+            let message = choice.message
+            
+            return UnifiedChatResponse(
+                content: message.content,
+                model: openAIResponse.model,
+                usage: openAIResponse.usage.map { (usage: OpenAIUsage) in
+                    TokenUsage(
+                        promptTokens: usage.promptTokens,
+                        completionTokens: usage.completionTokens,
+                        totalTokens: usage.totalTokens
+                    )
+                }
+            )
+        } catch {
+            // Se il parsing fallisce, prova a estrarre informazioni di errore dal JSON grezzo
+            if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let error = json["error"] as? [String: Any],
+               let message = error["message"] as? String {
+                
+                // Gestisci errori specifici per modelli o3
+                if message.contains("model") && (message.contains("o3") || message.contains("does not exist")) {
+                    throw ChatServiceError.unsupportedModel("Il modello o3 non è disponibile per il tuo account. Verifica il tuo livello di accesso API OpenAI.")
+                }
+                
+                if let code = error["code"] as? String {
+                    switch code {
+                    case "model_not_found":
+                        throw ChatServiceError.unsupportedModel(message)
+                    case "insufficient_quota":
+                        throw ChatServiceError.rateLimitExceeded
+                    case "invalid_api_key":
+                        throw ChatServiceError.authenticationFailed
+                    default:
+                        throw ChatServiceError.serverError(message)
+                    }
+                } else {
+                    throw ChatServiceError.serverError(message)
+                }
+            }
+            
+            throw ChatServiceError.invalidResponse
+        }
+    }
+    
+    private func parseOpenAIError(_ errorResponse: OpenAIErrorResponse) -> ChatServiceError {
+        let error = errorResponse.error
+        
+        // Gestisci errori specifici per modelli o3
+        if error.message.contains("model") && (error.message.contains("o3") || error.message.contains("does not exist")) {
+            return ChatServiceError.unsupportedModel("Il modello o3 non è disponibile per il tuo account. Verifica il tuo livello di accesso API OpenAI (richiede livello 4 o 5).")
+        }
+        
+        switch error.code {
+        case "model_not_found":
+            return ChatServiceError.unsupportedModel(error.message)
+        case "insufficient_quota":
+            return ChatServiceError.rateLimitExceeded
+        case "invalid_api_key":
+            return ChatServiceError.authenticationFailed
+        case "rate_limit_exceeded":
+            return ChatServiceError.rateLimitExceeded
+        case "context_length_exceeded":
+            return ChatServiceError.serverError("Messaggio troppo lungo per il modello selezionato")
+        default:
+            return ChatServiceError.serverError(error.message)
+        }
     }
 }
 
@@ -116,7 +176,7 @@ class OpenAIAgentService: BaseAgentService {
         if let agentId = agentConfiguration?.id {
             var context = ConversationContext(chatId: UUID(), agentId: agentId)
             context.messages.append(ContextMessage(role: "assistant", content: response.content, metadata: ["model": response.model ?? "unknown"]))
-            saveConversationContext(context)
+            try await saveConversationContext(context)
         }
         
         return response.content

@@ -1,0 +1,64 @@
+{
+  "source": "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/ChatDetailView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Configura Parametri",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 487
+        }
+      },
+      {
+        "comment": "",
+        "key": "Annulla",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 490
+        }
+      },
+      {
+        "comment": "",
+        "key": "Salva",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 496
+        }
+      },
+      {
+        "comment": "",
+        "key": "Workflow",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 521
+        }
+      },
+      {
+        "comment": "",
+        "key": "Parametri",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 531
+        }
+      },
+      {
+        "comment": "",
+        "key": "Configura i parametri per questo workflow. I campi contrassegnati con * sono obbligatori.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 533
+        }
+      },
+      {
+        "comment": "",
+        "key": "*",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 544
+        }
+      }
+    ]
+  },
+  "version": 1
+}

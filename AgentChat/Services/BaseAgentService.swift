@@ -170,7 +170,7 @@ class BaseAgentService: AgentServiceProtocol {
         return capabilities.contains(.collaboration)
     }
     
-    func saveConversationContext(_ context: ConversationContext) {
+    func saveConversationContext(_ context: ConversationContext) async throws {
         // Save conversation context using memory manager
         for message in context.messages {
             AgentMemoryManager.shared.saveMemory(

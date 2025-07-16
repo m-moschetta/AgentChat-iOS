@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22500" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift">
+    <entity name="ChatEntity" representedClassName="ChatEntity" syncable="YES">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="YES"/>
+        <attribute name="agentTypeString" attributeType="String"/>
+        <attribute name="providerJSON" attributeType="String"/>
+        <attribute name="selectedModel" attributeType="String"/>
+        <attribute name="n8nWorkflowJSON" attributeType="String"/>
+        <attribute name="agentConfigurationJSON" attributeType="String"/>
+        <relationship name="messages" destinationEntity="MessageEntity" toMany="YES" deletionRule="Cascade" inverseName="chat" inverseEntity="MessageEntity"/>
+    </entity>
+    <entity name="MessageEntity" representedClassName="MessageEntity" syncable="YES">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="YES"/>
+        <attribute name="roleString" attributeType="String"/>
+        <attribute name="content" attributeType="String"/>
+        <attribute name="timestamp" attributeType="Date"/>
+        <attribute name="isAwaitingResponse" attributeType="Boolean" usesScalarValueType="YES"/>
+        <relationship name="chat" destinationEntity="ChatEntity" toMany="NO" deletionRule="Nullify" inverseName="messages" inverseEntity="ChatEntity"/>
+    </entity>
+</model>

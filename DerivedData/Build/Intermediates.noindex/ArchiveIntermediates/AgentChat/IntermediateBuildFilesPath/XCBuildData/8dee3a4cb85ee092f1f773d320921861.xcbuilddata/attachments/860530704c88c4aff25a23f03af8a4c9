@@ -1,0 +1,365 @@
+{
+  "" : {
+    "const-values" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentChat-master.swiftconstvalues",
+    "dependencies" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentChat-master.d",
+    "diagnostics" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentChat-master.dia",
+    "emit-module-dependencies" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentChat-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentChat-master-emit-module.dia",
+    "swift-dependencies" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentChat-master.swiftdeps"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/AgentChatApp.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentChatApp.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentChatApp.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentChatApp.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/ContentView.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ContentView.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ContentView.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ContentView.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/CoreData/ChatEntity+CoreDataClass.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatEntity+CoreDataClass.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatEntity+CoreDataClass.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatEntity+CoreDataClass.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/CoreData/ChatEntity+CoreDataProperties.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatEntity+CoreDataProperties.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatEntity+CoreDataProperties.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatEntity+CoreDataProperties.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/CoreData/MessageEntity+CoreDataClass.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/MessageEntity+CoreDataClass.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/MessageEntity+CoreDataClass.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/MessageEntity+CoreDataClass.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/CoreData/MessageEntity+CoreDataProperties.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/MessageEntity+CoreDataProperties.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/MessageEntity+CoreDataProperties.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/MessageEntity+CoreDataProperties.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Examples/AgentSystemExamples.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentSystemExamples.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentSystemExamples.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentSystemExamples.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Models/Agent.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/Agent.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/Agent.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/Agent.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Models/AgentConfiguration.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentConfiguration.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentConfiguration.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentConfiguration.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Models/AgentGroup.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentGroup.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentGroup.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentGroup.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Models/AgentGroupTemplate.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentGroupTemplate.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentGroupTemplate.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentGroupTemplate.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Models/AgentType.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentType.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentType.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentType.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Models/AssistantProvider.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AssistantProvider.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AssistantProvider.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AssistantProvider.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Models/Chat.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/Chat.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/Chat.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/Chat.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Models/ChatServiceError.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatServiceError.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatServiceError.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatServiceError.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Models/GroupAgent.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GroupAgent.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GroupAgent.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GroupAgent.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Models/Message.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/Message.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/Message.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/Message.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Models/N8NWorkflow.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/N8NWorkflow.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/N8NWorkflow.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/N8NWorkflow.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Models/ProviderModels.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ProviderModels.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ProviderModels.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ProviderModels.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/OpenAIAssistantService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/OpenAIAssistantService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/OpenAIAssistantService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/OpenAIAssistantService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Protocols/ChatServiceProtocol.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatServiceProtocol.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatServiceProtocol.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatServiceProtocol.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/AgentBridge.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentBridge.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentBridge.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentBridge.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/AgentConfigurationManager.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentConfigurationManager.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentConfigurationManager.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentConfigurationManager.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/AgentManager.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentManager.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentManager.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentManager.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/AgentMemoryManager.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentMemoryManager.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentMemoryManager.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentMemoryManager.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/AgentOrchestrator.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentOrchestrator.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentOrchestrator.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentOrchestrator.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/Agents/AnthropicAgentService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AnthropicAgentService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AnthropicAgentService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AnthropicAgentService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/Agents/CustomAgentService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/CustomAgentService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/CustomAgentService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/CustomAgentService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/Agents/DeepSeekAgentService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/DeepSeekAgentService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/DeepSeekAgentService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/DeepSeekAgentService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/Agents/GrokAgentService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GrokAgentService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GrokAgentService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GrokAgentService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/Agents/MistralAgentService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/MistralAgentService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/MistralAgentService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/MistralAgentService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/Agents/N8NAgentService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/N8NAgentService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/N8NAgentService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/N8NAgentService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/Agents/PerplexityAgentService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/PerplexityAgentService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/PerplexityAgentService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/PerplexityAgentService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/AnthropicService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AnthropicService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AnthropicService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AnthropicService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/BaseAgentService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/BaseAgentService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/BaseAgentService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/BaseAgentService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/BaseHTTPService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/BaseHTTPService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/BaseHTTPService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/BaseHTTPService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/ChatService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/ChatServiceFactory.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatServiceFactory.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatServiceFactory.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatServiceFactory.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/CoreDataPersistenceManager.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/CoreDataPersistenceManager.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/CoreDataPersistenceManager.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/CoreDataPersistenceManager.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/CustomProviderService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/CustomProviderService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/CustomProviderService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/CustomProviderService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/CustomService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/CustomService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/CustomService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/CustomService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/GrokService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GrokService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GrokService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GrokService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/GroupChatService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GroupChatService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GroupChatService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GroupChatService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/HybridMultiAgentService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/HybridMultiAgentService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/HybridMultiAgentService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/HybridMultiAgentService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/KeychainService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/KeychainService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/KeychainService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/KeychainService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/LocalAssistantConfiguration.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/LocalAssistantConfiguration.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/LocalAssistantConfiguration.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/LocalAssistantConfiguration.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/MistralService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/MistralService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/MistralService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/MistralService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/N8NService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/N8NService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/N8NService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/N8NService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/N8NWorkflowManager.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/N8NWorkflowManager.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/N8NWorkflowManager.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/N8NWorkflowManager.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/OpenAIAgentService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/OpenAIAgentService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/OpenAIAgentService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/OpenAIAgentService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/OpenAIService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/OpenAIService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/OpenAIService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/OpenAIService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/PerplexityService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/PerplexityService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/PerplexityService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/PerplexityService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/ProviderTransformers.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ProviderTransformers.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ProviderTransformers.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ProviderTransformers.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/ServiceContainer.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ServiceContainer.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ServiceContainer.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ServiceContainer.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Services/UniversalAssistantService.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/UniversalAssistantService.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/UniversalAssistantService.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/UniversalAssistantService.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Utils/String+Height.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/String+Height.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/String+Height.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/String+Height.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/APIKeyConfigView.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/APIKeyConfigView.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/APIKeyConfigView.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/APIKeyConfigView.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/AddAgentView.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AddAgentView.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AddAgentView.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AddAgentView.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/AddN8NWorkflowView.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AddN8NWorkflowView.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AddN8NWorkflowView.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AddN8NWorkflowView.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/AddParameterView.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AddParameterView.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AddParameterView.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AddParameterView.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/AgentConfigurationView.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentConfigurationView.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentConfigurationView.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentConfigurationView.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/AgentEditView.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentEditView.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentEditView.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/AgentEditView.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/ChatDetailView.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatDetailView.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatDetailView.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatDetailView.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/ChatListView.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatListView.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatListView.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ChatListView.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/CustomProviderView.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/CustomProviderView.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/CustomProviderView.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/CustomProviderView.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/GroupChatView.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GroupChatView.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GroupChatView.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GroupChatView.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/GroupSelectionView.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GroupSelectionView.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GroupSelectionView.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GroupSelectionView.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/ModelSelectorView.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ModelSelectorView.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ModelSelectorView.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/ModelSelectorView.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/NewChatView.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/NewChatView.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/NewChatView.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/NewChatView.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/SettingsView.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/SettingsView.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/SettingsView.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/SettingsView.o"
+  },
+  "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "index-unit-output-path" : "/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath/AgentChat.build/Release-iphonesimulator/AgentChat.build/Objects-normal/x86_64/GeneratedAssetSymbols.o"
+  }
+}

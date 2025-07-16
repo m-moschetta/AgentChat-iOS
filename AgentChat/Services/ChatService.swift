@@ -24,9 +24,10 @@ class ChatManager: ObservableObject {
     private let serviceFactory = ServiceFactory()
     private let agentOrchestrator = AgentOrchestrator.shared
     
-    private init() {
-        // Carica le chat salvate all'avvio dell'applicazione
-        chats = ChatPersistenceManager.shared.loadChats()
+        private init() {
+        // Pulisce tutti i dati esistenti e carica le chat salvate
+        CoreDataPersistenceManager.shared.clearAllData()
+        chats = CoreDataPersistenceManager.shared.loadChats()
     }
     
     /// Crea una nuova chat basata su un provider e un modello specifici.
@@ -43,8 +44,6 @@ class ChatManager: ObservableObject {
                 return .perplexity
             case .grok:
                 return .grok
-    
-                return .openAI // Temporary mapping, needs proper implementation
             case .deepSeek:
                 return .deepSeek
             case .n8n:
@@ -62,43 +61,46 @@ class ChatManager: ObservableObject {
         )
         
         chats.append(newChat)
-        ChatPersistenceManager.shared.saveChats(chats)
+        CoreDataPersistenceManager.shared.saveOrUpdateChat(chat: newChat)
     }
     
     /// Crea una nuova chat basata su una configurazione di agente personalizzata.
     func createNewChat(with agentConfiguration: AgentConfiguration) {
         let newChat = Chat(agentConfiguration: agentConfiguration)
         chats.append(newChat)
-        ChatPersistenceManager.shared.saveChats(chats)
+        CoreDataPersistenceManager.shared.saveOrUpdateChat(chat: newChat)
     }
     
     /// Elimina una o più chat in base ai loro indici.
     func deleteChat(at offsets: IndexSet) {
+        let idsToDelete = offsets.map { chats[$0].id }
+        for id in idsToDelete {
+            CoreDataPersistenceManager.shared.deleteChat(with: id)
+        }
         chats.remove(atOffsets: offsets)
-        ChatPersistenceManager.shared.saveChats(chats)
     }
 
     /// Aggiunge un nuovo messaggio a una chat esistente.
     func addMessage(to chat: Chat, message: Message) {
         if let index = chats.firstIndex(where: { $0.id == chat.id }) {
             chats[index].messages.append(message)
-            ChatPersistenceManager.shared.saveChats(chats)
+            CoreDataPersistenceManager.shared.saveOrUpdateChat(chat: chats[index])
         }
     }
 
     // MARK: - Import/Export
     
+    // MARK: - Import/Export (Refactoring Needed)
+
     /// Esporta tutte le chat in un file e restituisce l'URL del file.
     func exportChats() -> URL? {
-        return ChatPersistenceManager.shared.exportChats(chats)
+        // TODO: Implementare l'esportazione da Core Data
+        return nil
     }
 
     /// Importa le chat da un file JSON e sovrascrive quelle correnti.
     func importChats(from url: URL) {
-        if let imported = ChatPersistenceManager.shared.importChats(from: url) {
-            chats = imported
-            ChatPersistenceManager.shared.saveChats(chats)
-        }
+        // TODO: Implementare l'importazione in Core Data
     }
     
     /// Restituisce l'istanza del servizio di chat per un dato tipo di agente (legacy).

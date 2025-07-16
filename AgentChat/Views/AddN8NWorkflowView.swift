@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct AddN8NWorkflowView: View {
     @Environment(\.dismiss) private var dismiss

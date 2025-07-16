@@ -1,0 +1,112 @@
+{
+  "source": "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/AddAgentView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Nuovo Agente",
+        "location": {
+          "startingColumn": 45,
+          "startingLine": 75
+        }
+      },
+      {
+        "comment": "",
+        "key": "Modifica Agente",
+        "location": {
+          "startingColumn": 62,
+          "startingLine": 75
+        }
+      },
+      {
+        "comment": "",
+        "key": "Informazioni Base",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 38
+        }
+      },
+      {
+        "comment": "",
+        "key": "Prompt",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 48
+        }
+      },
+      {
+        "comment": "",
+        "key": "Avatar",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 52
+        }
+      },
+      {
+        "comment": "",
+        "key": "Stato",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 56
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nome agente",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 39
+        }
+      },
+      {
+        "comment": "",
+        "key": "Provider",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 41
+        }
+      },
+      {
+        "comment": "",
+        "key": "System Prompt",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 49
+        }
+      },
+      {
+        "comment": "",
+        "key": "Emoji o SF Symbol",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 53
+        }
+      },
+      {
+        "comment": "",
+        "key": "Agente attivo",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 57
+        }
+      },
+      {
+        "comment": "",
+        "key": "Annulla",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 62
+        }
+      },
+      {
+        "comment": "",
+        "key": "Salva",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 68
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,80 @@
+{
+  "source": "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/GroupChatView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "%lld agenti attivi",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 126
+        }
+      },
+      {
+        "comment": "",
+        "key": "Attivo",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 139
+        }
+      },
+      {
+        "comment": "",
+        "key": "Inattivo",
+        "location": {
+          "startingColumn": 54,
+          "startingLine": 139
+        }
+      },
+      {
+        "comment": "",
+        "key": "+%lld",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 170
+        }
+      },
+      {
+        "comment": "",
+        "key": "Avvia una discussione di gruppo...",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 346
+        }
+      },
+      {
+        "comment": "",
+        "key": "Dettagli Gruppo",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 405
+        }
+      },
+      {
+        "comment": "",
+        "key": "Partecipanti (%lld)",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 391
+        }
+      },
+      {
+        "comment": "",
+        "key": "Informazioni Gruppo",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 397
+        }
+      },
+      {
+        "comment": "",
+        "key": "Chiudi",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 408
+        }
+      }
+    ]
+  },
+  "version": 1
+}

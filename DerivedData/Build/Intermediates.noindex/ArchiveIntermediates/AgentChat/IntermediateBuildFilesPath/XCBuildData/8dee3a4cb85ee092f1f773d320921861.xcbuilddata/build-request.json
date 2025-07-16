@@ -1,0 +1,79 @@
+{
+  "buildCommand" : {
+    "command" : "build",
+    "skipDependencies" : false,
+    "style" : "buildOnly"
+  },
+  "configuredTargets" : [
+    {
+      "guid" : "6c41e6652f1636f234c553995e7bab21ee6081cbe50064998d12948248c5623f"
+    }
+  ],
+  "containerPath" : "/Users/mariomoschetta/Documents/AgentChat/AgentChat.xcodeproj",
+  "continueBuildingAfterErrors" : false,
+  "dependencyScope" : "workspace",
+  "enableIndexBuildArena" : false,
+  "hideShellScriptEnvironment" : false,
+  "parameters" : {
+    "action" : "install",
+    "activeArchitecture" : "arm64",
+    "activeRunDestination" : {
+      "disableOnlyActiveArch" : false,
+      "platform" : "iphonesimulator",
+      "sdk" : "iphonesimulator18.5",
+      "sdkVariant" : "iphonesimulator",
+      "supportedArchitectures" : [
+        "arm64"
+      ],
+      "targetArchitecture" : "arm64"
+    },
+    "arenaInfo" : {
+      "buildIntermediatesPath" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex",
+      "buildProductsPath" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Products",
+      "derivedDataPath" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData",
+      "indexDataStoreFolderPath" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Index.noindex/DataStore",
+      "indexEnableDataStore" : true,
+      "indexPCHPath" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Index.noindex/PrecompiledHeaders",
+      "pchPath" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/PrecompiledHeaders"
+    },
+    "configurationName" : "Release",
+    "overrides" : {
+      "commandLine" : {
+        "table" : {
+
+        }
+      },
+      "synthesized" : {
+        "table" : {
+          "ACTION" : "install",
+          "ASSET_PACK_FOLDER_PATH" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/InstallationBuildProductsLocation/OnDemandResources",
+          "ASSETCATALOG_COMPILER_FLATTENED_APP_ICON_PATH" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/BuildProductsPath/ProductIcon.png",
+          "COLOR_DIAGNOSTICS" : "YES",
+          "DEPLOYMENT_LOCATION" : "YES",
+          "DEPLOYMENT_POSTPROCESSING" : "YES",
+          "diagnostic_message_length" : "97",
+          "DSTROOT" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/InstallationBuildProductsLocation",
+          "EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE" : "NO",
+          "ENABLE_PREVIEWS" : "NO",
+          "ENABLE_SIGNATURE_AGGREGATION" : "YES",
+          "ENABLE_XOJIT_PREVIEWS" : "YES",
+          "INDEX_ENABLE_DATA_STORE" : "NO",
+          "MESSAGES_APPLICATION_EXTENSION_SUPPORT_FOLDER_PATH" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/BuildProductsPath/MessagesApplicationExtensionSupport",
+          "MESSAGES_APPLICATION_SUPPORT_FOLDER_PATH" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/BuildProductsPath/MessagesApplicationSupport",
+          "OBJROOT" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/IntermediateBuildFilesPath",
+          "SHARED_PRECOMPS_DIR" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/PrecompiledHeaders",
+          "SIGNATURE_METADATA_FOLDER_PATH" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/BuildProductsPath/Signatures",
+          "SWIFT_STDLIB_TOOL_UNSIGNED_DESTINATION_DIR" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/BuildProductsPath/SwiftSupport",
+          "SYMROOT" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/BuildProductsPath",
+          "WATCHKIT_2_SUPPORT_FOLDER_PATH" : "/Users/mariomoschetta/Documents/AgentChat/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/AgentChat/BuildProductsPath/WatchKitSupport2"
+        }
+      }
+    }
+  },
+  "schemeCommand" : "archive",
+  "showNonLoggedProgress" : true,
+  "useDryRun" : false,
+  "useImplicitDependencies" : true,
+  "useLegacyBuildLocations" : false,
+  "useParallelTargets" : true
+}

@@ -1,0 +1,264 @@
+{
+  "source": "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/AgentEditView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Modifica Agente",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 89
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nuovo Agente",
+        "location": {
+          "startingColumn": 58,
+          "startingLine": 89
+        }
+      },
+      {
+        "comment": "",
+        "key": "Informazioni Base",
+        "location": {
+          "startingColumn": 17,
+          "startingLine": 126
+        }
+      },
+      {
+        "comment": "",
+        "key": "System Prompt",
+        "location": {
+          "startingColumn": 17,
+          "startingLine": 152
+        }
+      },
+      {
+        "comment": "",
+        "key": "Configurazione Tecnica",
+        "location": {
+          "startingColumn": 17,
+          "startingLine": 178
+        }
+      },
+      {
+        "comment": "",
+        "key": "Funzionalità",
+        "location": {
+          "startingColumn": 17,
+          "startingLine": 253
+        }
+      },
+      {
+        "comment": "",
+        "key": "Annulla",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 92
+        }
+      },
+      {
+        "comment": "",
+        "key": "Salva",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 99
+        }
+      },
+      {
+        "comment": "",
+        "key": "Crea",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 99
+        }
+      },
+      {
+        "comment": "",
+        "key": "Personalità",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 146
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nome agente",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 137
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ruolo (es. Assistente AI)",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 140
+        }
+      },
+      {
+        "comment": "",
+        "key": "Definisci come l'agente deve comportarsi e rispondere",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 154
+        }
+      },
+      {
+        "comment": "",
+        "key": "System prompt...",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 158
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld caratteri",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 169
+        }
+      },
+      {
+        "comment": "",
+        "key": "Anteprima",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 162
+        }
+      },
+      {
+        "comment": "",
+        "key": "Provider",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 188
+        }
+      },
+      {
+        "comment": "",
+        "key": "Creatività",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 200
+        }
+      },
+      {
+        "comment": "",
+        "key": "Preciso",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 209
+        }
+      },
+      {
+        "comment": "",
+        "key": "Creativo",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 213
+        }
+      },
+      {
+        "comment": "",
+        "key": "Lunghezza Risposta",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 223
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld token",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 225
+        }
+      },
+      {
+        "comment": "",
+        "key": "Finestra Contesto",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 239
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld token",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 241
+        }
+      },
+      {
+        "comment": "",
+        "key": "Agente Attivo",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 254
+        }
+      },
+      {
+        "comment": "",
+        "key": "L'agente ricorderà il contesto delle conversazioni precedenti",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 260
+        }
+      },
+      {
+        "comment": "",
+        "key": "Memoria Conversazione",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 257
+        }
+      },
+      {
+        "comment": "",
+        "key": "Scegli Icona",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 361
+        }
+      },
+      {
+        "comment": "",
+        "key": "Scegli Provider",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 410
+        }
+      },
+      {
+        "comment": "",
+        "key": "Anteprima",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 443
+        }
+      },
+      {
+        "comment": "",
+        "key": "Anteprima System Prompt",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 425
+        }
+      },
+      {
+        "comment": "",
+        "key": "Questo è come l'agente \"%@\" interpreterà le sue istruzioni:",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 429
+        }
+      }
+    ]
+  },
+  "version": 1
+}

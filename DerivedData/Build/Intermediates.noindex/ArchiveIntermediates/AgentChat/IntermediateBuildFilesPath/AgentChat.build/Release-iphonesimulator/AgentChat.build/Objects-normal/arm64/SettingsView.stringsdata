@@ -1,0 +1,200 @@
+{
+  "source": "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/SettingsView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Settings",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 84
+        }
+      },
+      {
+        "comment": "",
+        "key": "Providers",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 26
+        }
+      },
+      {
+        "comment": "",
+        "key": "Agents",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "Data Management",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 56
+        }
+      },
+      {
+        "comment": "",
+        "key": "App Information",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 68
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add Custom Provider",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 38
+        }
+      },
+      {
+        "comment": "",
+        "key": "Configure Agents",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 46
+        }
+      },
+      {
+        "comment": "",
+        "key": "Manage Legacy Agents",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 50
+        }
+      },
+      {
+        "comment": "",
+        "key": "Import/Export Settings",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 57
+        }
+      },
+      {
+        "comment": "",
+        "key": "Reset All Settings",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 61
+        }
+      },
+      {
+        "comment": "",
+        "key": "Version",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 70
+        }
+      },
+      {
+        "comment": "",
+        "key": "Build",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 77
+        }
+      },
+      {
+        "comment": "",
+        "key": "Configure",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 132
+        }
+      },
+      {
+        "comment": "",
+        "key": "Configured",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 125
+        }
+      },
+      {
+        "comment": "",
+        "key": "Not configured",
+        "location": {
+          "startingColumn": 54,
+          "startingLine": 125
+        }
+      },
+      {
+        "comment": "",
+        "key": "Legacy Agents",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 170
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 173
+        }
+      },
+      {
+        "comment": "",
+        "key": "Import/Export",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 218
+        }
+      },
+      {
+        "comment": "",
+        "key": "Export",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 202
+        }
+      },
+      {
+        "comment": "",
+        "key": "Import",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 212
+        }
+      },
+      {
+        "comment": "",
+        "key": "Export Agent Configurations",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 203
+        }
+      },
+      {
+        "comment": "",
+        "key": "Export All Settings",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 207
+        }
+      },
+      {
+        "comment": "",
+        "key": "Import Configurations",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 213
+        }
+      },
+      {
+        "comment": "",
+        "key": "Done",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 221
+        }
+      }
+    ]
+  },
+  "version": 1
+}

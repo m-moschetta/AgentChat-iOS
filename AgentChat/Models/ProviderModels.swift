@@ -58,6 +58,22 @@ struct OpenAIUsage: Codable {
     }
 }
 
+// MARK: - OpenAI Error Models
+struct OpenAIErrorResponse: Codable {
+    let error: OpenAIError
+}
+
+struct OpenAIError: Codable {
+    let message: String
+    let type: String
+    let code: String?
+    let param: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case message, type, code, param
+    }
+}
+
 // MARK: - Anthropic Models
 struct AnthropicRequest: Codable {
     let model: String

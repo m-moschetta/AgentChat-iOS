@@ -1,0 +1,176 @@
+{
+  "source": "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/NewChatView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Nuova Conversazione",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 101
+        }
+      },
+      {
+        "comment": "",
+        "key": "Annulla",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 104
+        }
+      },
+      {
+        "comment": "",
+        "key": "Inizia",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 133
+        }
+      },
+      {
+        "comment": "",
+        "key": "Inizia",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 138
+        }
+      },
+      {
+        "comment": "",
+        "key": "Inizia",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 144
+        }
+      },
+      {
+        "comment": "",
+        "key": "Inizia",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 151
+        }
+      },
+      {
+        "comment": "",
+        "key": "Crea nuovo agente",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 202
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nessun agente configurato",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 178
+        }
+      },
+      {
+        "comment": "",
+        "key": "Crea il tuo primo agente",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 182
+        }
+      },
+      {
+        "comment": "",
+        "key": "Agenti Personalizzati",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 208
+        }
+      },
+      {
+        "comment": "",
+        "key": "Agenti configurabili con ruoli, personalità e memoria personalizzati",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 210
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nessun provider disponibile",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 238
+        }
+      },
+      {
+        "comment": "",
+        "key": "Aggiungi un provider personalizzato per iniziare",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 241
+        }
+      },
+      {
+        "comment": "",
+        "key": "Aggiungi Provider",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 246
+        }
+      },
+      {
+        "comment": "",
+        "key": "Assistenti AI Tradizionali",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 273
+        }
+      },
+      {
+        "comment": "",
+        "key": "Aggiungi provider personalizzato",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 276
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sistemi Multi-Agente",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 308
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sistemi avanzati che utilizzano più agenti per elaborazioni complesse e collaborative",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 310
+        }
+      },
+      {
+        "comment": "",
+        "key": "Workflow n8n",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 337
+        }
+      },
+      {
+        "comment": "",
+        "key": "Automatizza i task con i workflow di n8n",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 339
+        }
+      },
+      {
+        "comment": "",
+        "key": "API Key richiesta",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 409
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,96 @@
+{
+  "source": "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/AgentConfigurationView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Configurazione Agenti",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 48
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cerca agenti...",
+        "location": {
+          "startingColumn": 56,
+          "startingLine": 46
+        }
+      },
+      {
+        "comment": "",
+        "key": "Importa/Esporta",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 52
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ripristina Default",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 56
+        }
+      },
+      {
+        "comment": "",
+        "key": "Aggiungi",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 65
+        }
+      },
+      {
+        "comment": "",
+        "key": "Importa/Esporta",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 170
+        }
+      },
+      {
+        "comment": "",
+        "key": "Gestione Configurazioni",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 144
+        }
+      },
+      {
+        "comment": "",
+        "key": "Esporta le tue configurazioni di agenti per condividerle o farne un backup, oppure importa configurazioni da altri dispositivi.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 148
+        }
+      },
+      {
+        "comment": "",
+        "key": "Esporta Configurazioni",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 155
+        }
+      },
+      {
+        "comment": "",
+        "key": "Importa Configurazioni",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 161
+        }
+      },
+      {
+        "comment": "",
+        "key": "Chiudi",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 173
+        }
+      }
+    ]
+  },
+  "version": 1
+}

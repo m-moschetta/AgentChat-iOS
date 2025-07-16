@@ -1,0 +1,176 @@
+{
+  "source": "/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/APIKeyConfigView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Configura API Key",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 156
+        }
+      },
+      {
+        "comment": "",
+        "key": "Configurazione API Key",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 171
+        }
+      },
+      {
+        "comment": "",
+        "key": "Provider",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 75
+        }
+      },
+      {
+        "comment": "",
+        "key": "Connessione riuscita",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 114
+        }
+      },
+      {
+        "comment": "",
+        "key": "Test fallito",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 117
+        }
+      },
+      {
+        "comment": "",
+        "key": "Inserisci la tua API key",
+        "location": {
+          "startingColumn": 41,
+          "startingLine": 81
+        }
+      },
+      {
+        "comment": "",
+        "key": "Inserisci la tua API key",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 83
+        }
+      },
+      {
+        "comment": "",
+        "key": "Test in corso...",
+        "location": {
+          "startingColumn": 60,
+          "startingLine": 105
+        }
+      },
+      {
+        "comment": "",
+        "key": "Testa connessione",
+        "location": {
+          "startingColumn": 81,
+          "startingLine": 105
+        }
+      },
+      {
+        "comment": "",
+        "key": "API Key",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 125
+        }
+      },
+      {
+        "comment": "",
+        "key": "La tua API key verrà salvata in modo sicuro nel Keychain del dispositivo.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 128
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ottieni la tua API key da: platform.openai.com",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 131
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ottieni la tua API key da: console.anthropic.com",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 133
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ottieni la tua API key da: console.mistral.ai",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 135
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ottieni la tua API key da: perplexity.ai",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 137
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ottieni la tua API key da: console.x.ai",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 139
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ottieni la tua API key da: platform.deepseek.com",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 141
+        }
+      },
+      {
+        "comment": "",
+        "key": "Rimuovi API Key",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 150
+        }
+      },
+      {
+        "comment": "",
+        "key": "Annulla",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 159
+        }
+      },
+      {
+        "comment": "",
+        "key": "Salva",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 165
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 172
+        }
+      }
+    ]
+  },
+  "version": 1
+}

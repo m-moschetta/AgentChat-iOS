@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Foundation
 
 // MARK: - API Key Config View
 struct APIKeyConfigView: View {
