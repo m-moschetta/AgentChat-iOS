@@ -96,14 +96,14 @@ struct CollaborativeMessage {
     }
 }
 
-struct TaskContext {
+struct TaskContext: Codable {
     let taskId: UUID
     let taskType: TaskType
-    let parameters: [String: Any]
+    let parameters: [String: String]
     let deadline: Date?
 }
 
-enum TaskType: String, CaseIterable {
+enum TaskType: String, Codable, CaseIterable {
     case research = "research"
     case analysis = "analysis"
     case generation = "generation"
@@ -148,7 +148,7 @@ class BaseAgentService: AgentServiceProtocol {
         throw AgentServiceError.notImplemented
     }
     
-    func validateConfiguration() async throws -> Bool {
+    func validateConfiguration() async throws {
         guard let config = agentConfiguration else {
             throw AgentServiceError.missingConfiguration
         }
@@ -158,7 +158,7 @@ class BaseAgentService: AgentServiceProtocol {
             throw AgentServiceError.invalidConfiguration("Agent name cannot be empty")
         }
         
-        return true
+
     }
     
     // MARK: - AgentServiceProtocol Implementation

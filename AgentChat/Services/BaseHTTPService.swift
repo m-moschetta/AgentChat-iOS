@@ -60,14 +60,14 @@ struct RequestParameters {
     let stream: Bool?
     
     // Provider-specific parameters
-    let customParameters: [String: Any]
+    let customParameters: [String: String]
     
     init(
         temperature: Double? = nil,
         maxTokens: Int? = nil,
         topP: Double? = nil,
         stream: Bool? = false,
-        customParameters: [String: Any] = [:]
+        customParameters: [String: String] = [:]
     ) {
         self.temperature = temperature
         self.maxTokens = maxTokens
@@ -146,11 +146,11 @@ class BaseHTTPService: ChatServiceProtocol {
         return response.content
     }
     
-    func validateConfiguration() async throws -> Bool {
+    func validateConfiguration() async throws {
         guard KeychainService.shared.hasAPIKey(for: getKeychainKey()) else {
             throw ChatServiceError.missingAPIKey(providerName)
         }
-        return true
+
     }
     
     // MARK: - Protected Methods (to be overridden)

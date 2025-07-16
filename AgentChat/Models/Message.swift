@@ -8,7 +8,10 @@
 import Foundation
 
 // MARK: - Message
-struct Message: Identifiable, Equatable, Codable {
+struct Message: Identifiable, Equatable, Codable, Comparable {
+    static func < (lhs: Message, rhs: Message) -> Bool {
+        return lhs.timestamp < rhs.timestamp
+    }
     let id: UUID
     let content: String
     let isUser: Bool
@@ -19,5 +22,12 @@ struct Message: Identifiable, Equatable, Codable {
         self.content = content
         self.isUser = isUser
         self.timestamp = timestamp
+    }
+
+    init(from entity: MessageEntity) {
+        self.id = entity.id ?? UUID()
+        self.content = entity.content ?? ""
+        self.isUser = entity.isUser
+        self.timestamp = entity.timestamp ?? Date()
     }
 }

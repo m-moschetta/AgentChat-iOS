@@ -284,7 +284,7 @@ class CustomAgentService: BaseAgentService {
         return response.content
     }
     
-    override func validateConfiguration() async throws -> Bool {
+    override func validateConfiguration() async throws {
         guard !customConfig.baseURL.isEmpty else {
             throw AgentServiceError.invalidConfiguration("Custom provider base URL is required")
         }
@@ -293,7 +293,7 @@ class CustomAgentService: BaseAgentService {
             throw AgentServiceError.invalidConfiguration("Custom provider must support at least one model")
         }
         
-        return try await super.validateConfiguration()
+        try await super.validateConfiguration()
     }
     
     // MARK: - Custom provider methods

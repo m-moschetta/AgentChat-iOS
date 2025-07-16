@@ -21,6 +21,14 @@ extension ChatEntity {
     @NSManaged public var n8nWorkflowJSON: String?
     @NSManaged public var agentConfigurationJSON: String?
     @NSManaged public var messages: NSSet?
+    
+    // Proprietà aggiunte per completare il mapping
+    @NSManaged public var chatTypeString: String?
+    @NSManaged public var title: String?
+    @NSManaged public var isMemoryEnabled: Bool
+    @NSManaged public var createdAt: Date?
+    @NSManaged public var lastActivity: Date?
+    @NSManaged public var groupTemplateJSON: String?
 
 }
 

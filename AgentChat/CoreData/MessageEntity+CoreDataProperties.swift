@@ -15,7 +15,7 @@ extension MessageEntity {
     }
 
     @NSManaged public var id: UUID?
-    @NSManaged public var roleString: String?
+    @NSManaged public var isUser: Bool
     @NSManaged public var content: String?
     @NSManaged public var timestamp: Date?
     @NSManaged public var isAwaitingResponse: Bool

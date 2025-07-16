@@ -36,10 +36,9 @@ class CustomService: ChatServiceProtocol {
         return try await sendCustomMessage(message: message, model: model)
     }
     
-    func validateConfiguration() async throws -> Bool {
+    func validateConfiguration() async throws {
         // Per i provider personalizzati, verifichiamo se ci sono configurazioni base
         // In futuro questo potrebbe includere verifiche più specifiche
-        return true
     }
     
     // MARK: - Private Methods

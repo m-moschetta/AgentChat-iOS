@@ -9,9 +9,9 @@ import SwiftUI
 
 // MARK: - Model Selector View
 struct ModelSelectorView: View {
-    @ObservedObject var chat: Chat
+    @Binding var chat: Chat
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var config = LocalAssistantConfiguration()
+
     
     private var availableModels: [String] {
         guard let provider = chat.provider else { return [] }
@@ -238,12 +238,16 @@ struct ModelRow: View {
 }
 
 // MARK: - Preview
-#Preview {
-    let sampleChat = Chat(
-        agentType: .openAI,
-        provider: AssistantProvider.defaultProviders.first(where: { $0.type == .openai }),
-        selectedModel: "gpt-4o"
-    )
-    
-    ModelSelectorView(chat: sampleChat)
+struct ModelSelectorView_Previews: PreviewProvider {
+    static var previews: some View {
+        // Create a sample chat that is mutable
+        @State var sampleChat = Chat(
+            agentType: .openAI,
+            provider: AssistantProvider.defaultProviders.first(where: { $0.type == .openai }),
+            selectedModel: "gpt-4o"
+        )
+
+        // Pass the binding to the ModelSelectorView
+        ModelSelectorView(chat: $sampleChat)
+    }
 }

@@ -56,9 +56,9 @@ class HybridMultiAgentService: ChatServiceProtocol {
         return response
     }
     
-    func validateConfiguration() async throws -> Bool {
+    func validateConfiguration() async throws {
         // Il servizio ibrido è sempre disponibile (core locale + fallback)
-        return true
+        // La validazione ha successo se non vengono lanciate eccezioni.
     }
     
     // MARK: - Private Methods

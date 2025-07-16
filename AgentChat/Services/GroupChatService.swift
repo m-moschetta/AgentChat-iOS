@@ -48,9 +48,8 @@ class GroupChatService: ChatServiceProtocol {
         return try await startGroupConversation(group: group, initialMessage: message)
     }
     
-    func validateConfiguration() async throws -> Bool {
+    func validateConfiguration() async throws {
         // Il servizio di gruppo è sempre disponibile
-        return true
     }
     
     // MARK: - Group Management

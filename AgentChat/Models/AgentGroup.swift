@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 // MARK: - AgentGroup
-class AgentGroup: ObservableObject, Identifiable {
+class AgentGroup: ObservableObject, Identifiable, Codable {
     let id = UUID()
     let name: String
     let description: String
@@ -29,6 +29,34 @@ class AgentGroup: ObservableObject, Identifiable {
         self.icon = icon
         self.participants = participants
         self.agentType = agentType
+    }
+    
+    // MARK: - Codable Implementation
+    private enum CodingKeys: String, CodingKey {
+        case name, description, icon, participants, agentType
+        // id, messages, isActive, currentSpeaker are excluded from coding
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.description = try container.decode(String.self, forKey: .description)
+        self.icon = try container.decode(String.self, forKey: .icon)
+        self.participants = try container.decode([GroupAgent].self, forKey: .participants)
+        self.agentType = try container.decode(AgentType.self, forKey: .agentType)
+        // Published properties are initialized with default values
+        self.messages = []
+        self.isActive = false
+        self.currentSpeaker = nil
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        try container.encode(description, forKey: .description)
+        try container.encode(icon, forKey: .icon)
+        try container.encode(participants, forKey: .participants)
+        try container.encode(agentType, forKey: .agentType)
     }
     
     // MARK: - Conversation Management

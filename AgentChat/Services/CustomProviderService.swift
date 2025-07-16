@@ -29,9 +29,9 @@ class CustomProviderService: ChatServiceProtocol {
         return try await sendMessage(message: message, provider: defaultProvider, model: model ?? "custom-model")
     }
     
-    func validateConfiguration() async throws -> Bool {
+    func validateConfiguration() async throws {
         // Basic validation - should be improved based on actual requirements
-        return true
+
     }
     
     private func getDefaultCustomProvider() -> AssistantProvider? {

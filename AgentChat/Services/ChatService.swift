@@ -25,9 +25,15 @@ class ChatManager: ObservableObject {
     private let agentOrchestrator = AgentOrchestrator.shared
     
         private init() {
-        // Carica le chat salvate
+        // Carica le chat salvate (RIMOSSA clearAllData() che cancellava tutto)
         chats = CoreDataPersistenceManager.shared.loadChats()
     }
+    
+    /// Cancella tutti i dati (solo per debug o reset manuale)
+    //    func clearAllData() {
+//        CoreDataPersistenceManager.shared.clearAllData()
+//        chats = []
+//    }
     
     /// Crea una nuova chat basata su un provider e un modello specifici.
     func createNewChat(with provider: AssistantProvider, model: String?, workflow: N8NWorkflow? = nil) {
@@ -65,7 +71,7 @@ class ChatManager: ObservableObject {
     
     /// Crea una nuova chat basata su una configurazione di agente personalizzata.
     func createNewChat(with agentConfiguration: AgentConfiguration) {
-        let newChat = Chat(agentConfiguration: agentConfiguration)
+        let newChat = Chat(agentType: agentConfiguration.agentType, agentConfiguration: agentConfiguration)
         chats.append(newChat)
         CoreDataPersistenceManager.shared.saveOrUpdateChat(chat: newChat)
     }
@@ -93,12 +99,27 @@ class ChatManager: ObservableObject {
 
     /// Aggiunge un nuovo messaggio a una chat esistente.
     func addMessage(to chat: Chat, message: Message) {
-        // Use the chat model's logic to append the message and update metadata
-        chat.addMessage(message)
-
-        if chats.firstIndex(where: { $0.id == chat.id }) != nil {
-            CoreDataPersistenceManager.shared.saveOrUpdateChat(chat: chat)
+        guard let index = chats.firstIndex(where: { $0.id == chat.id }) else {
+            print("--- ERRORE FATALE in addMessage: Chat con ID \(chat.id) non trovata nell'array 'chats'. ---")
+            return
         }
+
+        print("--- Inizio addMessage (logica semplificata) per chat ID: \(chat.id) ---")
+        print("Messaggio da aggiungere: \(message.content) (Role: \(message.isUser ? "user" : "assistant"))")
+        print("Numero messaggi prima dell'aggiunta: \(chats[index].messages.count)")
+
+        // Modifica diretta dell'oggetto nell'array.
+        // Poiché Chat è uno struct, la modifica crea una nuova copia che viene riassegnata all'indice.
+        chats[index].messages.append(message)
+        chats[index].updateLastActivity()
+
+        print("Numero messaggi dopo l'aggiunta: \(chats[index].messages.count)")
+        print("Chiamata a saveOrUpdateChat con la chat aggiornata.")
+
+        // Passa la chat aggiornata (che è una copia dello struct) per il salvataggio.
+        CoreDataPersistenceManager.shared.saveOrUpdateChat(chat: chats[index])
+        
+        print("--- Fine addMessage per chat ID: \(chat.id) ---")
     }
 
     // MARK: - Import/Export

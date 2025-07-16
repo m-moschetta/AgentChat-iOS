@@ -9,7 +9,7 @@ import SwiftUI
 
 // MARK: - ChatDetailView
 struct ChatDetailView: View {
-    @ObservedObject var chat: Chat
+    @State var chat: Chat
     @Environment(\.dismiss) private var dismiss
     @State private var inputText = ""
     @State private var textEditorHeight: CGFloat = 30
@@ -20,10 +20,14 @@ struct ChatDetailView: View {
     @State private var showModelSelector = false
     @State private var showAgentConfig = false
     @State private var workflowParameters: [String: String] = [:]
+
+    public init(chat: Chat) {
+        self._chat = State(initialValue: chat)
+    }
     
-    @StateObject private var agentConfigManager = AgentConfigurationManager.shared
-    @StateObject private var memoryManager = AgentMemoryManager.shared
-    @StateObject private var chatManager = ChatManager.shared
+    private var agentConfigManager = AgentConfigurationManager.shared
+    private var memoryManager = AgentMemoryManager.shared
+    private var chatManager = ChatManager.shared
     
     var body: some View {
         chatContent
@@ -71,7 +75,7 @@ struct ChatDetailView: View {
                 )
             }
             .sheet(isPresented: $showModelSelector) {
-                ModelSelectorView(chat: chat)
+                ModelSelectorView(chat: $chat)
             }
             .sheet(isPresented: $showAgentConfig) {
                 if let agentConfig = chat.agentConfiguration {
@@ -609,11 +613,11 @@ struct WorkflowParameterSheet: View {
 // MARK: - Preview
 #Preview {
     let sampleChat = Chat(
-        agentType: .openAI,
         messages: [
             Message(content: "Ciao!", isUser: true),
             Message(content: "Ciao! Come posso aiutarti oggi?", isUser: false)
-        ]
+        ],
+        agentType: .openAI
     )
     
     NavigationView {

@@ -6,12 +6,20 @@
 //
 
 import SwiftUI
+import CoreData
 
 @main
 struct AgentChatApp: App {
+    @Environment(\.scenePhase) private var scenePhase
+    let persistenceController = CoreDataPersistenceManager.shared
+
     var body: some Scene {
         WindowGroup {
-            ChatListView()
+            MainTabView()
+                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+        }
+        .onChange(of: scenePhase) { _ in
+            persistenceController.saveContext()
         }
     }
 }

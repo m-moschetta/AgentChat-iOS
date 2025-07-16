@@ -39,7 +39,7 @@ class N8NService: ChatServiceProtocol {
         return try await sendMessageToN8N(message: message, workflow: workflow)
     }
     
-    func validateConfiguration() async throws -> Bool {
+    func validateConfiguration() async throws {
         let activeWorkflows = N8NWorkflowManager.shared.getActiveWorkflows()
         guard !activeWorkflows.isEmpty else {
             throw ChatServiceError.missingAPIKey("No active n8n workflows configured")
@@ -54,7 +54,7 @@ class N8NService: ChatServiceProtocol {
             }
         }
         
-        return true
+
     }
     
     private func sendMessageToN8N(message: String, workflow: N8NWorkflow) async throws -> String {

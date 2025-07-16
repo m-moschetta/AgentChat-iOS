@@ -176,7 +176,11 @@ class OpenAIAgentService: BaseAgentService {
         if let agentId = agentConfiguration?.id {
             var context = ConversationContext(chatId: UUID(), agentId: agentId)
             context.messages.append(ContextMessage(role: "assistant", content: response.content, metadata: ["model": response.model ?? "unknown"]))
-            try await saveConversationContext(context)
+            do {
+                try await saveConversationContext(context)
+            } catch {
+                print("Failed to save conversation context: \(error.localizedDescription)")
+            }
         }
         
         return response.content

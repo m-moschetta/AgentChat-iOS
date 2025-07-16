@@ -156,15 +156,16 @@ class N8NAgentService: BaseAgentService {
         return result
     }
     
-    override func validateConfiguration() async throws -> Bool {
+    override func validateConfiguration() async throws {
         guard !baseURL.isEmpty else {
             throw AgentServiceError.invalidConfiguration("N8N base URL is required")
         }
         
         // Test connection to N8N
         // This would be implemented with actual N8N API call
-        return try await super.validateConfiguration()
+        try await super.validateConfiguration()
     }
+
     
     // MARK: - N8N-specific methods
     func executeWorkflow(
