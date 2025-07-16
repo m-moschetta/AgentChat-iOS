@@ -69,6 +69,18 @@ class ChatManager: ObservableObject {
         chats.append(newChat)
         CoreDataPersistenceManager.shared.saveOrUpdateChat(chat: newChat)
     }
+
+    /// Crea una nuova chat di gruppo a partire da un template di gruppo di agenti.
+    func createNewGroupChat(from template: AgentGroupTemplate) {
+        let newChat = Chat(
+            agentType: .group,
+            chatType: .group,
+            title: template.name,
+            groupTemplate: template
+        )
+        chats.append(newChat)
+        CoreDataPersistenceManager.shared.saveOrUpdateChat(chat: newChat)
+    }
     
     /// Elimina una o più chat in base ai loro indici.
     func deleteChat(at offsets: IndexSet) {

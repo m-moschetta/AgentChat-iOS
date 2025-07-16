@@ -272,25 +272,14 @@ struct ChatListView: View {
     }
     
     func createNewChatWithAgent(_ agentConfig: AgentConfiguration) {
-        let newChat = Chat(
-            agentConfiguration: agentConfig,
-            chatType: .single,
-            title: agentConfig.name
-        )
-        chatService.chats.append(newChat)
-        selectedChat = newChat
+        chatService.createNewChat(with: agentConfig)
+        selectedChat = chatService.chats.last
         activeGroupChat = nil
     }
-    
+
     func createGroupChat(from template: AgentGroupTemplate) {
-        let newChat = Chat(
-            agentType: .group,
-            chatType: .group,
-            title: template.name,
-            groupTemplate: template
-        )
-        chatService.chats.append(newChat)
-        selectedChat = newChat
+        chatService.createNewGroupChat(from: template)
+        selectedChat = chatService.chats.last
         activeGroupChat = nil
     }
     
