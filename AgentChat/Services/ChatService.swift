@@ -25,8 +25,7 @@ class ChatManager: ObservableObject {
     private let agentOrchestrator = AgentOrchestrator.shared
     
         private init() {
-        // Pulisce tutti i dati esistenti e carica le chat salvate
-        CoreDataPersistenceManager.shared.clearAllData()
+        // Carica le chat salvate
         chats = CoreDataPersistenceManager.shared.loadChats()
     }
     
