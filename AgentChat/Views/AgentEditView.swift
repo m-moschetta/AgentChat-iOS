@@ -79,42 +79,44 @@ struct AgentEditView: View {
     }
     
     var body: some View {
-        NavigationView {
-            Form {
-                basicInfoSection
-                systemPromptSection
-                technicalConfigSection
-                featuresSection
-                validationSection
-            }
-            .navigationTitle(isEditing ? "Modifica Agente" : "Nuovo Agente")
-            .toolbar {
-                ToolbarItemGroup(placement: .cancellationAction) {
-                    Button("Annulla") {
-                        dismiss()
-                    }
-                }
-                
-                ToolbarItemGroup(placement: .confirmationAction) {
-                    Button(isEditing ? "Salva" : "Crea") {
-                        saveAgent()
-                    }
-                    .disabled(!isValid)
-                }
-            }
-            .sheet(isPresented: $showingIconPicker) {
-                AgentIconPickerView(selectedIcon: $icon)
-            }
-            .sheet(isPresented: $showingProviderPicker) {
-                ProviderPickerView(selectedProvider: $preferredProvider)
-            }
-            .sheet(isPresented: $showingPreview) {
-                PromptPreviewView(systemPrompt: systemPrompt, agentName: name)
-            }
-            .onChange(of: name) { validateForm() }
-            .onChange(of: systemPrompt) { validateForm() }
-            .onChange(of: role) { validateForm() }
+        Form {
+            basicInfoSection
+            systemPromptSection
+            technicalConfigSection
+            featuresSection
+            validationSection
         }
+        .navigationTitle(isEditing ? "Modifica Agente" : "Nuovo Agente")
+        .safeAreaInset(edge: .bottom) {
+            HStack {
+                Button("Annulla") {
+                    dismiss()
+                }
+                .buttonStyle(.bordered)
+                
+                Spacer()
+                
+                Button(isEditing ? "Salva" : "Crea") {
+                    saveAgent()
+                }
+                .disabled(name.isEmpty || preferredProvider.isEmpty)
+                .buttonStyle(.borderedProminent)
+            }
+            .padding()
+            .background(Color(.systemBackground))
+        }
+        .sheet(isPresented: $showingIconPicker) {
+            AgentIconPickerView(selectedIcon: $icon)
+        }
+        .sheet(isPresented: $showingProviderPicker) {
+            ProviderPickerView(selectedProvider: $preferredProvider)
+        }
+        .sheet(isPresented: $showingPreview) {
+            PromptPreviewView(systemPrompt: systemPrompt, agentName: name)
+        }
+        .onChange(of: name) { _ in validateForm() }
+        .onChange(of: systemPrompt) { _ in validateForm() }
+        .onChange(of: role) { _ in validateForm() }
         .onAppear {
             validateForm()
         }
@@ -357,13 +359,6 @@ struct AgentIconPickerView: View {
             }
             .padding()
             .navigationTitle("Scegli Icona")
-            .toolbar {
-                ToolbarItemGroup(placement: .cancellationAction) {
-                    Button("Chiudi") {
-                        dismiss()
-                    }
-                }
-            }
         }
     }
 }
@@ -413,13 +408,6 @@ struct ProviderPickerView: View {
                 }
             }
             .navigationTitle("Scegli Provider")
-            .toolbar {
-                ToolbarItemGroup(placement: .cancellationAction) {
-                    Button("Chiudi") {
-                        dismiss()
-                    }
-                }
-            }
         }
     }
 }
@@ -453,13 +441,6 @@ struct PromptPreviewView: View {
                 .padding()
             }
             .navigationTitle("Anteprima")
-            .toolbar {
-                ToolbarItemGroup(placement: .cancellationAction) {
-                    Button("Chiudi") {
-                        dismiss()
-                    }
-                }
-            }
         }
     }
 }

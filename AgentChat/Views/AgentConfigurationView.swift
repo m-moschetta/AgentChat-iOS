@@ -38,7 +38,7 @@ struct AgentConfigurationView: View {
                 List {
                     ForEach(filteredAgents) { agent in
                         NavigationLink(destination: AgentEditView(agent: agent)) {
-                            AgentRow(agent: agent, isSelected: false, action: {})
+                            AgentRow(agent: agent, isSelected: false, onTap: {})
                         }
                     }
                     .onDelete(perform: deleteAgents)
@@ -46,7 +46,7 @@ struct AgentConfigurationView: View {
                 .searchable(text: $searchText, prompt: "Cerca agenti...")
             }
             .navigationTitle("Configurazione Agenti")
-            .toolbar {
+            .toolbar(content: {
                 ToolbarItem(placement: .navigation) {
                     Menu {
                         Button("Importa/Esporta") {
@@ -66,12 +66,12 @@ struct AgentConfigurationView: View {
                         showingAddAgent = true
                     }
                 }
-            }
+            })
             .sheet(isPresented: $showingAddAgent) {
                 AgentEditView(agent: nil)
             }
             .sheet(isPresented: $showingImportExport) {
-                ImportExportView()
+                AgentImportExportView()
             }
         }
     }
@@ -129,8 +129,8 @@ struct StatCard: View {
     }
 }
 
-// MARK: - Import Export View
-struct ImportExportView: View {
+// MARK: - Agent Import Export View
+struct AgentImportExportView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var configManager = AgentConfigurationManager.shared
     @State private var showingDocumentPicker = false
@@ -185,7 +185,7 @@ struct ImportExportView: View {
         }
         .sheet(isPresented: $showingShareSheet) {
             if let data = exportData {
-                ShareSheet(items: [data])
+                ShareSheet(activityItems: [data])
             }
         }
     }
@@ -217,37 +217,7 @@ struct ImportExportView: View {
     }
 }
 
-// MARK: - Share Sheet (macOS compatible)
-#if os(macOS)
-struct ShareSheet: NSViewControllerRepresentable {
-    let items: [Any]
-    
-    func makeNSViewController(context: Context) -> NSViewController {
-        let viewController = NSViewController()
-        viewController.view = NSView()
-        
-        DispatchQueue.main.async {
-            let picker = NSSharingServicePicker(items: items)
-            picker.show(relativeTo: .zero, of: viewController.view, preferredEdge: .minY)
-        }
-        
-        return viewController
-    }
-    
-    func updateNSViewController(_ nsViewController: NSViewController, context: Context) {}
-}
-#else
-struct ShareSheet: UIViewControllerRepresentable {
-    let items: [Any]
-    
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        let controller = UIActivityViewController(activityItems: items, applicationActivities: nil)
-        return controller
-    }
-    
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
-}
-#endif
+// ShareSheet is defined in SettingsView.swift
 
 // MARK: - Preview
 struct AgentConfigurationView_Previews: PreviewProvider {

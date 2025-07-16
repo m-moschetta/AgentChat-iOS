@@ -32,41 +32,47 @@ struct AddAgentView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section("Informazioni Base") {
-                    TextField("Nome agente", text: $name)
+        NavigationView {
+            VStack {
+                Form {
+                    Section(header: Text("Informazioni Base")) {
+                        TextField("Nome agente", text: $name)
 
-                    Picker("Provider", selection: $selectedProvider) {
-                        ForEach(configuration.availableProviders) { provider in
-                            Text(provider.name).tag(Optional(provider))
+                        Picker("Provider", selection: $selectedProvider) {
+                            ForEach(configuration.availableProviders) { provider in
+                                Text(provider.name).tag(Optional(provider))
+                            }
                         }
                     }
-                }
 
-                Section("Prompt") {
-                    TextField("System Prompt", text: $systemPrompt, axis: .vertical)
-                        .lineLimit(3...6)
-                }
+                    Section(header: Text("Prompt")) {
+                        TextField("System Prompt", text: $systemPrompt)
+                    }
 
-                Section("Avatar") {
-                    TextField("Emoji o SF Symbol", text: $avatar)
-                }
+                    Section(header: Text("Avatar")) {
+                        TextField("Emoji o SF Symbol", text: $avatar)
+                    }
 
-                Section("Stato") {
-                    Toggle("Agente attivo", isOn: $isActive)
+                    Section(header: Text("Stato")) {
+                        Toggle("Agente attivo", isOn: $isActive)
+                    }
                 }
+                
+                HStack {
+                    Button("Annulla") { 
+                        dismiss() 
+                    }
+                    
+                    Spacer()
+                    
+                    Button("Salva") { 
+                        saveAgent() 
+                    }
+                    .disabled(!isFormValid)
+                }
+                .padding()
             }
             .navigationTitle(agent == nil ? "Nuovo Agente" : "Modifica Agente")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Annulla") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Salva") { saveAgent() }
-                        .disabled(!isFormValid)
-                }
-            }
         }
     }
 

@@ -50,6 +50,14 @@ class AgentManager: ObservableObject {
         agents.removeAll()
         UserDefaults.standard.removeObject(forKey: userDefaultsKey)
     }
+    
+    func resetToDefaults() {
+        reset()
+    }
+    
+    func removeAgent(_ agent: Agent) {
+        removeAgent(id: agent.id)
+    }
 
     // MARK: - Persistence
     private func loadAgents() {

@@ -43,6 +43,9 @@ struct APIKeyConfigView: View {
         case .grok:
             // Grok keys are typically long alphanumeric strings
             return key.count >= 20 && key.allSatisfy { $0.isLetter || $0.isNumber || $0 == "-" || $0 == "_" }
+        case .deepSeek:
+            // DeepSeek keys are typically long alphanumeric strings
+            return key.count >= 20 && key.allSatisfy { $0.isLetter || $0.isNumber || $0 == "-" || $0 == "_" }
         case .n8n, .custom:
             // For N8N and custom providers, accept any non-empty string
             return !key.isEmpty
@@ -133,6 +136,8 @@ struct APIKeyConfigView: View {
                             Text("Ottieni la tua API key da: perplexity.ai")
                         } else if provider.type == .grok {
                             Text("Ottieni la tua API key da: console.x.ai")
+                        } else if provider.type == .deepSeek {
+                            Text("Ottieni la tua API key da: platform.deepseek.com")
                         }
                     }
                     .font(.caption)
@@ -290,6 +295,8 @@ struct APIKeyConfigView: View {
             agentType = .custom
         case .grok:
              agentType = .grok
+        case .deepSeek:
+             agentType = .deepSeek
         }
         
         // Test the connection

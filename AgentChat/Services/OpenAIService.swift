@@ -10,12 +10,11 @@ import Foundation
 class OpenAIService: BaseHTTPService {
     
     // MARK: - Initialization
-    init(session: URLSession = .shared) {
+    init() {
         super.init(
             configuration: .openAI,
             requestTransformer: OpenAIRequestTransformer(),
-            responseParser: OpenAIResponseParser(),
-            session: session
+            responseParser: OpenAIResponseParser()
         )
     }
     

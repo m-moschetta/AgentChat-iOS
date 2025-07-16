@@ -24,7 +24,7 @@ enum ChatType: String, Codable, CaseIterable {
 // MARK: - Chat
 class Chat: Identifiable, ObservableObject, Hashable, Codable {
     let id: UUID
-    @Published var messages: [Message]
+    @Published var messages: [Message] = []
     let agentType: AgentType
     let provider: AssistantProvider?
     @Published var selectedModel: String?
@@ -32,11 +32,11 @@ class Chat: Identifiable, ObservableObject, Hashable, Codable {
     
     // Nuove proprietà per agenti configurabili
     @Published var agentConfiguration: AgentConfiguration?
-    @Published var chatType: ChatType
-    @Published var title: String
-    @Published var isMemoryEnabled: Bool
+    @Published var chatType: ChatType = .single
+    @Published var title: String = ""
+    @Published var isMemoryEnabled: Bool = true
     let createdAt: Date
-    @Published var lastActivity: Date
+    @Published var lastActivity: Date = Date()
     
     // Proprietà per chat di gruppo
     var groupTemplate: AgentGroupTemplate?
@@ -193,16 +193,40 @@ class Chat: Identifiable, ObservableObject, Hashable, Codable {
         case provider
         case selectedModel
         case n8nWorkflow
+        case agentConfiguration
+        case chatType
+        case title
+        case isMemoryEnabled
+        case createdAt
+        case lastActivity
+        case groupTemplate
     }
 
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
-        messages = try container.decode([Message].self, forKey: .messages)
         agentType = try container.decode(AgentType.self, forKey: .agentType)
         provider = try container.decodeIfPresent(AssistantProvider.self, forKey: .provider)
-        selectedModel = try container.decodeIfPresent(String.self, forKey: .selectedModel)
         n8nWorkflow = try container.decodeIfPresent(N8NWorkflow.self, forKey: .n8nWorkflow)
+        createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? Date()
+        groupTemplate = try container.decodeIfPresent(AgentGroupTemplate.self, forKey: .groupTemplate)
+        
+        // Inizializza le proprietà @Published direttamente con i valori decodificati
+        let decodedMessages = try container.decode([Message].self, forKey: .messages)
+        let decodedSelectedModel = try container.decodeIfPresent(String.self, forKey: .selectedModel)
+        let decodedAgentConfiguration = try container.decodeIfPresent(AgentConfiguration.self, forKey: .agentConfiguration)
+        let decodedChatType = try container.decodeIfPresent(ChatType.self, forKey: .chatType) ?? .single
+        let decodedTitle = try container.decodeIfPresent(String.self, forKey: .title) ?? agentType.displayName
+        let decodedIsMemoryEnabled = try container.decodeIfPresent(Bool.self, forKey: .isMemoryEnabled) ?? true
+        let decodedLastActivity = try container.decodeIfPresent(Date.self, forKey: .lastActivity) ?? Date()
+        
+        self._messages = Published(initialValue: decodedMessages)
+        self._selectedModel = Published(initialValue: decodedSelectedModel)
+        self._agentConfiguration = Published(initialValue: decodedAgentConfiguration)
+        self._chatType = Published(initialValue: decodedChatType)
+        self._title = Published(initialValue: decodedTitle)
+        self._isMemoryEnabled = Published(initialValue: decodedIsMemoryEnabled)
+        self._lastActivity = Published(initialValue: decodedLastActivity)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -213,5 +237,12 @@ class Chat: Identifiable, ObservableObject, Hashable, Codable {
         try container.encodeIfPresent(provider, forKey: .provider)
         try container.encodeIfPresent(selectedModel, forKey: .selectedModel)
         try container.encodeIfPresent(n8nWorkflow, forKey: .n8nWorkflow)
+        try container.encodeIfPresent(agentConfiguration, forKey: .agentConfiguration)
+        try container.encode(chatType, forKey: .chatType)
+        try container.encode(title, forKey: .title)
+        try container.encode(isMemoryEnabled, forKey: .isMemoryEnabled)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(lastActivity, forKey: .lastActivity)
+        try container.encodeIfPresent(groupTemplate, forKey: .groupTemplate)
     }
 }

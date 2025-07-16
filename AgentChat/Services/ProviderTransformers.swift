@@ -11,45 +11,7 @@ import Foundation
 // Nota: ChatServiceError è definito in Models/ChatServiceError.swift
 
 // MARK: - OpenAI Transformer
-struct OpenAIRequestTransformer: RequestTransformer {
-    func transform(_ request: UnifiedChatRequest) throws -> Data {
-        let openAIRequest = OpenAIRequest(
-            model: request.model,
-            messages: request.messages.compactMap { message in
-                guard !message.content.isEmpty else { return nil }
-                return OpenAIMessage(role: message.role, content: message.content)
-            },
-            maxTokens: request.parameters.maxTokens,
-            temperature: request.parameters.temperature,
-            stream: request.parameters.stream
-        )
-        
-        return try JSONEncoder().encode(openAIRequest)
-    }
-}
-
-struct OpenAIResponseParser: ResponseParser {
-    func parse(_ data: Data) throws -> UnifiedChatResponse {
-        let openAIResponse = try JSONDecoder().decode(OpenAIResponse.self, from: data)
-        
-        guard let choice = openAIResponse.choices.first,
-              !choice.message.content.isEmpty else {
-            throw ChatServiceError.invalidResponse
-        }
-        
-        let content = choice.message.content
-        
-        return UnifiedChatResponse(
-            content: content,
-            model: openAIResponse.model,
-            usage: TokenUsage(
-                promptTokens: openAIResponse.usage?.promptTokens ?? 0,
-                completionTokens: openAIResponse.usage?.completionTokens ?? 0,
-                totalTokens: openAIResponse.usage?.totalTokens ?? 0
-            )
-        )
-    }
-}
+// OpenAI transformers are defined in OpenAIAgentService.swift to avoid duplication
 
 // MARK: - Anthropic Transformer
 struct AnthropicRequestTransformer: RequestTransformer {

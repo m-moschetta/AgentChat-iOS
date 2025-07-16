@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - AgentGroupTemplate
-struct AgentGroupTemplate: Identifiable {
+struct AgentGroupTemplate: Identifiable, Codable {
     let id = UUID()
     let name: String
     let description: String

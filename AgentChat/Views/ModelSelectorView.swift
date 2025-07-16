@@ -129,9 +129,13 @@ struct ModelRow: View {
     private func modelDescription(for model: String) -> String {
         // Descrizioni dei modelli basate sul nome
         switch model.lowercased() {
-        // OpenAI - Modelli più recenti
+        // OpenAI - Modelli più recenti (Luglio 2025)
+        case let m where m.contains("o3-pro"):
+            return "Versione premium di o3 con pensiero esteso (2025)"
         case let m where m.contains("o3") && !m.contains("mini"):
             return "Modello di ragionamento più avanzato di OpenAI (2025)"
+        case let m where m.contains("o4-mini-high"):
+            return "Versione potenziata di o4-mini per compiti visivi (2025)"
         case let m where m.contains("o4-mini"):
             return "Modello di ragionamento veloce e ottimizzato (2025)"
         case let m where m.contains("gpt-4.1") && m.contains("nano"):
@@ -139,13 +143,19 @@ struct ModelRow: View {
         case let m where m.contains("gpt-4.1") && m.contains("mini"):
             return "Modello piccolo con prestazioni eccezionali"
         case let m where m.contains("gpt-4.1"):
-            return "Modello specializzato per coding e istruzioni precise (2025)"
+            return "Modello flagship per compiti complessi con coding avanzato (2025)"
+        case let m where m.contains("gpt-4.5"):
+            return "Modello sperimentale (deprecato dal 14 luglio 2025)"
+        case let m where m.contains("gpt-4o-mini"):
+            return "Versione più veloce ed economica di GPT-4o"
         case let m where m.contains("gpt-4o"):
-            return "Modello multimodale flagship di OpenAI"
-        case let m where m.contains("o1-mini"):
-            return "Modello di ragionamento veloce ed efficiente"
-        case let m where m.contains("o1"):
-            return "Modello di ragionamento per problemi complessi"
+            return "Modello multimodale avanzato (sostituisce GPT-4 Turbo)"
+        case let m where m.contains("gpt-3.5-turbo"):
+            return "Modello legacy (supportato fino a fine luglio 2025)"
+        case let m where m.contains("text-embedding"):
+            return "Modello per embedding semantici"
+        case let m where m.contains("gpt-image"):
+            return "Modello per generazione immagini"
             
         // Anthropic - Modelli più recenti
         case let m where m.contains("claude-opus-4"):
@@ -188,6 +198,38 @@ struct ModelRow: View {
             return "Modello Sonar ottimizzato per Perplexity (basato su Llama 3.3)"
         case let m where m.contains("sonar"):
             return "Modello veloce con capacità di ricerca web"
+        case let m where m.contains("r1-1776"):
+            return "Versione non censurata di DeepSeek R1"
+            
+        // Grok - Modelli più recenti (Luglio 2025)
+        case let m where m.contains("grok-4-heavy"):
+            return "Versione multi-agente per compiti complessi (2025)"
+        case let m where m.contains("grok-4"):
+            return "Modello flagship 'più intelligente al mondo' (2025)"
+        case let m where m.contains("grok-3"):
+            return "Modello precedente con ragionamento avanzato"
+        case let m where m.contains("grok-beta"):
+            return "Modello principale legacy"
+        case let m where m.contains("grok-vision-beta"):
+            return "Con capacità visive legacy"
+            
+        // DeepSeek - Modelli più recenti (Luglio 2025)
+        case let m where m.contains("deepseek-r1-0528"):
+            return "Versione aggiornata con migliori capacità di ragionamento (2025)"
+        case let m where m.contains("deepseek-r1-distill-70b"):
+            return "Versione distillata 70B del modello R1"
+        case let m where m.contains("deepseek-r1-distill-32b"):
+            return "Versione distillata 32B del modello R1"
+        case let m where m.contains("deepseek-r1"):
+            return "Modello di ragionamento originale"
+        case let m where m.contains("deepseek-v3-0324"):
+            return "Versione aggiornata con prestazioni migliorate (2025)"
+        case let m where m.contains("deepseek-v3"):
+            return "Modello base con 671B parametri"
+        case let m where m.contains("deepseek-coder-v2"):
+            return "Specializzato per coding avanzato"
+        case let m where m.contains("deepseek-math"):
+            return "Specializzato per matematica"
             
         default:
             return "Modello AI avanzato"

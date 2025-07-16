@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Foundation
-import UIKit
 
 // MARK: - ChatListView
 struct ChatListView: View {
@@ -246,7 +245,7 @@ struct ChatListView: View {
                 )
             }
         .sheet(isPresented: $showingSettings) {
-            SettingsView(workflowManager: workflowManager, chatManager: chatService)
+            SettingsView()
         }
         .sheet(isPresented: $showingAgentConfig) {
             AgentConfigurationView()
@@ -317,6 +316,8 @@ struct ChatListView: View {
             return "magnifyingglass.circle"
         case .grok:
             return "bolt.circle"
+        case .deepSeek:
+            return "brain.head.profile"
         case .n8n:
             return "gear.badge"
         case .custom:
@@ -348,6 +349,8 @@ struct ChatListView: View {
             return "Perplexity"
         case .grok:
             return "Grok"
+        case .deepSeek:
+            return "DeepSeek"
         case .n8n:
             return "n8n"
         case .custom:

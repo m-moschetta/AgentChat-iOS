@@ -10,12 +10,11 @@ import Foundation
 class MistralService: BaseHTTPService {
     
     // MARK: - Initialization
-    init(session: URLSession = .shared) {
+    init() {
         super.init(
             configuration: ProviderConfiguration.mistral,
             requestTransformer: MistralRequestTransformer(),
-            responseParser: MistralResponseParser(),
-            session: session
+            responseParser: MistralResponseParser()
         )
     }
     

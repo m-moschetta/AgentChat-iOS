@@ -125,7 +125,7 @@ class N8NService: ChatServiceProtocol {
             return .networkError(underlyingError)
         case .serverError(let message):
             return .serverError(message)
-        case .missingRequiredParameter(let param):
+        case .missingRequiredParameter(_):
             return .invalidConfiguration
         }
     }
@@ -274,6 +274,7 @@ class N8NService: ChatServiceProtocol {
                 throw N8NError.missingRequiredParameter(parameter.name)
             }
         }
+
     }
     
     // MARK: - Legacy Support Methods

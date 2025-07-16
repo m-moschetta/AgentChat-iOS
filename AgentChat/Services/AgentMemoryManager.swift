@@ -122,6 +122,7 @@ class AgentMemoryManager: ObservableObject {
     private let memoriesKey = "agent_memories"
     private let maxMemoriesPerAgent = 1000
     private let maxContextEntries = 20
+    private let memoryQueue = DispatchQueue(label: "com.agentchat.memory", qos: .utility)
     
     private init() {
         loadMemories()
@@ -150,52 +151,60 @@ class AgentMemoryManager: ObservableObject {
             metadata: metadata
         )
         
-        if memories[agentId] == nil {
-            memories[agentId] = []
+        memoryQueue.async { [weak self] in
+            guard let self = self else { return }
+            
+            if self.memories[agentId] == nil {
+                self.memories[agentId] = []
+            }
+            
+            self.memories[agentId]?.append(entry)
+            
+            // Mantieni solo le memorie più recenti e importanti
+            self.cleanupMemoriesForAgent(agentId)
+            
+            DispatchQueue.main.async {
+                self.saveMemories()
+            }
         }
-        
-        memories[agentId]?.append(entry)
-        
-        // Mantieni solo le memorie più recenti e importanti
-        cleanupMemoriesForAgent(agentId)
-        
-        saveMemories()
     }
     
     /// Recupera il contesto di memoria per un agente
     func getMemoryContext(for agentId: UUID, chatId: UUID? = nil) -> MemoryContext {
-        guard let agentMemories = memories[agentId] else {
-            return MemoryContext(entries: [], summary: "", relevanceScore: 0.0, lastUpdated: Date())
-        }
-        
-        // Filtra per chat specifica se richiesto
-        let relevantMemories: [MemoryEntry]
-        if let chatId = chatId {
-            relevantMemories = agentMemories.filter { $0.chatId == chatId || $0.type == .userPreference || $0.type == .personalDetail }
-        } else {
-            relevantMemories = agentMemories
-        }
-        
-        // Ordina per importanza e data
-        let sortedMemories = relevantMemories
-            .filter { !isExpired($0) }
-            .sorted { entry1, entry2 in
-                if entry1.importance.rawValue != entry2.importance.rawValue {
-                    return entry1.importance.rawValue > entry2.importance.rawValue
-                }
-                return entry1.timestamp > entry2.timestamp
+        return memoryQueue.sync {
+            guard let agentMemories = memories[agentId] else {
+                return MemoryContext(entries: [], summary: "", relevanceScore: 0.0, lastUpdated: Date())
             }
-            .prefix(maxContextEntries)
-        
-        let summary = generateSummary(from: Array(sortedMemories))
-        let relevanceScore = calculateRelevanceScore(Array(sortedMemories))
-        
-        return MemoryContext(
-            entries: Array(sortedMemories),
-            summary: summary,
-            relevanceScore: relevanceScore,
-            lastUpdated: Date()
-        )
+            
+            // Filtra per chat specifica se richiesto
+            let relevantMemories: [MemoryEntry]
+            if let chatId = chatId {
+                relevantMemories = agentMemories.filter { $0.chatId == chatId || $0.type == .userPreference || $0.type == .personalDetail }
+            } else {
+                relevantMemories = agentMemories
+            }
+            
+            // Ordina per importanza e data
+            let sortedMemories = relevantMemories
+                .filter { !isExpired($0) }
+                .sorted { entry1, entry2 in
+                    if entry1.importance.rawValue != entry2.importance.rawValue {
+                        return entry1.importance.rawValue > entry2.importance.rawValue
+                    }
+                    return entry1.timestamp > entry2.timestamp
+                }
+                .prefix(maxContextEntries)
+            
+            let summary = generateSummary(from: Array(sortedMemories))
+            let relevanceScore = calculateRelevanceScore(Array(sortedMemories))
+            
+            return MemoryContext(
+                entries: Array(sortedMemories),
+                summary: summary,
+                relevanceScore: relevanceScore,
+                lastUpdated: Date()
+            )
+        }
     }
     
     /// Analizza un messaggio e estrae informazioni da memorizzare

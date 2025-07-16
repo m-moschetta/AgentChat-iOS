@@ -17,6 +17,7 @@ enum ChatServiceError: LocalizedError {
     case rateLimitExceeded
     case authenticationFailed
     case serverError(String)
+    case invalidSessionId
     
     var errorDescription: String? {
         switch self {
@@ -36,6 +37,8 @@ enum ChatServiceError: LocalizedError {
             return "Autenticazione fallita"
         case .serverError(let message):
             return "Errore del server: \(message)"
+        case .invalidSessionId:
+            return "ID sessione non valido"
         }
     }
 }

@@ -167,7 +167,7 @@ class BaseHTTPService: ChatServiceProtocol {
     }
     
     // MARK: - Core HTTP Logic
-    private func sendUnifiedRequest(_ request: UnifiedChatRequest) async throws -> UnifiedChatResponse {
+    func sendUnifiedRequest(_ request: UnifiedChatRequest) async throws -> UnifiedChatResponse {
         // Validate API key
         guard let apiKey = KeychainService.shared.getAPIKey(for: getKeychainKey()) else {
             throw ChatServiceError.missingAPIKey(providerName)
@@ -247,8 +247,20 @@ extension ProviderConfiguration {
     static let openAI = ProviderConfiguration(
         name: "OpenAI",
         baseURL: "https://api.openai.com/v1/chat/completions",
-        defaultModel: "gpt-4o",
-        supportedModels: ["o3", "o4-mini", "gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o", "gpt-4o-mini", "o1", "o1-mini"]
+        defaultModel: "gpt-4.1-mini",
+        supportedModels: [
+            // Modelli Chat più recenti (Luglio 2025)
+            "gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", 
+            "gpt-4o", "gpt-4o-mini", 
+            "gpt-4.5",
+            "o3", "o3-pro", 
+            "o4-mini", "o4-mini-high",
+            "gpt-3.5-turbo",
+            // Modelli Embedding
+            "text-embedding-3-large", "text-embedding-3-small", "text-embedding-ada-002",
+            // Modelli Specializzati
+            "gpt-image-1"
+        ]
     )
     
     static let anthropic = ProviderConfiguration(
@@ -264,21 +276,46 @@ extension ProviderConfiguration {
     static let mistral = ProviderConfiguration(
         name: "Mistral",
         baseURL: "https://api.mistral.ai/v1/chat/completions",
-        defaultModel: "mistral-large-latest",
-        supportedModels: ["mistral-large-latest", "mistral-medium-latest", "mistral-small-latest", "codestral-latest", "pixtral-large-latest", "ministral-8b-latest", "ministral-3b-latest"]
+        defaultModel: "mistral-medium-2505",
+        supportedModels: ["mistral-medium-2505", "magistral-medium-2506", "codestral-2501", "devstral-medium-2507", "mistral-large-2411", "pixtral-large-2411", "ministral-8b-2410", "ministral-3b-2410", "magistral-small-2506", "mistral-small-2506", "devstral-small-2507", "mistral-nemo-2407", "pixtral-12b-2409", "mistral-embed", "mistral-moderation-2411", "mistral-ocr-2505"]
     )
     
     static let grok = ProviderConfiguration(
         name: "Grok",
         baseURL: "https://api.x.ai/v1/chat/completions",
         defaultModel: "grok-4",
-        supportedModels: ["grok-4", "grok-3", "grok-3-mini", "grok-2-latest"]
+        supportedModels: [
+            // Modelli Grok 4 (Luglio 2025)
+            "grok-4", "grok-4-heavy",
+            // Modelli Legacy
+            "grok-3", "grok-beta", "grok-vision-beta"
+        ]
     )
     
     static let perplexity = ProviderConfiguration(
         name: "Perplexity",
         baseURL: "https://api.perplexity.ai/chat/completions",
-        defaultModel: "llama-3.1-sonar-large-128k-online",
-        supportedModels: ["llama-3.1-sonar-large-128k-online", "llama-3.1-sonar-small-128k-online", "llama-3.1-sonar-huge-128k-online", "llama-3.1-8b-instruct", "llama-3.1-70b-instruct"]
+        defaultModel: "sonar-pro",
+        supportedModels: ["sonar-reasoning-pro", "sonar-reasoning", "sonar-pro", "sonar", "sonar-deep-research", "r1-1776", "llama-3.1-sonar-large-128k-online", "llama-3.1-sonar-small-128k-online", "llama-3.1-sonar-large-128k-chat", "llama-3.1-sonar-small-128k-chat", "llama-3.1-8b-instruct", "llama-3.1-70b-instruct"]
+    )
+    
+
+    
+    static let deepSeek = ProviderConfiguration(
+        name: "DeepSeek",
+        baseURL: "https://api.deepseek.com/v1/chat/completions",
+        authHeaderName: "Authorization",
+        authHeaderPrefix: "Bearer",
+        apiVersion: nil,
+        defaultModel: "deepseek-r1-0528",
+        supportedModels: [
+            // Modelli R1 (Ragionamento)
+            "deepseek-r1-0528", "deepseek-r1", "deepseek-r1-distill-32b", "deepseek-r1-distill-70b",
+            // Modelli V3
+            "deepseek-v3-0324", "deepseek-v3",
+            // Modelli Specializzati
+            "deepseek-coder-v2", "deepseek-math"
+        ],
+        customHeaders: [:]
     )
 }

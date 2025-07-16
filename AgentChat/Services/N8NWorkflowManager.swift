@@ -31,19 +31,17 @@ class N8NWorkflowManager: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-        DispatchQueue.main.async {
-            // Carica workflow predefiniti
-            let defaultWorkflows = N8NWorkflow.defaultWorkflows
-            
-            // Carica workflow personalizzati
-            let customWorkflows = self.loadCustomWorkflows()
-            
-            // Combina e ordina per categoria
-            self.availableWorkflows = (defaultWorkflows + customWorkflows)
-                .sorted { $0.category.rawValue < $1.category.rawValue }
-            
-            self.isLoading = false
-        }
+        // Carica workflow predefiniti
+        let defaultWorkflows = N8NWorkflow.defaultWorkflows
+        
+        // Carica workflow personalizzati
+        let customWorkflows = self.loadCustomWorkflows()
+        
+        // Combina e ordina per categoria
+        self.availableWorkflows = (defaultWorkflows + customWorkflows)
+            .sorted { $0.category.rawValue < $1.category.rawValue }
+        
+        self.isLoading = false
     }
     
     /// Aggiunge un nuovo workflow personalizzato

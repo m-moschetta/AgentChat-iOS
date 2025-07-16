@@ -22,6 +22,7 @@ class ChatManager: ObservableObject {
     
     @Published var chats: [Chat] = []
     private let serviceFactory = ServiceFactory()
+    private let agentOrchestrator = AgentOrchestrator.shared
     
     private init() {
         // Carica le chat salvate all'avvio dell'applicazione
@@ -42,6 +43,10 @@ class ChatManager: ObservableObject {
                 return .perplexity
             case .grok:
                 return .grok
+    
+                return .openAI // Temporary mapping, needs proper implementation
+            case .deepSeek:
+                return .deepSeek
             case .n8n:
                 return .n8n
             case .custom:
@@ -96,14 +101,29 @@ class ChatManager: ObservableObject {
         }
     }
     
-    /// Restituisce l'istanza del servizio di chat per un dato tipo di agente.
+    /// Restituisce l'istanza del servizio di chat per un dato tipo di agente (legacy).
     func getChatService(for agentType: AgentType) -> ChatServiceProtocol? {
         return serviceFactory.createChatService(for: agentType)
     }
     
-    /// Restituisce l'istanza del servizio di chat per un dato provider (identificato da una stringa).
+    /// Restituisce l'istanza del servizio di chat per un dato provider (identificato da una stringa) (legacy).
     func getChatService(for provider: String) -> ChatServiceProtocol? {
         return serviceFactory.createChatService(for: provider)
+    }
+    
+    /// Restituisce l'istanza del servizio agente per una configurazione specifica.
+    func getAgentService(for configuration: AgentConfiguration) -> AgentServiceProtocol? {
+        return serviceFactory.createAgentService(for: configuration)
+    }
+    
+    /// Restituisce l'istanza del servizio agente per un tipo di agente.
+    func getAgentService(for agentType: AgentType, configuration: AgentConfiguration? = nil) -> AgentServiceProtocol? {
+        return serviceFactory.createAgentService(for: agentType, configuration: configuration)
+    }
+    
+    /// Restituisce l'orchestratore degli agenti.
+    func getAgentOrchestrator() -> AgentOrchestrator {
+        return agentOrchestrator
     }
 }
 
@@ -115,25 +135,99 @@ extension ChatManager {
         return agentTypes.compactMap { serviceFactory.createChatService(for: $0) }
     }
     
-    /// Verifica se un provider è disponibile e configurato correttamente.
+    /// Verifica se un provider è disponibile e configurato correttamente (legacy).
     func isProviderAvailable(_ agentType: AgentType) async -> Bool {
         guard let service = serviceFactory.createChatService(for: agentType) else {
             return false
         }
         
         do {
-            return try await service.validateConfiguration()
+            try await service.validateConfiguration()
+            return true
         } catch {
             return false
         }
     }
     
-    /// Restituisce i modelli supportati per un tipo di agente.
+    /// Verifica se un agente è disponibile e configurato correttamente.
+    func isAgentAvailable(_ configuration: AgentConfiguration) async -> Bool {
+        guard let service = serviceFactory.createAgentService(for: configuration) else {
+            return false
+        }
+        
+        do {
+            try await service.validateConfiguration()
+            return true
+        } catch {
+            return false
+        }
+    }
+    
+    /// Restituisce i modelli supportati per un tipo di agente (legacy).
     func getSupportedModels(for agentType: AgentType) -> [String] {
         guard let service = serviceFactory.createChatService(for: agentType) else {
             return []
         }
         return service.supportedModels
+    }
+    
+    /// Restituisce i modelli supportati per una configurazione di agente.
+    func getSupportedModels(for configuration: AgentConfiguration) -> [String] {
+        guard let service = serviceFactory.createAgentService(for: configuration) else {
+            return []
+        }
+        return service.supportedModels
+    }
+    
+    // MARK: - Agent Session Management
+    
+    /// Crea una nuova sessione di agente singolo.
+    func createSingleAgentSession(with configuration: AgentConfiguration) -> String? {
+        do {
+            let chatId = UUID()
+            let session = try agentOrchestrator.createSession(for: configuration.id, chatId: chatId, sessionType: .single)
+            return session.id.uuidString
+        } catch {
+            return nil
+        }
+    }
+    
+    /// Crea una nuova sessione multi-agente.
+    func createMultiAgentSession(with configurations: [AgentConfiguration], taskType: TaskType = .collaboration) -> String? {
+        // Per ora creiamo una sessione con il primo agente, in futuro implementeremo il multi-agente completo
+        guard let firstConfig = configurations.first else { return nil }
+        do {
+            let chatId = UUID()
+            let session = try agentOrchestrator.createSession(for: firstConfig.id, chatId: chatId, sessionType: .group)
+            return session.id.uuidString
+        } catch {
+            return nil
+        }
+    }
+    
+    /// Invia un messaggio a una sessione di agente.
+    func sendMessageToSession(_ sessionId: String, message: String, context: [ChatMessage] = []) async throws -> String {
+        guard let uuid = UUID(uuidString: sessionId) else {
+            throw ChatServiceError.invalidSessionId
+        }
+        return try await agentOrchestrator.processMessage(message, for: uuid)
+    }
+    
+    /// Termina una sessione di agente.
+    func endAgentSession(_ sessionId: String) {
+        guard let uuid = UUID(uuidString: sessionId) else { return }
+        agentOrchestrator.endSession(uuid)
+    }
+    
+    /// Ottiene lo stato di una sessione di agente.
+    func getSessionStatus(_ sessionId: String) -> (isActive: Bool, type: SessionType?) {
+        guard let uuid = UUID(uuidString: sessionId) else {
+            return (false, nil)
+        }
+        if let session = agentOrchestrator.getSession(for: uuid) {
+            return (true, session.sessionType)
+        }
+        return (false, nil)
     }
 }
 

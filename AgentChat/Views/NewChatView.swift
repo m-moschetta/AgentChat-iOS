@@ -97,9 +97,16 @@ struct NewChatView: View {
                     )
                 }
             }
-            .listStyle(InsetGroupedListStyle())
+            .listStyle(.sidebar)
             .navigationTitle("Nuova Conversazione")
-            .navigationBarItems(leading: Button("Annulla") { dismiss() }, trailing: startChatButton)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Annulla") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    startChatButton
+                }
+            }
             .sheet(isPresented: $showingCustomProviderView) {
                 CustomProviderView()
             }
@@ -344,7 +351,7 @@ struct AgentRow: View {
     var body: some View {
         Button(action: onTap) {
             HStack {
-                Text(agent.avatarEmoji)
+                Text(agent.icon)
                     .font(.title2)
                     .frame(width: 24)
 
@@ -352,7 +359,7 @@ struct AgentRow: View {
                     Text(agent.name)
                         .font(.headline)
                         .foregroundColor(.primary)
-                    Text(agent.providerName)
+                    Text(agent.preferredProvider)
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -430,8 +437,8 @@ struct WorkflowRow: View {
                     Text(workflow.name)
                         .font(.headline)
                         .foregroundColor(.primary)
-                    if let description = workflow.description, !description.isEmpty {
-                        Text(description)
+                    if !workflow.description.isEmpty {
+                        Text(workflow.description)
                             .font(.caption)
                             .foregroundColor(.secondary)
                             .lineLimit(1)

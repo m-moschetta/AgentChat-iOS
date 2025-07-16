@@ -35,8 +35,7 @@ class ServiceContainer: ServiceContainerProtocol {
     func registerSingleton<T>(_ type: T.Type, factory: @escaping () -> T) {
         let key = String(describing: type)
         factories[key] = factory
-        // Create singleton immediately
-        singletons[key] = factory()
+        // Don't create singleton immediately - use lazy initialization
     }
     
     // MARK: - Resolution Methods
@@ -48,9 +47,13 @@ class ServiceContainer: ServiceContainerProtocol {
             return singleton
         }
         
-        // Otherwise create new instance
+        // Create singleton if factory exists and store it
         if let factory = factories[key] {
-            return factory() as? T
+            let instance = factory() as? T
+            if instance != nil {
+                singletons[key] = instance
+            }
+            return instance
         }
         
         return nil
@@ -58,12 +61,22 @@ class ServiceContainer: ServiceContainerProtocol {
     
     // MARK: - Default Service Registration
     private func registerDefaultServices() {
-        // Register HTTP-based chat services
+        // Register HTTP-based chat services (legacy)
         register(OpenAIService.self) { OpenAIService() }
         register(AnthropicService.self) { AnthropicService() }
         register(MistralService.self) { MistralService() }
         register(GrokService.self) { GrokService() }
         register(PerplexityService.self) { PerplexityService() }
+        
+        // Register new Agent Services
+        register(OpenAIAgentService.self) { OpenAIAgentService() }
+        register(AnthropicAgentService.self) { AnthropicAgentService() }
+        register(MistralAgentService.self) { MistralAgentService() }
+        register(GrokAgentService.self) { GrokAgentService() }
+        register(PerplexityAgentService.self) { PerplexityAgentService() }
+        register(DeepSeekAgentService.self) { DeepSeekAgentService() }
+        register(N8NAgentService.self) { N8NAgentService() }
+        register(CustomAgentService.self) { CustomAgentService() }
         
         // Register special services as singletons
         registerSingleton(N8NService.self) { N8NService.shared }
@@ -73,9 +86,13 @@ class ServiceContainer: ServiceContainerProtocol {
         registerSingleton(HybridMultiAgentService.self) { HybridMultiAgentService.shared }
         registerSingleton(GroupChatService.self) { GroupChatService.shared }
         
+        // Register orchestrator as singleton
+        registerSingleton(AgentOrchestrator.self) { AgentOrchestrator.shared }
+        
         // Register managers (excluding ChatManager to avoid circular dependency)
         registerSingleton(KeychainService.self) { KeychainService.shared }
         registerSingleton(AgentMemoryManager.self) { AgentMemoryManager.shared }
+        registerSingleton(AgentCollaborationManager.self) { AgentCollaborationManager.shared }
     }
 }
 
@@ -87,7 +104,7 @@ class ServiceFactory {
         self.container = container
     }
     
-    // MARK: - Chat Service Creation
+    // MARK: - Chat Service Creation (Legacy)
     func createChatService(for agentType: AgentType) -> ChatServiceProtocol? {
         switch agentType {
         case .openAI:
@@ -100,6 +117,8 @@ class ServiceFactory {
             return container.resolve(GrokService.self)
         case .perplexity:
             return container.resolve(PerplexityService.self)
+        case .deepSeek:
+            return nil // DeepSeek uses agent service only
         case .n8n:
             return container.resolve(N8NService.self)
         case .custom:
@@ -116,6 +135,53 @@ class ServiceFactory {
             return container.resolve(GroupChatService.self)
         case .codeReviewPanel:
             return container.resolve(GroupChatService.self)
+        }
+    }
+    
+    // MARK: - Agent Service Creation (New)
+    func createAgentService(for configuration: AgentConfiguration) -> AgentServiceProtocol? {
+        switch configuration.preferredProvider.lowercased() {
+        case "openai":
+            return OpenAIAgentService(configuration: configuration)
+        case "anthropic", "claude":
+            return AnthropicAgentService(configuration: configuration)
+        case "mistral":
+            return MistralAgentService(configuration: configuration)
+        case "grok":
+            return GrokAgentService(configuration: configuration)
+        case "perplexity":
+            return PerplexityAgentService(configuration: configuration)
+        case "deepseek":
+            return DeepSeekAgentService(configuration: configuration)
+        case "n8n":
+            return N8NAgentService(configuration: configuration)
+        default:
+            return CustomAgentService(configuration: configuration, customConfig: nil)
+        }
+    }
+    
+    func createAgentService(for agentType: AgentType, configuration: AgentConfiguration? = nil) -> AgentServiceProtocol? {
+        switch agentType {
+        case .openAI:
+            return OpenAIAgentService(configuration: configuration)
+        case .claude:
+            return AnthropicAgentService(configuration: configuration)
+        case .mistral:
+            return MistralAgentService(configuration: configuration)
+        case .grok:
+            return GrokAgentService(configuration: configuration)
+        case .perplexity:
+            return PerplexityAgentService(configuration: configuration)
+        case .deepSeek:
+            return DeepSeekAgentService(configuration: configuration)
+        case .n8n:
+            return N8NAgentService(configuration: configuration)
+        case .custom:
+            return CustomAgentService(configuration: configuration, customConfig: nil)
+        case .hybridMultiAgent:
+            return container.resolve(HybridMultiAgentService.self) as? AgentServiceProtocol
+        case .agentGroup, .group, .productTeam, .brainstormingSquad, .codeReviewPanel:
+            return container.resolve(GroupChatService.self) as? AgentServiceProtocol
         }
     }
     
@@ -151,6 +217,14 @@ extension ServiceContainer {
     var agentMemoryManager: AgentMemoryManager? {
         return resolve(AgentMemoryManager.self)
     }
+    
+    var agentOrchestrator: AgentOrchestrator? {
+        return resolve(AgentOrchestrator.self)
+    }
+    
+    var collaborationManager: AgentCollaborationManager? {
+        return resolve(AgentCollaborationManager.self)
+    }
 }
 
 // MARK: - Service Locator Pattern (for backward compatibility)
@@ -166,5 +240,13 @@ class ServiceLocator {
     
     func getChatService(for provider: String) -> ChatServiceProtocol? {
         return serviceFactory.createChatService(for: provider)
+    }
+    
+    func getAgentService(for configuration: AgentConfiguration) -> AgentServiceProtocol? {
+        return serviceFactory.createAgentService(for: configuration)
+    }
+    
+    func getAgentOrchestrator() -> AgentOrchestrator? {
+        return ServiceContainer.shared.agentOrchestrator
     }
 }

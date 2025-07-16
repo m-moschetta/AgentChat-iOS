@@ -103,7 +103,7 @@ struct ChatDetailView: View {
             .onAppear {
                 scrollToLastMessage(proxy)
             }
-            .onChange(of: chat.messages) { oldValue, newValue in
+            .onChange(of: chat.messages) { newValue in
                 scrollToLastMessageAnimated(proxy, messages: newValue)
             }
         }
@@ -359,6 +359,8 @@ struct ChatDetailView: View {
                     errorMessage = "Errore del server: \(message)"
                 case .networkError(let error):
                     errorMessage = "Errore di rete: \(error.localizedDescription)"
+                case .invalidSessionId:
+                    errorMessage = "ID sessione non valido."
                 }
             } else {
                 errorMessage = "Errore: \(error.localizedDescription)"
@@ -396,6 +398,8 @@ struct ChatDetailView: View {
                 return .perplexity
             case .grok:
                 return .grok
+            case .deepSeek:
+                return .deepSeek
             case .n8n:
                 return .n8n
             case .custom:

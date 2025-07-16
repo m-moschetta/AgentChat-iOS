@@ -23,6 +23,24 @@ struct AgentConfiguration: Identifiable, Codable, Hashable {
     var memoryEnabled: Bool
     var contextWindow: Int // Numero di messaggi da ricordare
     
+    // Nuove proprietà per il sistema di agenti avanzato
+    var agentType: AgentType {
+        return AgentType(rawValue: preferredProvider) ?? .openAI
+    }
+    var model: String
+    var capabilities: [AgentCapability]
+    var parameters: AgentParameters
+    var customConfig: [String: String]?
+    
+    // MARK: - Coding Keys
+    enum CodingKeys: String, CodingKey {
+        case id, name, systemPrompt, personality, role, icon
+        case preferredProvider, temperature, maxTokens, isActive
+        case memoryEnabled, contextWindow, model, capabilities
+        case parameters, customConfig
+        // agentType è escluso perché è una proprietà computata
+    }
+    
     init(
         id: UUID = UUID(),
         name: String,
@@ -35,7 +53,11 @@ struct AgentConfiguration: Identifiable, Codable, Hashable {
         maxTokens: Int = 2000,
         isActive: Bool = true,
         memoryEnabled: Bool = true,
-        contextWindow: Int = 10
+        contextWindow: Int = 10,
+        model: String? = nil,
+        capabilities: [AgentCapability] = [],
+        parameters: AgentParameters? = nil,
+        customConfig: [String: String]? = nil
     ) {
         self.id = id
         self.name = name
@@ -49,6 +71,16 @@ struct AgentConfiguration: Identifiable, Codable, Hashable {
         self.isActive = isActive
         self.memoryEnabled = memoryEnabled
         self.contextWindow = contextWindow
+        
+        // Imposta il modello predefinito basato sul provider
+        let agentType = AgentType(rawValue: preferredProvider) ?? .openAI
+        self.model = model ?? agentType.defaultModel
+        self.capabilities = capabilities.isEmpty ? agentType.defaultCapabilities : capabilities
+        self.parameters = parameters ?? AgentParameters(
+            temperature: temperature,
+            maxTokens: maxTokens
+        )
+        self.customConfig = customConfig
     }
     
     // MARK: - Default Agents
@@ -121,10 +153,6 @@ struct AgentConfiguration: Identifiable, Codable, Hashable {
     ]
     
     // MARK: - Helper Methods
-    var agentType: AgentType? {
-        return AgentType(rawValue: preferredProvider)
-    }
-    
     var displayName: String {
         return "\(icon) \(name)"
     }
@@ -151,6 +179,40 @@ struct AgentConfiguration: Identifiable, Codable, Hashable {
     }
 }
 
+// MARK: - Agent Parameters
+
+/// Parametri di configurazione per un agente
+struct AgentParameters: Codable, Hashable {
+    let temperature: Double
+    let maxTokens: Int?
+    let topP: Double?
+    let frequencyPenalty: Double?
+    let presencePenalty: Double?
+    let stopSequences: [String]?
+    let timeout: TimeInterval
+    let retryAttempts: Int
+    
+    init(
+        temperature: Double = 0.7,
+        maxTokens: Int? = nil,
+        topP: Double? = nil,
+        frequencyPenalty: Double? = nil,
+        presencePenalty: Double? = nil,
+        stopSequences: [String]? = nil,
+        timeout: TimeInterval = 30.0,
+        retryAttempts: Int = 3
+    ) {
+        self.temperature = temperature
+        self.maxTokens = maxTokens
+        self.topP = topP
+        self.frequencyPenalty = frequencyPenalty
+        self.presencePenalty = presencePenalty
+        self.stopSequences = stopSequences
+        self.timeout = timeout
+        self.retryAttempts = retryAttempts
+    }
+}
+
 // MARK: - Agent Configuration Extensions
 extension AgentConfiguration {
     static func createCustomAgent(
@@ -168,5 +230,179 @@ extension AgentConfiguration {
             icon: icon,
             preferredProvider: provider
         )
+    }
+    
+    /// Crea una configurazione per il nuovo sistema di agenti
+    static func createAgentConfiguration(
+        name: String,
+        agentType: AgentType,
+        model: String? = nil,
+        systemPrompt: String? = nil,
+        capabilities: [AgentCapability] = [],
+        parameters: AgentParameters? = nil
+    ) -> AgentConfiguration {
+        let finalModel = model ?? agentType.defaultModel
+        let finalCapabilities = capabilities.isEmpty ? agentType.defaultCapabilities : capabilities
+        let finalSystemPrompt = systemPrompt ?? "Sei un assistente AI utile e competente."
+        
+        return AgentConfiguration(
+            name: name,
+            systemPrompt: finalSystemPrompt,
+            personality: "Professionale",
+            role: "Assistente",
+            icon: agentType.defaultIcon,
+            preferredProvider: agentType.rawValue,
+            model: finalModel,
+            capabilities: finalCapabilities,
+            parameters: parameters
+        )
+    }
+    
+    /// Valida la configurazione dell'agente
+    func validate() throws {
+        if name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            throw AgentConfigurationError.invalidName
+        }
+        
+        if model.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            throw AgentConfigurationError.invalidModel
+        }
+        
+        if parameters.temperature < 0 || parameters.temperature > 2 {
+            throw AgentConfigurationError.invalidTemperature
+        }
+        
+        if let maxTokens = parameters.maxTokens, maxTokens <= 0 {
+            throw AgentConfigurationError.invalidMaxTokens
+        }
+        
+        if parameters.timeout <= 0 {
+            throw AgentConfigurationError.invalidTimeout
+        }
+        
+        if parameters.retryAttempts < 0 {
+            throw AgentConfigurationError.invalidRetryAttempts
+        }
+    }
+}
+
+// MARK: - Configuration Errors
+
+enum AgentConfigurationError: LocalizedError {
+    case invalidName
+    case invalidModel
+    case invalidTemperature
+    case invalidMaxTokens
+    case invalidTimeout
+    case invalidRetryAttempts
+    
+    var errorDescription: String? {
+        switch self {
+        case .invalidName:
+            return "Il nome dell'agente non può essere vuoto"
+        case .invalidModel:
+            return "Il modello specificato non è valido"
+        case .invalidTemperature:
+            return "La temperatura deve essere compresa tra 0 e 2"
+        case .invalidMaxTokens:
+            return "Il numero massimo di token deve essere positivo"
+        case .invalidTimeout:
+            return "Il timeout deve essere positivo"
+        case .invalidRetryAttempts:
+            return "Il numero di tentativi deve essere non negativo"
+        }
+    }
+}
+
+// MARK: - AgentType Extensions
+
+extension AgentType {
+    var defaultModel: String {
+        switch self {
+        case .openAI:
+            return "gpt-4"
+        case .claude:
+            return "claude-3-5-sonnet-20241022"
+        case .mistral:
+            return "mistral-large-latest"
+        case .perplexity:
+            return "llama-3.1-sonar-large-128k-online"
+        case .grok:
+            return "grok-beta"
+        case .deepSeek:
+            return "deepseek-v3-0324"
+        case .n8n:
+            return "workflow"
+        case .custom:
+            return "custom-model"
+        case .hybridMultiAgent:
+            return "hybrid-balanced"
+        case .agentGroup:
+            return "group-collaborative"
+        case .group:
+            return "group-standard"
+        case .productTeam:
+            return "product-team"
+        case .brainstormingSquad:
+            return "brainstorming"
+        case .codeReviewPanel:
+            return "code-review"
+        }
+    }
+    
+    var defaultCapabilities: [AgentCapability] {
+        switch self {
+        case .openAI, .claude, .mistral, .grok, .deepSeek:
+            return [.textGeneration, .codeGeneration, .dataAnalysis]
+        case .perplexity:
+            return [.textGeneration, .webSearch, .dataAnalysis]
+        case .n8n:
+            return [.workflowAutomation, .collaboration]
+        case .custom:
+            return [.textGeneration]
+        case .hybridMultiAgent:
+            return [.textGeneration, .codeGeneration, .dataAnalysis, .collaboration, .memoryRetention]
+        case .agentGroup, .group:
+            return [.textGeneration, .collaboration, .memoryRetention]
+        case .productTeam:
+            return [.textGeneration, .dataAnalysis, .collaboration]
+        case .brainstormingSquad:
+            return [.textGeneration, .collaboration]
+        case .codeReviewPanel:
+            return [.textGeneration, .codeGeneration, .collaboration]
+        }
+    }
+    
+    var defaultIcon: String {
+        switch self {
+        case .openAI:
+            return "🤖"
+        case .claude:
+            return "🧠"
+        case .mistral:
+            return "🌪️"
+        case .perplexity:
+            return "🔍"
+        case .grok:
+            return "🚀"
+        case .deepSeek:
+            return "🧠"
+        case .n8n:
+            return "⚙️"
+        case .custom:
+            return "🔧"
+        case .hybridMultiAgent:
+            return "🔀"
+        case .agentGroup:
+            return "👥"
+        case .group:
+            return "🏢"
+        case .productTeam:
+            return "📱"
+        case .brainstormingSquad:
+            return "💡"
+        case .codeReviewPanel:
+            return "👨‍💻"
+        }
     }
 }

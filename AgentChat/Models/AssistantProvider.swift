@@ -14,6 +14,8 @@ enum ProviderType: String, Codable, CaseIterable {
     case mistral = "mistral"
     case perplexity = "perplexity"
     case grok = "grok"
+
+    case deepSeek = "deepseek"
     case n8n = "n8n"
     case custom = "custom"
     
@@ -24,6 +26,8 @@ enum ProviderType: String, Codable, CaseIterable {
         case .mistral: return "Mistral"
         case .perplexity: return "Perplexity"
         case .grok: return "Grok"
+
+        case .deepSeek: return "DeepSeek"
         case .n8n: return "n8n"
         case .custom: return "Custom"
         }
@@ -31,7 +35,7 @@ enum ProviderType: String, Codable, CaseIterable {
 }
 
 // MARK: - Assistant Provider
-struct AssistantProvider: Codable, Identifiable, Equatable {
+struct AssistantProvider: Codable, Identifiable, Equatable, Hashable {
     let id: String
     let name: String
     let type: ProviderType
@@ -78,10 +82,22 @@ extension AssistantProvider {
             name: "OpenAI",
             type: .openai,
             endpoint: "https://api.openai.com/v1/chat/completions",
-            supportedModels: ["o3", "o4-mini", "gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o", "gpt-4o-mini", "o1", "o1-mini"],
-            defaultModel: "o3",
+            supportedModels: [
+                // Modelli Chat più recenti (Luglio 2025)
+                "gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", 
+                "gpt-4o", "gpt-4o-mini", 
+                "gpt-4.5",
+                "o3", "o3-pro", 
+                "o4-mini", "o4-mini-high",
+                "gpt-3.5-turbo",
+                // Modelli Embedding
+                "text-embedding-3-large", "text-embedding-3-small", "text-embedding-ada-002",
+                // Modelli Specializzati
+                "gpt-image-1"
+            ],
+            defaultModel: "gpt-4.1-mini",
             icon: "brain.head.profile",
-            description: "OpenAI's latest models including o3 reasoning and GPT-4.1 series (2025)"
+            description: "OpenAI's latest models including GPT-4.1, o3/o4 reasoning series and specialized models (Luglio 2025)"
         ),
         AssistantProvider(
             name: "Anthropic",
@@ -96,17 +112,17 @@ extension AssistantProvider {
             name: "Mistral",
             type: .mistral,
             endpoint: "https://api.mistral.ai/v1/chat/completions",
-            supportedModels: ["mistral-large-latest", "mistral-medium-latest", "mistral-small-latest", "codestral-latest", "pixtral-large-latest", "ministral-8b-latest", "ministral-3b-latest"],
-            defaultModel: "mistral-large-latest",
+            supportedModels: ["mistral-medium-2505", "magistral-medium-2506", "codestral-2501", "devstral-medium-2507", "mistral-large-2411", "pixtral-large-2411", "ministral-8b-2410", "ministral-3b-2410", "magistral-small-2506", "mistral-small-2506", "devstral-small-2507", "mistral-nemo-2407", "pixtral-12b-2409", "mistral-embed", "mistral-moderation-2411", "mistral-ocr-2505"],
+            defaultModel: "mistral-medium-2505",
             icon: "wind",
-            description: "Mistral's efficient and powerful language models"
+            description: "Mistral's efficient and powerful language models with latest 2025 updates"
         ),
         AssistantProvider(
             name: "Perplexity",
             type: .perplexity,
             endpoint: "https://api.perplexity.ai/chat/completions",
-            supportedModels: ["sonar-pro", "sonar", "sonar-reasoning-pro", "sonar-reasoning", "sonar-deep-research", "sonar-large"],
-            defaultModel: "sonar-reasoning-pro",
+            supportedModels: ["sonar-reasoning-pro", "sonar-reasoning", "sonar-pro", "sonar", "sonar-deep-research", "r1-1776", "llama-3.1-sonar-large-128k-online", "llama-3.1-sonar-small-128k-online", "llama-3.1-sonar-large-128k-chat", "llama-3.1-sonar-small-128k-chat", "llama-3.1-8b-instruct", "llama-3.1-70b-instruct"],
+            defaultModel: "sonar-pro",
             icon: "magnifyingglass.circle",
             description: "Perplexity's latest search-enhanced AI models with reasoning and deep research (2025)"
         ),
@@ -114,10 +130,32 @@ extension AssistantProvider {
             name: "Grok",
             type: .grok,
             endpoint: "https://api.x.ai/v1/chat/completions",
-            supportedModels: ["grok-4", "grok-3", "grok-3-mini", "grok-2-image-1212"],
+            supportedModels: [
+                // Modelli Grok 4 (Luglio 2025)
+                "grok-4", "grok-4-heavy",
+                // Modelli Legacy
+                "grok-3", "grok-beta", "grok-vision-beta"
+            ],
             defaultModel: "grok-4",
             icon: "bolt.circle",
-            description: "xAI's Grok models with reasoning capabilities and real-time information"
+            description: "xAI's Grok models including Grok 4 'most intelligent AI in the world' (Luglio 2025)"
+        ),
+
+        AssistantProvider(
+            name: "DeepSeek",
+            type: .deepSeek,
+            endpoint: "https://api.deepseek.com/v1/chat/completions",
+            supportedModels: [
+                // Modelli R1 (Ragionamento)
+                "deepseek-r1-0528", "deepseek-r1", "deepseek-r1-distill-32b", "deepseek-r1-distill-70b",
+                // Modelli V3
+                "deepseek-v3-0324", "deepseek-v3",
+                // Modelli Specializzati
+                "deepseek-coder-v2", "deepseek-math"
+            ],
+            defaultModel: "deepseek-r1-0528",
+            icon: "brain.filled.head.profile",
+            description: "DeepSeek's open-source models with R1 reasoning, V3 series, and specialized coding/math capabilities (Luglio 2025)"
         ),
         AssistantProvider(
             name: "n8n Blog Creator",

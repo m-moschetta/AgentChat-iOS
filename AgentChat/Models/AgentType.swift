@@ -15,6 +15,7 @@ enum AgentType: String, CaseIterable, Identifiable, Codable {
     case mistral = "Mistral"
     case perplexity = "Perplexity"
     case grok = "Grok"
+    case deepSeek = "DeepSeek"
     case n8n = "n8n"
     case custom = "Custom"
     
@@ -49,6 +50,8 @@ enum AgentType: String, CaseIterable, Identifiable, Codable {
             return "Perplexity"
         case .grok:
             return "Grok (X.AI)"
+        case .deepSeek:
+            return "DeepSeek AI"
         case .n8n:
             return "n8n Workflow"
         case .custom:
@@ -80,6 +83,8 @@ enum AgentType: String, CaseIterable, Identifiable, Codable {
             return "Modelli Perplexity con capacità di ricerca web"
         case .grok:
             return "Modelli Grok di X.AI con accesso a dati real-time"
+        case .deepSeek:
+            return "Modelli DeepSeek con capacità di ragionamento avanzato"
         case .n8n:
             return "Workflow personalizzati tramite n8n"
         case .custom:
@@ -111,6 +116,8 @@ enum AgentType: String, CaseIterable, Identifiable, Codable {
             return "🔍"
         case .grok:
             return "🚀"
+        case .deepSeek:
+            return "🧠"
         case .n8n:
             return "⚙️"
         case .custom:
