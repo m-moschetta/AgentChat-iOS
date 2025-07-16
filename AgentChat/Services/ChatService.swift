@@ -81,9 +81,11 @@ class ChatManager: ObservableObject {
 
     /// Aggiunge un nuovo messaggio a una chat esistente.
     func addMessage(to chat: Chat, message: Message) {
-        if let index = chats.firstIndex(where: { $0.id == chat.id }) {
-            chats[index].messages.append(message)
-            CoreDataPersistenceManager.shared.saveOrUpdateChat(chat: chats[index])
+        // Use the chat model's logic to append the message and update metadata
+        chat.addMessage(message)
+
+        if chats.firstIndex(where: { $0.id == chat.id }) != nil {
+            CoreDataPersistenceManager.shared.saveOrUpdateChat(chat: chat)
         }
     }
 

@@ -266,8 +266,8 @@ struct ChatDetailView: View {
         
         let userMsg = Message(id: UUID(), content: trimmed, isUser: true, timestamp: Date())
         
-        // Aggiungi il messaggio alla chat con analisi e memorizzazione
-        chat.addMessage(userMsg)
+        // Aggiungi il messaggio alla chat e persisti tramite il manager
+        ChatManager.shared.addMessage(to: chat, message: userMsg)
         
         inputText = ""
         errorMessage = nil
@@ -324,9 +324,9 @@ struct ChatDetailView: View {
             }
             
             let assistantMessage = Message(id: UUID(), content: responseText, isUser: false, timestamp: Date())
-            
-            // Aggiungi il messaggio dell'assistente con analisi e memorizzazione
-            chat.addMessage(assistantMessage)
+
+            // Aggiungi il messaggio dell'assistente e persisti tramite il manager
+            ChatManager.shared.addMessage(to: chat, message: assistantMessage)
             
         } catch {
             if let idx = chat.messages.firstIndex(where: { $0.id == placeholderId }) {
