@@ -21,36 +21,17 @@ class ChatManager: ObservableObject {
     static let shared = ChatManager()
     
     @Published var chats: [Chat] = []
+    @Published var chatLoadErrors: [UUID] = []
     private let serviceFactory = ServiceFactory()
     private let agentOrchestrator = AgentOrchestrator.shared
-    private let persistenceManager = CoreDataPersistenceManager()
     
     // SOLUZIONE: Thread safety per operazioni concorrenti
     private let chatQueue = DispatchQueue(label: "com.agentchat.chatmanager", attributes: .concurrent)
     private let syncQueue = DispatchQueue(label: "com.agentchat.sync", qos: .userInitiated)
     
     private init() {
-        // Carica le chat salvate (RIMOSSA clearAllData() che cancellava tutto)
-        loadChatsFromPersistence()
+        // Nota: caricamento chat da persistence rimosso per gestione solo in memoria
     }
-    
-    // SOLUZIONE: Metodo thread-safe per caricare chat
-    private func loadChatsFromPersistence() {
-        syncQueue.async { [weak self] in
-            guard let self = self else { return }
-            let loadedChats = self.persistenceManager.loadChats()
-            
-            DispatchQueue.main.async {
-                self.chats = loadedChats
-            }
-        }
-    }
-    
-    /// Cancella tutti i dati (solo per debug o reset manuale)
-    //    func clearAllData() {
-//        persistenceManager.clearAllData()
-//        chats = []
-//    }
     
     /// Crea una nuova chat basata su un provider e un modello specifici.
     func createNewChat(with provider: AssistantProvider, model: String?, workflow: N8NWorkflow? = nil) {
@@ -90,11 +71,6 @@ class ChatManager: ObservableObject {
             DispatchQueue.main.async {
                 self.chats.append(newChat)
             }
-            
-            // Salva in background
-            self.syncQueue.async {
-                self.persistenceManager.saveOrUpdateChat(chat: newChat)
-            }
         }
     }
     
@@ -108,11 +84,6 @@ class ChatManager: ObservableObject {
             
             DispatchQueue.main.async {
                 self.chats.append(newChat)
-            }
-            
-            // Salva in background
-            self.syncQueue.async {
-                self.persistenceManager.saveOrUpdateChat(chat: newChat)
             }
         }
     }
@@ -134,28 +105,14 @@ class ChatManager: ObservableObject {
             DispatchQueue.main.async {
                 self.chats.append(newChat)
             }
-            
-            // Salva in background
-            self.syncQueue.async {
-                self.persistenceManager.saveOrUpdateChat(chat: newChat)
-            }
         }
     }
     
     /// Elimina una o più chat in base ai loro indici.
     func deleteChat(at offsets: IndexSet) {
-        let idsToDelete = offsets.map { chats[$0].id }
-        
         // SOLUZIONE: Thread-safe chat deletion
         chatQueue.async(flags: .barrier) { [weak self] in
             guard let self = self else { return }
-            
-            // Elimina dal persistence in background
-            self.syncQueue.async {
-                for id in idsToDelete {
-                    self.persistenceManager.deleteChat(with: id)
-                }
-            }
             
             // Aggiorna UI sul main thread
             DispatchQueue.main.async {
@@ -198,39 +155,28 @@ class ChatManager: ObservableObject {
                     
                     print("Numero messaggi dopo l'aggiunta: \(self.chats[currentIndex].messages.count)")
                     
-                    // Salva in background
-                    let updatedChat = self.chats[currentIndex]
-                    self.syncQueue.async {
-                        self.persistenceManager.saveOrUpdateChat(chat: updatedChat)
-                        print("--- Fine addMessage per chat ID: \(chat.id) ---")
-                    }
+                    print("--- Fine addMessage per chat ID: \(chat.id) ---")
                 }
             }
         }
     }
     
-    /// Salva una chat aggiornata nel persistence manager
+    /// Salva una chat aggiornata - rimossa la persistenza, funzione resa vuota o rimosso
     func saveChat(_ chat: Chat) {
-        // SOLUZIONE: Thread-safe save operation
-        syncQueue.async { [weak self] in
-            guard let self = self else { return }
-            self.persistenceManager.saveOrUpdateChat(chat: chat)
-        }
+        // Non fa nulla in gestione solo in memoria
     }
 
     // MARK: - Import/Export
     
-    // MARK: - Import/Export (Refactoring Needed)
-
     /// Esporta tutte le chat in un file e restituisce l'URL del file.
     func exportChats() -> URL? {
-        // TODO: Implementare l'esportazione da Core Data
+        // Funzione vuota, esportazione non implementata in memoria
         return nil
     }
 
     /// Importa le chat da un file JSON e sovrascrive quelle correnti.
     func importChats(from url: URL) {
-        // TODO: Implementare l'importazione in Core Data
+        // Funzione vuota, importazione non implementata in memoria
     }
     
     /// Restituisce l'istanza del servizio di chat per un dato tipo di agente (legacy).
@@ -363,6 +309,37 @@ extension ChatManager {
     }
 }
 
-// MARK: - Legacy Support
-// ChatServiceFactory is now defined in ChatServiceFactory.swift
-// This extension provides backward compatibility through ChatManager.shared
+
+// MARK: - Chat Load Errors Alert View Extension
+extension ChatManager {
+    /// Bool computed property to control showing the alert
+    var showingChatLoadErrorAlert: Bool {
+        !chatLoadErrors.isEmpty
+    }
+    
+    /// SwiftUI View that can be used to present an alert about corrupted chat load errors.
+    ///
+    /// Usage:
+    /// In your main SwiftUI View, observe `ChatManager.shared` and use `.alert(isPresented: $chatManager.showingChatLoadErrorAlert)`
+    /// or call this function to get the alert binding and content.
+    ///
+    /// Example:
+    /// ```
+    /// @StateObject private var chatManager = ChatManager.shared
+    ///
+    /// var body: some View {
+    ///     ContentView()
+    ///         .alert(isPresented: $chatManager.showingChatLoadErrorAlert) {
+    ///             chatManager.chatLoadErrorAlert
+    ///         }
+    /// }
+    /// ```
+    var chatLoadErrorAlert: Alert {
+        Alert(
+            title: Text("Attenzione"),
+            message: Text("Alcune chat non sono state caricate per dati corrotti. Puoi eliminarle o riprovare l'importazione.\n\nChat corrotte: \(chatLoadErrors.count)"),
+            dismissButton: .default(Text("OK"))
+        )
+    }
+}
+

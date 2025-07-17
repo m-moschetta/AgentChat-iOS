@@ -24,13 +24,7 @@ Il sistema di agenti è stato progettato per fornire:
 
 ### Provider Supportati
 
-- **OpenAI**: GPT-4, GPT-3.5-turbo
-- **Anthropic**: Claude-3.5-sonnet, Claude-3-haiku
-- **Mistral**: Mistral-large, Mistral-medium
-- **Perplexity**: Modelli con ricerca web
-- **Grok**: Modelli X.AI
-- **N8N**: Workflow di automazione
-- **Custom**: Provider personalizzati
+
 
 ## Utilizzo Base
 

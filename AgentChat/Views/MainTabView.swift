@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CoreData
 
 /// Vista principale con TabView che implementa le linee guida iOS 26
 /// per la barra inferiore fluttuante con materiale Liquid Glass
@@ -302,8 +301,6 @@ struct AgentRowView: View {
                 Text(agent.name)
                     .font(.headline)
                 
-
-                
                 HStack {
                     Text(agent.type.displayName)
                         .font(.caption)
@@ -450,5 +447,4 @@ struct GroupCreationView: View {
 
 #Preview {
     MainTabView()
-        .environment(\.managedObjectContext, CoreDataPersistenceManager().container.viewContext)
 }

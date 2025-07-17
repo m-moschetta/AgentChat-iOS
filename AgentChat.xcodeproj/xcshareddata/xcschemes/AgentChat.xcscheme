@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1540"
-   version = "1.7">
+   version = "1.8">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EDB593AD2E17BB850075B302"
+               BlueprintIdentifier = "EDB593B02E17BB850075B302"
                BuildableName = "AgentChat.app"
                BlueprintName = "AgentChat"
                ReferencedContainer = "container:AgentChat.xcodeproj">
@@ -31,7 +31,7 @@
       </Testables>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -44,36 +44,18 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EDB593AD2E17BB850075B302"
+            BlueprintIdentifier = "EDB593B02E17BB850075B302"
             BuildableName = "AgentChat.app"
             BlueprintName = "AgentChat"
             ReferencedContainer = "container:AgentChat.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <RemoteRunnable
-         runnableDebuggingMode = "2"
-         BundleIdentifier = "com.apple.Simulator"
-         RemoteRunnablePath = "/Applications/Xcode.app/Contents/Developer/Applications/Simulator.app">
-         <MacroExpansion>
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EDB593AD2E17BB850075B302"
-               BuildableName = "AgentChat.app"
-               BlueprintName = "AgentChat"
-               ReferencedContainer = "container:AgentChat.xcodeproj">
-            </BuildableReference>
-         </MacroExpansion>
-      </RemoteRunnable>
       <LocationScenarioReference
          identifier = "com.apple.dt.IDEFoundation.CurrentLocationScenarioIdentifier"
          referenceType = "1">
       </LocationScenarioReference>
       <StoreKitConfigurationFileReference>
       </StoreKitConfigurationFileReference>
-      <CommandLineArguments>
-      </CommandLineArguments>
-      <EnvironmentVariables>
-      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -85,7 +67,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EDB593AD2E17BB850075B302"
+            BlueprintIdentifier = "EDB593B02E17BB850075B302"
             BuildableName = "AgentChat.app"
             BlueprintName = "AgentChat"
             ReferencedContainer = "container:AgentChat.xcodeproj">
