@@ -13,8 +13,8 @@ class UniversalAssistantService {
     
     private init() {}
     
-    func sendMessage(_ message: String, agentType: AgentType, model: String?) async throws -> String {
-        guard let service = ServiceLocator.shared.getChatService(for: agentType) else {
+    func sendMessage(_ message: String, configuration: AgentConfiguration) async throws -> String {
+        guard let service = ServiceLocator.shared.getChatService(for: configuration.agentType) else {
             throw UniversalAssistantError.unsupportedProvider
         }
         
@@ -25,7 +25,7 @@ class UniversalAssistantService {
             throw UniversalAssistantError.configurationError(error.localizedDescription)
         }
         
-        return try await service.sendMessage(message, model: model)
+        return try await service.sendMessage(message, configuration: configuration)
     }
     
     /// Verifica se un provider è disponibile e configurato

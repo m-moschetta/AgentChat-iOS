@@ -105,3 +105,11 @@ class AgentManager: ObservableObject {
         UserDefaults.standard.set(data, forKey: groupsKey)
     }
 }
+
+// MARK: - Extension per compatibilità con MainTabView
+extension AgentManager {
+    /// Metodo alias per removeAgentGroup per compatibilità con MainTabView
+    func removeGroup(_ group: AgentGroup) {
+        removeAgentGroup(group)
+    }
+}

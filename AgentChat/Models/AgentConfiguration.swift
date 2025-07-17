@@ -152,6 +152,21 @@ struct AgentConfiguration: Identifiable, Codable, Hashable {
         )
     ]
     
+    // MARK: - Static Factory Methods
+
+    static func createAgentConfiguration(for provider: AssistantProvider, model: String?) -> AgentConfiguration? {
+        let agentType = AgentType(rawValue: provider.id) ?? .openAI
+        return AgentConfiguration(
+            name: provider.name,
+            systemPrompt: "Assistant for \(provider.name)",
+            personality: "Default",
+            role: "Assistant",
+            icon: "🤖",
+            preferredProvider: provider.id,
+            model: model ?? agentType.defaultModel
+        )
+    }
+
     // MARK: - Helper Methods
     var displayName: String {
         return "\(icon) \(name)"

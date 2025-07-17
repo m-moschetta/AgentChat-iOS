@@ -136,4 +136,37 @@ enum AgentType: String, CaseIterable, Identifiable, Codable {
             return "🔍"
         }
     }
+    
+    var iconName: String {
+        switch self {
+        case .openAI:
+            return "brain.head.profile"
+        case .claude:
+            return "sparkles"
+        case .mistral:
+            return "wind"
+        case .perplexity:
+            return "magnifyingglass"
+        case .grok:
+            return "rocket"
+        case .deepSeek:
+            return "brain.head.profile"
+        case .n8n:
+            return "gearshape"
+        case .custom:
+            return "slider.horizontal.3"
+        case .hybridMultiAgent:
+            return "person.3"
+        case .agentGroup:
+            return "person.3.fill"
+        case .group:
+            return "person.3.fill"
+        case .productTeam:
+            return "rocket.fill"
+        case .brainstormingSquad:
+            return "lightbulb.fill"
+        case .codeReviewPanel:
+            return "magnifyingglass.circle.fill"
+        }
+    }
 }

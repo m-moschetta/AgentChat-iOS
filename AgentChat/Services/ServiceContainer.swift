@@ -140,44 +140,48 @@ class ServiceFactory {
     
     // MARK: - Agent Service Creation (New)
     func createAgentService(for configuration: AgentConfiguration) -> AgentServiceProtocol? {
+        let memoryManager = container.resolve(AgentMemoryManager.self)
+        
         switch configuration.preferredProvider.lowercased() {
         case "openai":
-            return OpenAIAgentService(configuration: configuration)
+            return OpenAIAgentService(configuration: configuration, memoryManager: memoryManager)
         case "anthropic", "claude":
-            return AnthropicAgentService(configuration: configuration)
+            return AnthropicAgentService(configuration: configuration, memoryManager: memoryManager)
         case "mistral":
-            return MistralAgentService(configuration: configuration)
+            return MistralAgentService(configuration: configuration, memoryManager: memoryManager)
         case "grok":
-            return GrokAgentService(configuration: configuration)
+            return GrokAgentService(configuration: configuration, memoryManager: memoryManager)
         case "perplexity":
-            return PerplexityAgentService(configuration: configuration)
+            return PerplexityAgentService(configuration: configuration, memoryManager: memoryManager)
         case "deepseek":
-            return DeepSeekAgentService(configuration: configuration)
+            return DeepSeekAgentService(configuration: configuration, memoryManager: memoryManager)
         case "n8n":
-            return N8NAgentService(configuration: configuration)
+            return N8NAgentService(configuration: configuration, memoryManager: memoryManager)
         default:
-            return CustomAgentService(configuration: configuration, customConfig: nil)
+            return CustomAgentService(configuration: configuration, customConfig: nil, memoryManager: memoryManager)
         }
     }
     
     func createAgentService(for agentType: AgentType, configuration: AgentConfiguration? = nil) -> AgentServiceProtocol? {
+        let memoryManager = container.resolve(AgentMemoryManager.self)
+        
         switch agentType {
         case .openAI:
-            return OpenAIAgentService(configuration: configuration)
+            return OpenAIAgentService(configuration: configuration, memoryManager: memoryManager)
         case .claude:
-            return AnthropicAgentService(configuration: configuration)
+            return AnthropicAgentService(configuration: configuration, memoryManager: memoryManager)
         case .mistral:
-            return MistralAgentService(configuration: configuration)
+            return MistralAgentService(configuration: configuration, memoryManager: memoryManager)
         case .grok:
-            return GrokAgentService(configuration: configuration)
+            return GrokAgentService(configuration: configuration, memoryManager: memoryManager)
         case .perplexity:
-            return PerplexityAgentService(configuration: configuration)
+            return PerplexityAgentService(configuration: configuration, memoryManager: memoryManager)
         case .deepSeek:
-            return DeepSeekAgentService(configuration: configuration)
+            return DeepSeekAgentService(configuration: configuration, memoryManager: memoryManager)
         case .n8n:
-            return N8NAgentService(configuration: configuration)
+            return N8NAgentService(configuration: configuration, memoryManager: memoryManager)
         case .custom:
-            return CustomAgentService(configuration: configuration, customConfig: nil)
+            return CustomAgentService(configuration: configuration, customConfig: nil, memoryManager: memoryManager)
         case .hybridMultiAgent:
             return container.resolve(HybridMultiAgentService.self) as? AgentServiceProtocol
         case .agentGroup, .group, .productTeam, .brainstormingSquad, .codeReviewPanel:

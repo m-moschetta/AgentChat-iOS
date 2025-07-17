@@ -25,9 +25,9 @@ class HybridMultiAgentService: ChatServiceProtocol {
     
     var providerName: String { "Hybrid Multi-Agent" }
     
-    func sendMessage(_ message: String, model: String?) async throws -> String {
+    func sendMessage(_ message: String, configuration: AgentConfiguration) async throws -> String {
         let complexity = analyzeComplexity(message)
-        let selectedModel = model ?? "hybrid-balanced"
+        let selectedModel = configuration.model
         
         // Controlla cache prima
         if let cached = responseCache.get(message, model: selectedModel) {

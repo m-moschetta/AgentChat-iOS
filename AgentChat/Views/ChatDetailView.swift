@@ -9,7 +9,10 @@ import SwiftUI
 
 // MARK: - ChatDetailView
 struct ChatDetailView: View {
-    @State var chat: Chat
+    public init(chat: Binding<Chat>) {
+        self._chat = chat
+    }
+    @Binding var chat: Chat
     @Environment(\.dismiss) private var dismiss
     @State private var inputText = ""
     @State private var textEditorHeight: CGFloat = 30
@@ -21,17 +24,11 @@ struct ChatDetailView: View {
     @State private var showAgentConfig = false
     @State private var workflowParameters: [String: String] = [:]
 
-    public init(chat: Chat) {
-        self._chat = State(initialValue: chat)
-    }
-    
     private var agentConfigManager = AgentConfigurationManager.shared
-    private var memoryManager = AgentMemoryManager.shared
     private var chatManager = ChatManager.shared
-    
+
     var body: some View {
         chatContent
-            .navigationTitle(chatTitle)
              .toolbar {
                  ToolbarItem(placement: .principal) {
                      titleView
@@ -108,7 +105,7 @@ struct ChatDetailView: View {
             .onAppear {
                 scrollToLastMessage(proxy)
             }
-            .onChange(of: chat.messages) { newValue in
+            .onChange(of: chat.messages) { _, newValue in
                 scrollToLastMessageAnimated(proxy, messages: newValue)
             }
         }
@@ -132,6 +129,7 @@ struct ChatDetailView: View {
                 Spacer()
             }
         }
+        .listRowSeparator(.hidden)
     }
     
     @ViewBuilder
@@ -146,7 +144,7 @@ struct ChatDetailView: View {
     private var inputSection: some View {
         HStack {
             TextEditor(text: $inputText)
-                .onChange(of: inputText) {
+                .onChange(of: inputText) { _, _ in
                     updateTextEditorHeight()
                 }
                 .frame(height: textEditorHeight)
@@ -169,7 +167,10 @@ struct ChatDetailView: View {
     }
     
     private func updateTextEditorHeight() {
-        let newHeight = min(150, max(30, inputText.heightForWidth(width: UIScreen.main.bounds.width - 80, font: .systemFont(ofSize: 17))))
+        let horizontalPadding: CGFloat = 24
+        let buttonWidth: CGFloat = 40
+        let availableWidth = UIScreen.main.bounds.width - horizontalPadding - buttonWidth
+        let newHeight = min(150, max(30, inputText.heightForWidth(width: availableWidth, font: .systemFont(ofSize: 17))))
         if newHeight != textEditorHeight {
             textEditorHeight = newHeight
         }
@@ -188,18 +189,6 @@ struct ChatDetailView: View {
         }
         .disabled(inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isAwaitingAssistant)
         .padding(.leading, 4)
-    }
-    
-    private var chatTitle: String {
-        if let workflow = chat.n8nWorkflow {
-            return workflow.name
-        } else if let agentConfig = chat.agentConfiguration {
-            return agentConfig.name
-        } else if let groupTemplate = chat.groupTemplate {
-            return groupTemplate.name
-        } else {
-            return chat.title
-        }
     }
     
     private var titleView: some View {
@@ -268,26 +257,60 @@ struct ChatDetailView: View {
         let trimmed = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, !isAwaitingAssistant else { return }
         
-        let userMsg = Message(id: UUID(), content: trimmed, isUser: true, timestamp: Date())
+        let userMsg: Message
+        do {
+            userMsg = try Message(id: UUID(), content: trimmed, isUser: true, timestamp: Date())
+        } catch {
+            await MainActor.run {
+                errorMessage = "Errore nella creazione del messaggio: \(error.localizedDescription)"
+            }
+            return
+        }
         
-        // Aggiungi il messaggio alla chat e persisti tramite il manager
-        ChatManager.shared.addMessage(to: chat, message: userMsg)
+        // SOLUZIONE: Elimina race condition - non mutare direttamente chat.messages
+        do {
+            try ChatManager.shared.addMessage(to: chat, message: userMsg)
+        } catch {
+            // Gestire l'errore gracefully
+            await MainActor.run {
+                errorMessage = "Errore nell'invio del messaggio: \(error.localizedDescription)"
+            }
+            return
+        }
         
-        inputText = ""
-        errorMessage = nil
-        
-        isAwaitingAssistant = true
+        await MainActor.run {
+            inputText = ""
+            errorMessage = nil
+            isAwaitingAssistant = true
+        }
         
         let placeholderId = UUID()
-        let placeholderMsg = Message(id: placeholderId, content: "...", isUser: false, timestamp: Date())
-        chat.messages.append(placeholderMsg)
+        let placeholderMsg: Message
+        do {
+            placeholderMsg = try Message(id: placeholderId, content: "...", isUser: false, timestamp: Date())
+        } catch {
+            await MainActor.run {
+                errorMessage = "Errore nella creazione del placeholder: \(error.localizedDescription)"
+                isAwaitingAssistant = false
+            }
+            return
+        }
+        
+        // SOLUZIONE: Usa ChatManager invece di mutazione diretta
+        do {
+            try ChatManager.shared.addMessage(to: chat, message: placeholderMsg)
+        } catch {
+            await MainActor.run {
+                errorMessage = "Errore nell'aggiunta del placeholder: \(error.localizedDescription)"
+                isAwaitingAssistant = false
+            }
+            return
+        }
         
         do {
             let response: String
             
-            // Gestione workflow n8n
             if let workflow = chat.n8nWorkflow {
-                // Prepara i parametri per il workflow
                 var parameters = workflowParameters
                 parameters["userMessage"] = trimmed
                 
@@ -298,7 +321,6 @@ struct ChatDetailView: View {
                 )
                 response = n8nResponse.message ?? "Nessuna risposta dal workflow"
             } else if let agentConfig = chat.agentConfiguration {
-                // Usa l'agente configurabile
                 let contextualPrompt = chat.buildContextualPrompt(for: trimmed)
                 response = try await sendMessageToConfigurableAgent(
                     message: trimmed,
@@ -306,20 +328,24 @@ struct ChatDetailView: View {
                     contextualPrompt: contextualPrompt
                 )
             } else {
-                // Usa il servizio universale per inviare il messaggio
+                let config = AgentConfiguration(
+                    name: chat.agentType.displayName,
+                    systemPrompt: "",
+                    personality: "",
+                    role: "",
+                    icon: chat.agentType.icon,
+                    preferredProvider: chat.agentType.rawValue,
+                    model: chat.selectedModel
+                )
                 response = try await UniversalAssistantService.shared.sendMessage(
                     trimmed,
-                    agentType: chat.agentType,
-                    model: chat.selectedModel
+                    configuration: config
                 )
             }
             
-            // Rimuovi il placeholder
-            if let idx = chat.messages.firstIndex(where: { $0.id == placeholderId }) {
-                chat.messages.remove(at: idx)
-            }
+            // SOLUZIONE: Rimuovi placeholder tramite ChatManager
+            await removePlaceholderMessage(placeholderId)
             
-            // Formatta la risposta
             let responseText: String
             if chat.n8nWorkflow != nil {
                 responseText = formatN8NResponse(response)
@@ -327,70 +353,83 @@ struct ChatDetailView: View {
                 responseText = response
             }
             
-            let assistantMessage = Message(id: UUID(), content: responseText, isUser: false, timestamp: Date())
+            let assistantMessage: Message
+            do {
+                assistantMessage = try Message(id: UUID(), content: responseText, isUser: false, timestamp: Date())
+            } catch {
+                await MainActor.run {
+                    errorMessage = "Errore nella creazione della risposta: \(error.localizedDescription)"
+                }
+                return
+            }
 
-            // Aggiungi il messaggio dell'assistente e persisti tramite il manager
-            ChatManager.shared.addMessage(to: chat, message: assistantMessage)
-            
-        } catch {
-            if let idx = chat.messages.firstIndex(where: { $0.id == placeholderId }) {
-                chat.messages.remove(at: idx)
+            do {
+                try ChatManager.shared.addMessage(to: chat, message: assistantMessage)
+            } catch {
+                await MainActor.run {
+                    errorMessage = "Errore nel salvare la risposta: \(error.localizedDescription)"
+                }
             }
             
-            // Gestione errori specifici
+        } catch {
+            // SOLUZIONE: Rimuovi placeholder tramite ChatManager anche in caso di errore
+            await removePlaceholderMessage(placeholderId)
+            
             if let n8nError = error as? N8NError {
                 switch n8nError {
-                case .invalidURL:
-                    errorMessage = "URL endpoint non valido."
-                case .missingRequiredParameter(let param):
-                    errorMessage = "Parametro obbligatorio mancante: \(param)"
-                case .authenticationRequired:
-                    errorMessage = "Autenticazione richiesta per questo workflow."
-                case .networkError(let error):
-                    errorMessage = "Errore di rete: \(error.localizedDescription)"
-                case .invalidResponse:
-                    errorMessage = "Risposta non valida dal workflow."
-                case .workflowNotFound:
-                    errorMessage = "Workflow non trovato."
-                case .serverError(let message):
-                    errorMessage = "Errore del server: \(message)"
+                case .invalidURL: errorMessage = "URL endpoint non valido."
+                case .missingRequiredParameter(let param): errorMessage = "Parametro obbligatorio mancante: \(param)"
+                case .authenticationRequired: errorMessage = "Autenticazione richiesta per questo workflow."
+                case .networkError(let error): errorMessage = "Errore di rete: \(error.localizedDescription)"
+                case .invalidResponse: errorMessage = "Risposta non valida dal workflow."
+                case .workflowNotFound: errorMessage = "Workflow non trovato."
+                case .serverError(let message): errorMessage = "Errore del server: \(message)"
                 }
             } else if let assistantError = error as? UniversalAssistantError {
                 switch assistantError {
-                case .unsupportedProvider:
-                    errorMessage = "Provider non supportato."
-                case .configurationError(let message):
-                    errorMessage = "Errore di configurazione: \(message)"
-                case .serviceError(let chatError):
-                    errorMessage = chatError.localizedDescription
+                case .unsupportedProvider: errorMessage = "Provider non supportato."
+                case .configurationError(let message): errorMessage = "Errore di configurazione: \(message)"
+                case .serviceError(let chatError): errorMessage = chatError.localizedDescription
                 }
             } else if let chatError = error as? ChatServiceError {
                 switch chatError {
-                case .missingAPIKey(let message):
-                    errorMessage = "API Key mancante: \(message)"
-                case .invalidConfiguration:
-                    errorMessage = "Configurazione non valida."
-                case .unsupportedModel(let model):
-                    errorMessage = "Modello non supportato: \(model)"
-                case .invalidResponse:
-                    errorMessage = "Risposta non valida dal provider."
-                case .authenticationFailed:
-                    errorMessage = "Autenticazione fallita. Verifica le credenziali."
-                case .rateLimitExceeded:
-                    errorMessage = "Limite di richieste superato. Riprova più tardi."
-                case .serverError(let message):
-                    errorMessage = "Errore del server: \(message)"
-                case .networkError(let error):
-                    errorMessage = "Errore di rete: \(error.localizedDescription)"
-                case .invalidSessionId:
-                    errorMessage = "ID sessione non valido."
+                case .missingAPIKey(let message): errorMessage = "API Key mancante: \(message)"
+                case .invalidConfiguration: errorMessage = "Configurazione non valida."
+                case .unsupportedModel(let model): errorMessage = "Modello non supportato: \(model)"
+                case .invalidResponse: errorMessage = "Risposta non valida dal provider."
+                case .authenticationFailed: errorMessage = "Autenticazione fallita. Verifica le credenziali."
+                case .rateLimitExceeded: errorMessage = "Limite di richieste superato. Riprova più tardi."
+                case .serverError(let message): errorMessage = "Errore del server: \(message)"
+                case .networkError(let error): errorMessage = "Errore di rete: \(error.localizedDescription)"
+                case .invalidSessionId: errorMessage = "ID sessione non valido."
+                case .configurationNotFound: errorMessage = "Configurazione dell'agente non trovata."
+                case .invalidMessage(let message): errorMessage = "Messaggio non valido: \(message)"
+                case .invalidChat(let message): errorMessage = "Chat non valida: \(message)"
+                case .chatNotFound(let message): errorMessage = "Chat non trovata: \(message)"
                 }
             } else {
                 errorMessage = "Errore: \(error.localizedDescription)"
             }
         }
         
-        isAwaitingAssistant = false
+        await MainActor.run {
+            isAwaitingAssistant = false
+        }
+    }
+    
+    // MARK: - Helper Methods
+    @MainActor
+    private func removePlaceholderMessage(_ placeholderId: UUID) async {
+        // SOLUZIONE: Metodo thread-safe per rimuovere placeholder
+        if let chatIndex = ChatManager.shared.chats.firstIndex(where: { $0.id == chat.id }),
+           let messageIndex = ChatManager.shared.chats[chatIndex].messages.firstIndex(where: { $0.id == placeholderId }) {
+            
+            // Rimuovi il messaggio dall'array locale
+            ChatManager.shared.chats[chatIndex].messages.remove(at: messageIndex)
+            
+            // Salva le modifiche tramite il metodo pubblico
+            ChatManager.shared.saveChat(ChatManager.shared.chats[chatIndex])
+        }
     }
     
     // MARK: - Configurable Agent Message
@@ -399,72 +438,46 @@ struct ChatDetailView: View {
         agentConfig: AgentConfiguration,
         contextualPrompt: String
     ) async throws -> String {
-        // Determina il provider da utilizzare
         let providerName = agentConfig.preferredProvider
         guard let provider = AssistantProvider.defaultProviders.first(where: { $0.name == providerName }) ?? AssistantProvider.defaultProviders.first else {
             throw ChatServiceError.unsupportedModel("Provider non trovato: \(providerName)")
         }
         
-        // Costruisci il messaggio completo con il prompt contestuale
         let fullMessage = "\(contextualPrompt)\n\nUser: \(message)"
         
-        // Determina il tipo di agente dal provider
         let agentType: AgentType = {
             switch provider.type {
-            case .openai:
-                return .openAI
-            case .anthropic:
-                return .claude
-            case .mistral:
-                return .mistral
-            case .perplexity:
-                return .perplexity
-            case .grok:
-                return .grok
-            case .deepSeek:
-                return .deepSeek
-            case .n8n:
-                return .n8n
-            case .custom:
-                return .custom
+            case .openai: return .openAI
+            case .anthropic: return .claude
+            case .mistral: return .mistral
+            case .perplexity: return .perplexity
+            case .grok: return .grok
+            case .deepSeek: return .deepSeek
+            case .n8n: return .n8n
+            case .custom: return .custom
             }
         }()
         
-        // Ottieni il servizio appropriato tramite ChatManager
         guard let service = chatManager.getChatService(for: agentType) else {
             throw ChatServiceError.unsupportedModel("Servizio non disponibile per \(agentType.displayName)")
         }
         
-        // Invia il messaggio usando il servizio
         return try await service.sendMessage(
             fullMessage,
-            model: provider.defaultModel
+            configuration: agentConfig
         )
     }
     
     // MARK: - Format N8N Response
     private func formatN8NResponse(_ response: String) -> String {
-        // Prova a decodificare la risposta come JSON per n8n
         if let data = response.data(using: .utf8),
            let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
             
             var formattedResponse = ""
-            
-            if let responseText = jsonObject["response"] as? String {
-                formattedResponse += responseText
-            }
-            
-            if let status = jsonObject["status"] as? String {
-                formattedResponse += "\n\n📊 Status: \(status)"
-            }
-            
-            if let actionRequired = jsonObject["actionRequired"] as? String {
-                formattedResponse += "\n\n⚡ Azione richiesta: \(actionRequired)"
-            }
-            
-            if let publishedUrl = jsonObject["publishedUrl"] as? String {
-                formattedResponse += "\n\n🔗 URL pubblicato: \(publishedUrl)"
-            }
+            if let responseText = jsonObject["response"] as? String { formattedResponse += responseText }
+            if let status = jsonObject["status"] as? String { formattedResponse += "\n\n📊 Status: \(status)" }
+            if let actionRequired = jsonObject["actionRequired"] as? String { formattedResponse += "\n\n⚡ Azione richiesta: \(actionRequired)" }
+            if let publishedUrl = jsonObject["publishedUrl"] as? String { formattedResponse += "\n\n🔗 URL pubblicato: \(publishedUrl)" }
             
             return formattedResponse.isEmpty ? response : formattedResponse
         }
@@ -491,16 +504,12 @@ struct WorkflowParameterSheet: View {
             .navigationTitle("Configura Parametri")
             .toolbar {
                   ToolbarItem(placement: .cancellationAction) {
-                      Button("Annulla") {
-                          dismiss()
-                      }
+                      Button("Annulla") { dismiss() }
                   }
                   
                   ToolbarItem(placement: .confirmationAction) {
-                      Button("Salva") {
-                          dismiss()
-                      }
-                      .font(.system(size: 17, weight: .semibold))
+                      Button("Salva") { dismiss() }
+                          .font(.system(size: 17, weight: .semibold))
                   }
               }
         }
@@ -565,14 +574,7 @@ struct WorkflowParameterSheet: View {
     @ViewBuilder
     private func parameterInput(_ parameter: N8NParameter) -> some View {
         switch parameter.type {
-        case .text:
-            TextField(parameter.placeholder, text: Binding(
-                get: { parameters[parameter.name] ?? "" },
-                set: { parameters[parameter.name] = $0 }
-            ))
-            .textFieldStyle(.roundedBorder)
-            
-        case .multiline:
+        case .text, .multiline:
             TextField(parameter.placeholder, text: Binding(
                 get: { parameters[parameter.name] ?? "" },
                 set: { parameters[parameter.name] = $0 }
@@ -584,7 +586,8 @@ struct WorkflowParameterSheet: View {
                 get: { parameters[parameter.name] ?? "" },
                 set: { parameters[parameter.name] = $0 }
             ))
-             .textFieldStyle(.roundedBorder)
+            .textFieldStyle(.roundedBorder)
+            .keyboardType(.numberPad) // <-- Added keyboard type
             
         case .boolean:
             Toggle(isOn: Binding(
@@ -612,15 +615,23 @@ struct WorkflowParameterSheet: View {
 
 // MARK: - Preview
 #Preview {
-    let sampleChat = Chat(
-        messages: [
-            Message(content: "Ciao!", isUser: true),
-            Message(content: "Ciao! Come posso aiutarti oggi?", isUser: false)
-        ],
-        agentType: .openAI
-    )
-    
-    NavigationView {
-        ChatDetailView(chat: sampleChat)
+    // Wrapper view to hold the state for the preview
+    struct PreviewWrapper: View {
+        @State private var sampleChat = Chat(
+            messages: [
+                Message.createUnsafe(content: "Ciao!", isUser: true),
+                Message.createUnsafe(content: "Ciao! Come posso aiutarti oggi?", isUser: false)
+            ],
+            agentType: .openAI,
+            memoryManager: AgentMemoryManager.shared
+        )
+        
+        var body: some View {
+            NavigationView {
+                ChatDetailView(chat: $sampleChat)
+            }
+        }
     }
+    
+    return PreviewWrapper()
 }

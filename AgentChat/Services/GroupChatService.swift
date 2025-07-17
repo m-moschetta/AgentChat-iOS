@@ -52,6 +52,12 @@ class GroupChatService: ChatServiceProtocol {
         // Il servizio di gruppo è sempre disponibile
     }
     
+    // MARK: - ChatServiceProtocol Implementation
+    func sendMessage(_ message: String, configuration: AgentConfiguration) async throws -> String {
+        // Usa il modello dalla configurazione come template name
+        return try await sendMessage(message, model: configuration.model)
+    }
+    
     // MARK: - Group Management
     func createGroup(from template: AgentGroupTemplate, customName: String? = nil) -> AgentGroup {
         let groupId = UUID()

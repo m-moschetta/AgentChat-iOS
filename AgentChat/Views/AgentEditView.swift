@@ -114,9 +114,9 @@ struct AgentEditView: View {
         .sheet(isPresented: $showingPreview) {
             PromptPreviewView(systemPrompt: systemPrompt, agentName: name)
         }
-        .onChange(of: name) { _ in validateForm() }
-        .onChange(of: systemPrompt) { _ in validateForm() }
-        .onChange(of: role) { _ in validateForm() }
+        .onChange(of: name) { _, _ in validateForm() }
+        .onChange(of: systemPrompt) { _, _ in validateForm() }
+        .onChange(of: role) { _, _ in validateForm() }
         .onAppear {
             validateForm()
         }

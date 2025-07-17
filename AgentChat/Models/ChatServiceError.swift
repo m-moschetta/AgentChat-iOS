@@ -18,6 +18,10 @@ enum ChatServiceError: LocalizedError {
     case authenticationFailed
     case serverError(String)
     case invalidSessionId
+    case configurationNotFound
+    case invalidMessage(String)
+    case invalidChat(String)
+    case chatNotFound(String)
     
     var errorDescription: String? {
         switch self {
@@ -39,6 +43,14 @@ enum ChatServiceError: LocalizedError {
             return "Errore del server: \(message)"
         case .invalidSessionId:
             return "ID sessione non valido"
+        case .configurationNotFound:
+            return "Configurazione non trovata"
+        case .invalidMessage(let message):
+            return "Messaggio non valido: \(message)"
+        case .invalidChat(let message):
+            return "Chat non valida: \(message)"
+        case .chatNotFound(let message):
+            return "Chat non trovata: \(message)"
         }
     }
 }

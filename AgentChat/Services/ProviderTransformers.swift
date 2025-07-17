@@ -24,7 +24,11 @@ struct AnthropicRequestTransformer: RequestTransformer {
              },
             maxTokens: request.parameters.maxTokens ?? 4000,
             temperature: request.parameters.temperature,
-            system: nil
+            topP: request.parameters.topP,
+            topK: request.parameters.topK,
+            system: nil, // System prompt non ancora gestito a livello di transformer
+            stream: request.parameters.stream,
+            stopSequences: request.parameters.stopSequences
         )
         
         return try JSONEncoder().encode(anthropicRequest)
@@ -63,8 +67,9 @@ struct MistralRequestTransformer: RequestTransformer {
             temperature: request.parameters.temperature,
             maxTokens: request.parameters.maxTokens,
             topP: request.parameters.topP,
-            randomSeed: nil,
-            stream: request.parameters.stream
+            randomSeed: nil, // Non ancora gestito
+            stream: request.parameters.stream,
+            safePrompt: request.parameters.safePrompt
         )
         
         return try JSONEncoder().encode(mistralRequest)
@@ -106,7 +111,8 @@ struct GrokRequestTransformer: RequestTransformer {
             temperature: request.parameters.temperature,
             maxTokens: request.parameters.maxTokens,
             topP: request.parameters.topP,
-            stream: request.parameters.stream
+            stream: request.parameters.stream,
+            stop: request.parameters.stop
         )
         
         return try JSONEncoder().encode(grokRequest)

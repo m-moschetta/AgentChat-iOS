@@ -221,7 +221,7 @@ class CustomAgentService: BaseAgentService {
         return customConfig.capabilities.compactMap { AgentCapability(rawValue: $0) }
     }
     
-    init(configuration: AgentConfiguration? = nil, customConfig: CustomProviderConfig? = nil) {
+    init(configuration: AgentConfiguration? = nil, customConfig: CustomProviderConfig? = nil, memoryManager: AgentMemoryManager? = nil) {
         // Use provided custom config or create a default one
         self.customConfig = customConfig ?? CustomProviderConfig(
             name: "Custom Provider",
@@ -258,7 +258,7 @@ class CustomAgentService: BaseAgentService {
             responseParser: CustomResponseParser(config: self.customConfig)
         )
         
-        super.init(configuration: config)
+        super.init(configuration: config, memoryManager: memoryManager)
     }
     
     override func sendMessage(_ message: String, model: String?) async throws -> String {

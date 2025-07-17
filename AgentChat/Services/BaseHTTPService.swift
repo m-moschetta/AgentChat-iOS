@@ -58,6 +58,10 @@ struct RequestParameters {
     let maxTokens: Int?
     let topP: Double?
     let stream: Bool?
+    let stop: [String]?
+    let topK: Int?
+    let safePrompt: Bool?
+    let stopSequences: [String]?
     
     // Provider-specific parameters
     let customParameters: [String: String]
@@ -67,12 +71,20 @@ struct RequestParameters {
         maxTokens: Int? = nil,
         topP: Double? = nil,
         stream: Bool? = false,
+        stop: [String]? = nil,
+        topK: Int? = nil,
+        safePrompt: Bool? = nil,
+        stopSequences: [String]? = nil,
         customParameters: [String: String] = [:]
     ) {
         self.temperature = temperature
         self.maxTokens = maxTokens
         self.topP = topP
         self.stream = stream
+        self.stop = stop
+        self.topK = topK
+        self.safePrompt = safePrompt
+        self.stopSequences = stopSequences
         self.customParameters = customParameters
     }
 }
@@ -129,17 +141,15 @@ class BaseHTTPService: ChatServiceProtocol {
         return configuration.name
     }
     
-    func sendMessage(_ message: String, model: String?) async throws -> String {
-        let selectedModel = model ?? configuration.defaultModel
-        
-        guard supportedModels.contains(selectedModel) else {
-            throw ChatServiceError.unsupportedModel(selectedModel)
+    func sendMessage(_ message: String, configuration: AgentConfiguration) async throws -> String {
+        guard supportedModels.contains(configuration.model) else {
+            throw ChatServiceError.unsupportedModel(configuration.model)
         }
         
         let unifiedRequest = UnifiedChatRequest(
-            model: selectedModel,
+            model: configuration.model,
             messages: [ChatMessage(role: "user", content: message)],
-            parameters: getDefaultParameters()
+            parameters: buildRequestParameters(from: configuration)
         )
         
         let response = try await sendUnifiedRequest(unifiedRequest)
@@ -158,11 +168,16 @@ class BaseHTTPService: ChatServiceProtocol {
         return configuration.name.lowercased()
     }
     
-    func getDefaultParameters() -> RequestParameters {
+    func buildRequestParameters(from configuration: AgentConfiguration) -> RequestParameters {
         return RequestParameters(
-            temperature: 0.7,
-            maxTokens: 4000,
-            stream: false
+            temperature: configuration.parameters.temperature,
+            maxTokens: configuration.parameters.maxTokens,
+            topP: configuration.parameters.topP,
+            stream: false, // Stream non è ancora gestito
+            stop: configuration.parameters.stopSequences, // Assuming 'stop' and 'stopSequences' are the same
+            topK: nil, // topK is not a direct parameter in AgentParameters, decide how to handle it.
+            safePrompt: nil, // same for safePrompt
+            stopSequences: configuration.parameters.stopSequences
         )
     }
     

@@ -98,36 +98,30 @@ struct AgentStatisticsView: View {
     
     var body: some View {
         HStack {
-            StatCard(title: "Totale", value: "\(statistics.total)", color: .blue)
-            StatCard(title: "Attivi", value: "\(statistics.active)", color: .green)
-            StatCard(title: "Provider", value: "\(statistics.byProvider.count)", color: .orange)
+            StatCard(
+                title: "Totale", 
+                value: "\(statistics.total)", 
+                icon: "number.circle.fill", 
+                color: .blue
+            )
+            StatCard(
+                title: "Attivi", 
+                value: "\(statistics.active)", 
+                icon: "checkmark.circle.fill", 
+                color: .green
+            )
+            StatCard(
+                title: "Provider", 
+                value: "\(statistics.byProvider.count)", 
+                icon: "server.rack", 
+                color: .orange
+            )
         }
         .padding(.vertical, 8)
     }
 }
 
-struct StatCard: View {
-    let title: String
-    let value: String
-    let color: Color
-    
-    var body: some View {
-        VStack {
-            Text(value)
-                .font(.title2)
-                .fontWeight(.bold)
-                .foregroundColor(color)
-            
-            Text(title)
-                .font(.caption)
-                .foregroundColor(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(color.opacity(0.1))
-        .cornerRadius(8)
-    }
-}
+// StatCard is defined in MainTabView.swift
 
 // MARK: - Agent Import Export View
 struct AgentImportExportView: View {

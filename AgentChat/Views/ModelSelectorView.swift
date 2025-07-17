@@ -244,7 +244,8 @@ struct ModelSelectorView_Previews: PreviewProvider {
         @State var sampleChat = Chat(
             agentType: .openAI,
             provider: AssistantProvider.defaultProviders.first(where: { $0.type == .openai }),
-            selectedModel: "gpt-4o"
+            selectedModel: "gpt-4o",
+            memoryManager: AgentMemoryManager.shared
         )
 
         // Pass the binding to the ModelSelectorView

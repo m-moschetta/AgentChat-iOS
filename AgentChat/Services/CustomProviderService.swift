@@ -23,15 +23,25 @@ class CustomProviderService: ChatServiceProtocol {
     
     func sendMessage(_ message: String, model: String?) async throws -> String {
         // For now, we'll need a default provider - this should be improved
-        guard let defaultProvider = getDefaultCustomProvider() else {
+        guard let defaultProvider = getDefaultCustomProvider(),
+              let config = AgentConfiguration.createAgentConfiguration(for: defaultProvider, model: model) else {
             throw ChatServiceError.invalidConfiguration
         }
-        return try await sendMessage(message: message, provider: defaultProvider, model: model ?? "custom-model")
+        return try await sendMessage(message, configuration: config)
     }
     
     func validateConfiguration() async throws {
         // Basic validation - should be improved based on actual requirements
 
+    }
+    
+    // MARK: - ChatServiceProtocol Implementation
+    func sendMessage(_ message: String, configuration: AgentConfiguration) async throws -> String {
+        // For custom providers, we'll need a default provider
+        guard let defaultProvider = getDefaultCustomProvider() else {
+            throw ChatServiceError.invalidConfiguration
+        }
+        return try await sendMessage(message: message, provider: defaultProvider, configuration: configuration)
     }
     
     private func getDefaultCustomProvider() -> AssistantProvider? {
@@ -40,17 +50,17 @@ class CustomProviderService: ChatServiceProtocol {
         return nil
     }
     
-    func sendMessage(message: String, provider: AssistantProvider, model: String) async throws -> String {
+    func sendMessage(message: String, provider: AssistantProvider, configuration: AgentConfiguration) async throws -> String {
         // For custom providers, we'll try to use a generic OpenAI-compatible format
         guard let apiKey = KeychainService.shared.getAPIKey(for: provider.id) else {
             throw ChatServiceError.missingAPIKey("API key missing for provider: \(provider.name)")
         }
         
         let request = OpenAIRequest(
-            model: model,
+            model: configuration.model,
             messages: [OpenAIMessage(role: "user", content: message)],
-            maxTokens: 4000,
-            temperature: 0.7,
+            maxTokens: configuration.maxTokens,
+            temperature: configuration.temperature,
             stream: false
         )
         
@@ -63,7 +73,7 @@ class CustomProviderService: ChatServiceProtocol {
         let (data, response) = try await session.data(for: urlRequest)
         
         guard let httpResponse = response as? HTTPURLResponse else {
-            throw ChatServiceError.networkError(URLError(.badServerResponse))
+            throw AgentServiceError.networkError(URLError(.badServerResponse))
         }
         
         guard 200...299 ~= httpResponse.statusCode else {

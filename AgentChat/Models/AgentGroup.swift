@@ -108,6 +108,14 @@ class AgentGroup: ObservableObject, Identifiable, Codable {
     }
 }
 
+// MARK: - Extension per compatibilità con MainTabView
+extension AgentGroup {
+    /// Proprietà computata per mappare participants ad agents
+    var agents: [GroupAgent] {
+        return participants
+    }
+}
+
 // MARK: - GroupMessage
 struct GroupMessage: Identifiable {
     let id = UUID()

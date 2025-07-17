@@ -27,25 +27,41 @@ class CoreDataPersistenceManager {
 
     func saveOrUpdateChat(chat: Chat) {
         print("--- Inizio saveOrUpdateChat per chat ID: \(chat.id) ---")
-        let context = container.viewContext
-        let fetchRequest: NSFetchRequest<ChatEntity> = ChatEntity.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %@", chat.id as CVarArg)
+        
+        // SOLUZIONE: Usa background context per thread safety
+        let backgroundContext = container.newBackgroundContext()
+        
+        backgroundContext.perform {
+            let fetchRequest: NSFetchRequest<ChatEntity> = ChatEntity.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %@", chat.id as CVarArg)
 
-        do {
-            let results = try context.fetch(fetchRequest)
-            let chatEntity = results.first ?? ChatEntity(context: context)
-            if results.first != nil {
-                print("ChatEntity esistente trovata per l'ID.")
-            } else {
-                print("Nessuna ChatEntity esistente, ne creo una nuova.")
+            do {
+                let results = try backgroundContext.fetch(fetchRequest)
+                let chatEntity: ChatEntity
+                
+                if let existingEntity = results.first {
+                    chatEntity = existingEntity
+                    print("ChatEntity esistente trovata per l'ID.")
+                } else {
+                    chatEntity = ChatEntity(context: backgroundContext)
+                    chatEntity.id = chat.id
+                    print("Nessuna ChatEntity esistente, ne creo una nuova.")
+                }
+                
+                self.updateChatEntity(chatEntity, from: chat, in: backgroundContext)
+                
+                // Salva nel background context
+                try backgroundContext.save()
+                print("--- Fine saveOrUpdateChat per chat ID: \(chat.id) ---")
+                
+                // TODO: Aggiungere notifica se necessario
+                 // DispatchQueue.main.async {
+                 //     NotificationCenter.default.post(name: .chatUpdated, object: chat.id)
+                 // }
+                
+            } catch {
+                print("❌ ERRORE in saveOrUpdateChat: \(error)")
             }
-            
-            updateChatEntity(chatEntity, from: chat, in: context)
-            
-            saveContext()
-            print("--- Fine saveOrUpdateChat per chat ID: \(chat.id) ---")
-        } catch {
-            print("ERRORE FATALE in saveOrUpdateChat: \(error)")
         }
     }
 
@@ -81,7 +97,12 @@ class CoreDataPersistenceManager {
     // MARK: - Private Conversion Helpers
 
     private func updateChatEntity(_ entity: ChatEntity, from chat: Chat, in context: NSManagedObjectContext) {
-        print("  -> Inizio updateChatEntity per ID: \(chat.id)")
+        print("[DEBUG] Updating ChatEntity with ID: \(chat.id)")
+        print("[DEBUG] Chat messages count: \(chat.messages.count)")
+        print("[DEBUG] Chat title: \(chat.title)")
+        print("[DEBUG] Chat agentType: \(chat.agentType.rawValue)")
+        print("[DEBUG] Chat chatType: \(chat.chatType.rawValue)")
+        
         entity.id = chat.id
         entity.agentTypeString = chat.agentType.rawValue
         entity.chatTypeString = chat.chatType.rawValue
@@ -112,13 +133,18 @@ class CoreDataPersistenceManager {
             }
         }
 
+        // SOLUZIONE: Serializzazione sicura con fallback
         if let agentConfiguration = chat.agentConfiguration {
             do {
                 let data = try encoder.encode(agentConfiguration)
                 entity.agentConfigurationJSON = String(data: data, encoding: .utf8)
             } catch {
-                print("--- ERRORE FATALE: Impossibile codificare la proprietà 'agentConfiguration' per la chat \(chat.id): \(error) ---")
+                print("⚠️ Serialization failed for agentConfiguration: \(error)")
+                entity.agentConfigurationJSON = nil // Fallback sicuro
+                print("Config details: name=\(agentConfiguration.name), provider=\(agentConfiguration.preferredProvider)")
             }
+        } else {
+            entity.agentConfigurationJSON = nil
         }
 
         if let groupTemplate = chat.groupTemplate {
@@ -155,59 +181,22 @@ class CoreDataPersistenceManager {
     }
 
     private func convertToChat(from entity: ChatEntity) -> Chat {
-<<<<<<< Updated upstream
-        let decoder = JSONDecoder()
-        
-        let provider = entity.providerJSON.flatMap { $0.data(using: String.Encoding.utf8) }.flatMap {
-            try? decoder.decode(AssistantProvider.self, from: $0)
-        }
-        let n8nWorkflow = entity.n8nWorkflowJSON.flatMap { $0.data(using: String.Encoding.utf8) }.flatMap {
-            try? decoder.decode(N8NWorkflow.self, from: $0)
-        }
-        let agentConfig = entity.agentConfigurationJSON.flatMap { $0.data(using: String.Encoding.utf8) }.flatMap {
-            try? decoder.decode(AgentConfiguration.self, from: $0)
-        }
-
-        var chat = Chat(
-            id: entity.id ?? UUID(),
-            agentType: AgentType(rawValue: entity.agentTypeString ?? "") ?? .openAI,
-            provider: provider,
-            selectedModel: entity.selectedModel,
-            n8nWorkflow: n8nWorkflow
-        )
-        
-        // Set agent configuration separately
-        chat.agentConfiguration = agentConfig
-
-        if let messageEntities = entity.messages as? Set<MessageEntity> {
-            chat.messages = messageEntities.map { convertToMessage(from: $0) }.sorted(by: { $0.timestamp < $1.timestamp })
-        }
-        
-        return chat
-=======
-        return Chat(from: entity)
->>>>>>> Stashed changes
+        return Chat(fromEntity: entity, memoryManager: AgentMemoryManager.shared)
     }
 
     private func convertToMessage(from entity: MessageEntity) -> Message {
-        return Message(
+        return Message.createUnsafe(
             id: entity.id ?? UUID(),
             content: entity.content ?? "",
-<<<<<<< Updated upstream
-            isUser: entity.roleString == "user",
-=======
             isUser: entity.isUser,
->>>>>>> Stashed changes
             timestamp: entity.timestamp ?? Date()
         )
     }
 
 
-    static let shared = CoreDataPersistenceManager()
-
     let container: NSPersistentContainer
 
-    private init() {
+    init() {
         container = NSPersistentContainer(name: "AgentChat")
         container.loadPersistentStores { (storeDescription, error) in
             if let error = error as NSError? {
@@ -221,23 +210,18 @@ class CoreDataPersistenceManager {
         if context.hasChanges {
             do {
                 try context.save()
-<<<<<<< Updated upstream
+                print("[DEBUG] CoreData save successful")
             } catch {
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-            }
-=======
-                print("✅ Core Data context saved successfully.")
-            } catch {
-                let nserror = error as NSError
-                print("❌ Failed to save Core Data context: \(nserror), \(nserror.userInfo)")
+                print("[ERROR] CoreData save failed: \(error.localizedDescription)")
+                if let coreDataError = error as NSError? {
+                    print("[ERROR] CoreData error details: \(coreDataError.userInfo)")
+                }
                 // Invece di un fatalError, che chiude l'app, logghiamo l'errore
                 // per poterlo ispezionare durante il debug.
                 // fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         } else {
-            print("ℹ️ Core Data context has no changes to save.")
->>>>>>> Stashed changes
+            print("[DEBUG] CoreData context has no changes to save.")
         }
     }
 }

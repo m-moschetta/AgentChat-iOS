@@ -25,23 +25,24 @@ class AgentOrchestrator: ObservableObject {
     
     // MARK: - Agent Management
     func createAgentService(for configuration: AgentConfiguration) throws -> AgentServiceProtocol {
+        let memoryManager = AgentMemoryManager.shared
         let agentService: AgentServiceProtocol
         
         switch configuration.preferredProvider.lowercased() {
         case "openai":
-            agentService = OpenAIAgentService(configuration: configuration)
+            agentService = OpenAIAgentService(configuration: configuration, memoryManager: memoryManager)
         case "anthropic", "claude":
-            agentService = AnthropicAgentService(configuration: configuration)
+            agentService = AnthropicAgentService(configuration: configuration, memoryManager: memoryManager)
         case "mistral":
-            agentService = MistralAgentService(configuration: configuration)
+            agentService = MistralAgentService(configuration: configuration, memoryManager: memoryManager)
         case "perplexity":
-            agentService = PerplexityAgentService(configuration: configuration)
+            agentService = PerplexityAgentService(configuration: configuration, memoryManager: memoryManager)
         case "grok":
-            agentService = GrokAgentService(configuration: configuration)
+            agentService = GrokAgentService(configuration: configuration, memoryManager: memoryManager)
         case "n8n":
-            agentService = N8NAgentService(configuration: configuration)
+            agentService = N8NAgentService(configuration: configuration, memoryManager: memoryManager)
         default:
-            agentService = CustomAgentService(configuration: configuration)
+            agentService = CustomAgentService(configuration: configuration, memoryManager: memoryManager)
         }
         
         activeAgents[configuration.id] = agentService
@@ -106,8 +107,13 @@ class AgentOrchestrator: ObservableObject {
         session.lastActivity = Date()
         session.messageCount += 1
         
+        // Recupera la configurazione dell'agente
+        guard let agentConfig = configurationManager.getAgent(withId: session.agentId) else {
+            throw OrchestratorError.agentNotFound(session.agentId)
+        }
+
         // Processa il messaggio
-        let response = try await agentService.sendMessage(message, model: model)
+        let response = try await agentService.sendMessage(message, configuration: agentConfig)
         
         // Aggiorna le statistiche
         session.totalTokensUsed += estimateTokens(message + response)
@@ -169,8 +175,13 @@ class AgentOrchestrator: ObservableObject {
                 throw OrchestratorError.agentNotFound(step.agentId)
             }
             
+            // Recupera la configurazione dell'agente per lo step
+            guard let agentConfig = configurationManager.getAgent(withId: step.agentId) else {
+                throw OrchestratorError.agentNotFound(step.agentId)
+            }
+
             let stepInput = buildStepInput(currentResult, step: step)
-            currentResult = try await agentService.sendMessage(stepInput, model: step.preferredModel)
+            currentResult = try await agentService.sendMessage(stepInput, configuration: agentConfig)
             
             // Aggiorna il progresso
             task.progress = Float(task.steps.firstIndex(of: step)! + 1) / Float(task.steps.count)
@@ -188,8 +199,13 @@ class AgentOrchestrator: ObservableObject {
                     }
                     
                     do {
+                        // Recupera la configurazione dell'agente per lo step
+                        guard let agentConfig = self.configurationManager.getAgent(withId: step.agentId) else {
+                            return (index, "Error: Agent configuration not found")
+                        }
+
                         let stepInput = self.buildStepInput(task.initialInput, step: step)
-                        let result = try await agentService.sendMessage(stepInput, model: step.preferredModel)
+                        let result = try await agentService.sendMessage(stepInput, configuration: agentConfig)
                         return (index, result)
                     } catch {
                         return (index, "Error: \(error.localizedDescription)")

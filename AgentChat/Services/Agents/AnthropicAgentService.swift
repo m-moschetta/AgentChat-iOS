@@ -42,7 +42,7 @@ class AnthropicAgentService: BaseAgentService {
         return [.textGeneration, .codeGeneration, .dataAnalysis]
     }
     
-    override init(configuration: AgentConfiguration? = nil) {
+    override init(configuration: AgentConfiguration? = nil, memoryManager: AgentMemoryManager? = nil) {
         let config = configuration ?? AgentConfiguration(
             id: UUID(),
             name: "Claude Assistant",
@@ -66,7 +66,7 @@ class AnthropicAgentService: BaseAgentService {
             responseParser: AnthropicResponseParser()
         )
         
-        super.init(configuration: config)
+        super.init(configuration: config, memoryManager: memoryManager)
     }
     
     override func sendMessage(_ message: String, model: String?) async throws -> String {
@@ -85,7 +85,7 @@ class AnthropicAgentService: BaseAgentService {
         
         // Save memory
         if let agentId = agentConfiguration?.id {
-            try await AgentMemoryManager.shared.saveMemory(
+            try await memoryManager.saveMemory(
                 for: agentId,
                 chatId: UUID(),
                 content: response.content,

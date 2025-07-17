@@ -83,28 +83,38 @@ extension AssistantProvider {
             type: .openai,
             endpoint: "https://api.openai.com/v1/chat/completions",
             supportedModels: [
-                // Modelli Chat più recenti (Luglio 2025)
-                "gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", 
-                "gpt-4o", "gpt-4o-mini", 
-                "gpt-4.5",
-                "o3", "o3-pro", 
-                "o4-mini", "o4-mini-high",
+                // GPT-4 Omni Series
+                "gpt-4o", "gpt-4o-latest",
+                // GPT-4.1 Series
+                "gpt-4.1", "gpt-4.1-mini",
+                // Reasoning Models (o-series)
+                "o1", "o1-mini", "o1-pro",
+                "o3", "o3-pro",
+                "o4-mini",
+                // Legacy Models
                 "gpt-3.5-turbo",
-                // Modelli Embedding
-                "text-embedding-3-large", "text-embedding-3-small", "text-embedding-ada-002",
-                // Modelli Specializzati
-                "gpt-image-1"
+                // Embedding Models
+                "text-embedding-3-large", "text-embedding-3-small", "text-embedding-ada-002"
             ],
-            defaultModel: "gpt-4.1-mini",
+            defaultModel: "gpt-4o-latest",
             icon: "brain.head.profile",
-            description: "OpenAI's latest models including GPT-4.1, o3/o4 reasoning series and specialized models (Luglio 2025)"
+            description: "OpenAI's latest models including GPT-4o, GPT-4.1, and o-series reasoning models"
         ),
         AssistantProvider(
             name: "Anthropic",
             type: .anthropic,
             endpoint: "https://api.anthropic.com/v1/messages",
-            supportedModels: ["claude-opus-4-20250514", "claude-sonnet-4-20250514", "claude-3-7-sonnet-20250219", "claude-3-5-sonnet-20241022", "claude-3-5-haiku-20241022", "claude-3-opus-20240229", "claude-3-haiku-20240307"],
-            defaultModel: "claude-3-5-sonnet-20241022",
+            supportedModels: [
+                // Claude 4 Series
+                "claude-opus-4", "claude-sonnet-4",
+                // Claude 3.5 Series
+                "claude-3.5-sonnet", "claude-3.5-haiku",
+                // Claude 3.7 Series
+                "claude-3.7-sonnet",
+                // Claude Original Series
+                "claude-3-opus", "claude-3-sonnet", "claude-3-haiku"
+            ],
+            defaultModel: "claude-3.5-sonnet",
             icon: "sparkles",
             description: "Anthropic's Claude models for thoughtful and helpful conversations"
         ),
@@ -112,33 +122,47 @@ extension AssistantProvider {
             name: "Mistral",
             type: .mistral,
             endpoint: "https://api.mistral.ai/v1/chat/completions",
-            supportedModels: ["mistral-medium-2505", "magistral-medium-2506", "codestral-2501", "devstral-medium-2507", "mistral-large-2411", "pixtral-large-2411", "ministral-8b-2410", "ministral-3b-2410", "magistral-small-2506", "mistral-small-2506", "devstral-small-2507", "mistral-nemo-2407", "pixtral-12b-2409", "mistral-embed", "mistral-moderation-2411", "mistral-ocr-2505"],
-            defaultModel: "mistral-medium-2505",
+            supportedModels: [
+                // Modelli Pro
+                "mistral-large-latest", "mistral-small-latest", "mistral-large-specific",
+                // Specializzati
+                "devstral-medium", "magistral-reasoning", "pixtral-vision", "voxtral-audio",
+                // Open-Source
+                "open-mistral-7b", "open-mixtral-8x7b", "open-mixtral-8x22b"
+            ],
+            defaultModel: "mistral-large-latest",
             icon: "wind",
-            description: "Mistral's efficient and powerful language models with latest 2025 updates"
+            description: "Mistral's efficient and powerful language models with specialized capabilities"
         ),
         AssistantProvider(
             name: "Perplexity",
             type: .perplexity,
             endpoint: "https://api.perplexity.ai/chat/completions",
-            supportedModels: ["sonar-reasoning-pro", "sonar-reasoning", "sonar-pro", "sonar", "sonar-deep-research", "r1-1776", "llama-3.1-sonar-large-128k-online", "llama-3.1-sonar-small-128k-online", "llama-3.1-sonar-large-128k-chat", "llama-3.1-sonar-small-128k-chat", "llama-3.1-8b-instruct", "llama-3.1-70b-instruct"],
+            supportedModels: [
+                // Sonar Online
+                "sonar-pro", "llama-sonar-huge-online", "llama-sonar-large-online",
+                // Sonar Specializzati
+                "sonar-reasoning-pro", "sonar-deep-research",
+                // Open-Source
+                "llama-405b-instruct", "llama-70b-instruct", "mixtral-8x7b-instruct"
+            ],
             defaultModel: "sonar-pro",
             icon: "magnifyingglass.circle",
-            description: "Perplexity's latest search-enhanced AI models with reasoning and deep research (2025)"
+            description: "Perplexity's search-enhanced AI models with reasoning and research capabilities"
         ),
         AssistantProvider(
             name: "Grok",
             type: .grok,
             endpoint: "https://api.x.ai/v1/chat/completions",
             supportedModels: [
-                // Modelli Grok 4 (Luglio 2025)
-                "grok-4", "grok-4-heavy",
-                // Modelli Legacy
-                "grok-3", "grok-beta", "grok-vision-beta"
+                // Grok 4
+                "grok-4", "grok-4-specific",
+                // Grok 1.5
+                "grok-1.5", "grok-1.5-vision"
             ],
             defaultModel: "grok-4",
             icon: "bolt.circle",
-            description: "xAI's Grok models including Grok 4 'most intelligent AI in the world' (Luglio 2025)"
+            description: "xAI's Grok models with advanced reasoning and vision capabilities"
         ),
 
         AssistantProvider(

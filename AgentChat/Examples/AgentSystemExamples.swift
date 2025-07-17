@@ -36,7 +36,7 @@ class AgentSystemExamples {
         do {
             let response = try await agentService.sendMessage(
                 "Scrivi una funzione Swift per calcolare il fattoriale di un numero",
-                model: nil
+                configuration: config
             )
             print("Risposta: \(response)")
         } catch {
@@ -63,7 +63,7 @@ class AgentSystemExamples {
         do {
             let response = try await agentService.sendMessage(
                 "Quali sono le ultime novità nel campo dell'intelligenza artificiale?",
-                model: nil
+                configuration: config
             )
             print("Ricerca: \(response)")
         } catch {
@@ -214,7 +214,7 @@ guard let session = try? orchestrator.createSession(for: groupConfig.id, chatId:
         
         // Primo messaggio
         do {
-            let response1 = try await agentService.sendMessage("Il mio nome è Mario e sto lavorando su un'app iOS", model: nil)
+            let response1 = try await agentService.sendMessage("Il mio nome è Mario e sto lavorando su un'app iOS", configuration: config)
             print("Risposta 1: \(response1)")
             
             // Salva il contesto
@@ -226,7 +226,7 @@ guard let session = try? orchestrator.createSession(for: groupConfig.id, chatId:
             try await agentService.saveConversationContext(context)
             
             // Secondo messaggio che fa riferimento al primo
-            let response2 = try await agentService.sendMessage("Puoi aiutarmi con il design pattern MVVM per la mia app?", model: nil)
+            let response2 = try await agentService.sendMessage("Puoi aiutarmi con il design pattern MVVM per la mia app?", configuration: config)
             print("Risposta 2: \(response2)")
             
         } catch {
@@ -261,7 +261,7 @@ guard let session = try? orchestrator.createSession(for: groupConfig.id, chatId:
         }
         
         do {
-            let response = try await agentService.sendMessage("Crea una strategia di marketing per un'app mobile", model: nil)
+            let response = try await agentService.sendMessage("Crea una strategia di marketing per un'app mobile", configuration: customConfig)
             print("Risposta personalizzata: \(response)")
         } catch {
             print("Errore nell'agente personalizzato: \(error)")
@@ -371,7 +371,7 @@ guard let session = try? orchestrator.createSession(for: groupConfig.id, chatId:
         let startTime = Date()
         
         do {
-            let response = try await agentService.sendMessage("Spiega brevemente cos'è l'intelligenza artificiale", model: nil)
+            let response = try await agentService.sendMessage("Spiega brevemente cos'è l'intelligenza artificiale", configuration: config)
             
             let endTime = Date()
             let duration = endTime.timeIntervalSince(startTime)

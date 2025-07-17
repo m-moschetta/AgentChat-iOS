@@ -102,7 +102,7 @@ class DeepSeekAgentService: BaseAgentService {
         return [.textGeneration, .codeGeneration, .dataAnalysis]
     }
     
-    override init(configuration: AgentConfiguration? = nil) {
+    override init(configuration: AgentConfiguration? = nil, memoryManager: AgentMemoryManager? = nil) {
         let config = configuration ?? AgentConfiguration(
             id: UUID(),
             name: "DeepSeek Assistant",
@@ -119,7 +119,7 @@ class DeepSeekAgentService: BaseAgentService {
             responseParser: DeepSeekResponseParser()
         )
         
-        super.init(configuration: config)
+        super.init(configuration: config, memoryManager: memoryManager)
     }
     
     override func sendMessage(_ message: String, model: String?) async throws -> String {
@@ -139,7 +139,7 @@ class DeepSeekAgentService: BaseAgentService {
         
         // Save conversation context using memory manager
         if let agentId = agentConfiguration?.id {
-            AgentMemoryManager.shared.saveMemory(
+            memoryManager.saveMemory(
                 for: agentId,
                 chatId: UUID(),
                 content: response.content,

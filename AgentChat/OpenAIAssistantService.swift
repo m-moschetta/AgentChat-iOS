@@ -60,7 +60,7 @@ class OpenAIAssistantService {
     private var threadIds: [UUID: String] = [:] // Associa chat locali a thread OpenAI
     
     // Crea nuovo thread o usa esistente, invia messaggio, ritorna risposta
-    func sendMessage(userMessage: String, forChat chatId: UUID, withAssistantId assistantId: String) async throws -> String {
+    func sendMessage(userMessage: String, forChat chatId: UUID, withAssistantId assistantId: String, configuration: AgentConfiguration) async throws -> String {
         let threadId = try await getOrCreateThread(for: chatId)
         let messageId = try await postMessage(threadId: threadId, content: userMessage)
         let runId = try await createRun(threadId: threadId, assistantId: assistantId)

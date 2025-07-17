@@ -114,7 +114,7 @@ class N8NAgentService: BaseAgentService {
         return [.workflowAutomation, .collaboration]
     }
     
-    override init(configuration: AgentConfiguration? = nil) {
+    override init(configuration: AgentConfiguration? = nil, memoryManager: AgentMemoryManager? = nil) {
         let config = configuration ?? AgentConfiguration(
             name: "N8N Workflow Agent",
             systemPrompt: "You are an N8N workflow automation agent. You can execute workflows, manage automations, and integrate with various services.",
@@ -128,7 +128,7 @@ class N8NAgentService: BaseAgentService {
         self.baseURL = ProcessInfo.processInfo.environment["N8N_BASE_URL"] ?? "http://localhost:5678"
         self.apiKey = ProcessInfo.processInfo.environment["N8N_API_KEY"]
         
-        super.init(configuration: config)
+        super.init(configuration: config, memoryManager: memoryManager)
     }
     
     override func sendMessage(_ message: String, model: String?) async throws -> String {
@@ -146,7 +146,7 @@ class N8NAgentService: BaseAgentService {
         let result = formatWorkflowResponse(response)
         
         // Save conversation context using memory manager
-        AgentMemoryManager.shared.saveMemory(
+        memoryManager.saveMemory(
             for: agentConfiguration?.id ?? UUID(),
             chatId: UUID(),
             content: result,

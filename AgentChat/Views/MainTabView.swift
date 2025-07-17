@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 /// Vista principale con TabView che implementa le linee guida iOS 26
 /// per la barra inferiore fluttuante con materiale Liquid Glass
@@ -45,14 +46,14 @@ struct MainTabView: View {
         .tint(.accentColor)
         // Implementa il comportamento di minimizzazione iOS 26
         .toolbarBackground(.visible, for: .tabBar)
-        .toolbarColorScheme(.automatic, for: .tabBar)
+        .toolbarColorScheme(.dark, for: .tabBar)
     }
 }
 
 // MARK: - Agent Management View
 struct AgentManagementView: View {
-    @StateObject private var agentManager = AgentManager.shared
-    @StateObject private var configManager = AgentConfigurationManager.shared
+    @ObservedObject private var agentManager = AgentManager.shared
+    @ObservedObject private var configManager = AgentConfigurationManager.shared
     @State private var showingAddAgent = false
     @State private var showingGroupCreation = false
     @State private var selectedAgent: Agent?
@@ -93,7 +94,7 @@ struct AgentManagementView: View {
                         
                         StatCard(
                             title: "Workflow",
-                            value: "\(configManager.configurations.count)",
+                            value: "\(configManager.agents.count)",
                             icon: "flowchart.fill",
                             color: .purple
                         )
@@ -138,13 +139,13 @@ struct AgentManagementView: View {
                 }
             }
             .sheet(isPresented: $showingAddAgent) {
-                AddAgentView()
+                AddAgentView(agentManager: agentManager)
             }
             .sheet(isPresented: $showingGroupCreation) {
                 GroupCreationView()
             }
             .sheet(item: $selectedAgent) { agent in
-                AgentEditView(agent: agent)
+                AgentEditView(agent: agent.toAgentConfiguration())
             }
             
             // Vista di default quando nessun agente è selezionato
@@ -301,9 +302,7 @@ struct AgentRowView: View {
                 Text(agent.name)
                     .font(.headline)
                 
-                Text(agent.role)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+
                 
                 HStack {
                     Text(agent.type.displayName)
@@ -451,5 +450,5 @@ struct GroupCreationView: View {
 
 #Preview {
     MainTabView()
-        .environment(\.managedObjectContext, CoreDataPersistenceManager.shared.container.viewContext)
+        .environment(\.managedObjectContext, CoreDataPersistenceManager().container.viewContext)
 }

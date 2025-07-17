@@ -66,104 +66,20 @@ struct ChatListView: View {
                 
                 // Chat List
                 List {
-                    ForEach(chatService.chats) { chat in
-                        HStack {
-                            Circle()
-                                .fill(Color.accentColor.opacity(0.2))
-                                .frame(width: 40, height: 40)
-                                .overlay {
-                                    if let workflow = chat.n8nWorkflow {
-                                        Text(workflow.icon)
-                                            .font(.title3)
-                                    } else if chat.agentConfiguration != nil {
-                                        Image(systemName: "person.crop.circle")
-                                            .font(.title3)
-                                            .foregroundColor(.purple)
-                                    } else {
-                                        Image(systemName: ChatListView.getAgentTypeIcon(chat.agentType))
-                                            .font(.title3)
-                                            .foregroundColor(.accentColor)
-                                    }
-                                }
-                            
-                            VStack(alignment: .leading, spacing: 4) {
-                                HStack {
-                                    if let workflow = chat.n8nWorkflow {
-                                        Text(workflow.name)
-                                            .font(.headline)
-                                            .lineLimit(1)
-                                        Text(workflow.category.displayName)
-                                            .font(.caption2)
-                                            .padding(.horizontal, 6)
-                                            .padding(.vertical, 2)
-                                            .background(Color.blue.opacity(0.2))
-                                            .foregroundColor(.blue)
-                                            .cornerRadius(4)
-                                    } else if let agentConfig = chat.agentConfiguration {
-                                        Text(agentConfig.name)
-                                            .font(.headline)
-                                            .lineLimit(1)
-                                        Text(agentConfig.role)
-                                            .font(.caption2)
-                                            .padding(.horizontal, 6)
-                                            .padding(.vertical, 2)
-                                            .background(Color.purple.opacity(0.2))
-                                            .foregroundColor(.purple)
-                                            .cornerRadius(4)
-                                    } else {
-                                        Text(ChatListView.getAgentTypeName(chat.agentType))
-                                            .font(.headline)
-                                            .lineLimit(1)
-                                        
-                                        if let model = chat.selectedModel {
-                                            Text(model)
-                                                .font(.caption)
-                                                .foregroundColor(.secondary)
-                                                .padding(.horizontal, 6)
-                                                .padding(.vertical, 2)
-                                                .background(Color.gray.opacity(0.2))
-                                                .cornerRadius(4)
-                                        }
-                                    }
-                                }
-                                
-                                if let lastMessage = chat.lastMessage {
-                                    Text(lastMessage.content)
-                                        .font(.subheadline)
-                                        .foregroundColor(.secondary)
-                                        .lineLimit(2)
-                                } else {
-                                    Text("Nuova conversazione")
-                                        .font(.subheadline)
-                                        .foregroundColor(.secondary)
-                                        .italic()
-                                }
-                            }
-                            
-                            Spacer()
-                            
-                            VStack {
-                                if let lastMessage = chat.lastMessage {
-                                    Text(lastMessage.timestamp, style: .time)
-                                        .font(.caption2)
-                                        .foregroundColor(.secondary)
-                                }
-                                
-                                Spacer()
-                            }
-                        }
-                        .padding(.vertical, 8)
-                        .background(
-                            NavigationLink(
-                                destination: ChatDetailView(chat: chat),
-                                label: { EmptyView() }
+                    ForEach(chatService.chats.indices, id: \.self) { index in
+                        let chat = chatService.chats[index]
+                        ChatRowViewSimplified(chat: chat)
+                            .background(
+                                NavigationLink(
+                                    destination: ChatDetailView(chat: $chatService.chats[index]),
+                                    label: { EmptyView() }
+                                )
+                                .opacity(0)
                             )
-                            .opacity(0)
-                        )
-                        .onTapGesture {
-                            selectedChat = chat
-                            activeGroupChat = nil
-                        }
+                            .onTapGesture {
+                                selectedChat = chat
+                                activeGroupChat = nil
+                            }
                     }
                     .onDelete(perform: deleteChats)
                 }
@@ -357,6 +273,100 @@ struct ChatListView: View {
         case .codeReviewPanel:
             return "Code Review Panel"
         }
+    }
+}
+
+// MARK: - ChatRowViewSimplified
+struct ChatRowViewSimplified: View {
+    let chat: Chat
+    
+    var body: some View {
+        HStack {
+            Circle()
+                .fill(Color.accentColor.opacity(0.2))
+                .frame(width: 40, height: 40)
+                .overlay {
+                    if let workflow = chat.n8nWorkflow {
+                        Text(workflow.icon)
+                            .font(.title3)
+                    } else if chat.agentConfiguration != nil {
+                        Image(systemName: "person.crop.circle")
+                            .font(.title3)
+                            .foregroundColor(.purple)
+                    } else {
+                        Image(systemName: ChatListView.getAgentTypeIcon(chat.agentType))
+                            .font(.title3)
+                            .foregroundColor(.accentColor)
+                    }
+                }
+            
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    if let workflow = chat.n8nWorkflow {
+                        Text(workflow.name)
+                            .font(.headline)
+                            .lineLimit(1)
+                        Text(workflow.category.displayName)
+                            .font(.caption2)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.blue.opacity(0.2))
+                            .foregroundColor(.blue)
+                            .cornerRadius(4)
+                    } else if let agentConfig = chat.agentConfiguration {
+                        Text(agentConfig.name)
+                            .font(.headline)
+                            .lineLimit(1)
+                        Text(agentConfig.role)
+                            .font(.caption2)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.purple.opacity(0.2))
+                            .foregroundColor(.purple)
+                            .cornerRadius(4)
+                    } else {
+                        Text(ChatListView.getAgentTypeName(chat.agentType))
+                            .font(.headline)
+                            .lineLimit(1)
+                        
+                        if let model = chat.selectedModel {
+                            Text(model)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Color.gray.opacity(0.2))
+                                .cornerRadius(4)
+                        }
+                    }
+                }
+                
+                if let lastMessage = chat.lastMessage {
+                    Text(lastMessage.content)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .lineLimit(2)
+                } else {
+                    Text("Nuova conversazione")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .italic()
+                }
+            }
+            
+            Spacer()
+            
+            VStack {
+                if let lastMessage = chat.lastMessage {
+                    Text(lastMessage.timestamp, style: .time)
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
+            }
+        }
+        .padding(.vertical, 8)
     }
 }
 

@@ -124,7 +124,7 @@ class AgentMemoryManager: ObservableObject {
     private let maxContextEntries = 20
     private let memoryQueue = DispatchQueue(label: "com.agentchat.memory", qos: .utility)
     
-    private init() {
+    internal init() {
         loadMemories()
         startCleanupTimer()
     }

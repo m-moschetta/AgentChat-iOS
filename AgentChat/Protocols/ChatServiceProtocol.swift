@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - Chat Service Protocol
 protocol ChatServiceProtocol {
-    func sendMessage(_ message: String, model: String?) async throws -> String
+    func sendMessage(_ message: String, configuration: AgentConfiguration) async throws -> String
     func validateConfiguration() async throws
     var supportedModels: [String] { get }
     var providerName: String { get }

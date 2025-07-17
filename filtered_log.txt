@@ -1,0 +1,17 @@
+
+SwiftCompile normal arm64 Compiling\ MainTabView.swift /Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/MainTabView.swift (in target 'AgentChat' from project 'AgentChat')
+SwiftCompile normal arm64 /Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/MainTabView.swift (in target 'AgentChat' from project 'AgentChat')
+    cd /Users/mariomoschetta/Documents/AgentChat
+    
+/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/MainTabView.swift:49:30: error: type 'ColorScheme?' has no member 'automatic'
+        .toolbarColorScheme(.automatic, for: .tabBar)
+                            ~^~~~~~~~~
+/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/MainTabView.swift:97:53: error: value of type 'AgentConfigurationManager' has no dynamic member 'configurations' using key path from root type 'AgentConfigurationManager'
+                            value: "\(configManager.configurations.count)",
+                                      ~~~~~~~~~~~~~ ^~~~~~~~~~~~~~
+/Users/mariomoschetta/Documents/AgentChat/AgentChat/Views/MainTabView.swift:97:39: error: referencing subscript 'subscript(dynamicMember:)' requires wrapper 'ObservedObject<AgentConfigurationManager>.Wrapper'
+                            value: "\(configManager.configurations.count)",
+                                      ^
+                                      $
+
+Failed frontend command:

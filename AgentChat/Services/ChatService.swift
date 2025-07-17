@@ -23,15 +23,32 @@ class ChatManager: ObservableObject {
     @Published var chats: [Chat] = []
     private let serviceFactory = ServiceFactory()
     private let agentOrchestrator = AgentOrchestrator.shared
+    private let persistenceManager = CoreDataPersistenceManager()
     
-        private init() {
+    // SOLUZIONE: Thread safety per operazioni concorrenti
+    private let chatQueue = DispatchQueue(label: "com.agentchat.chatmanager", attributes: .concurrent)
+    private let syncQueue = DispatchQueue(label: "com.agentchat.sync", qos: .userInitiated)
+    
+    private init() {
         // Carica le chat salvate (RIMOSSA clearAllData() che cancellava tutto)
-        chats = CoreDataPersistenceManager.shared.loadChats()
+        loadChatsFromPersistence()
+    }
+    
+    // SOLUZIONE: Metodo thread-safe per caricare chat
+    private func loadChatsFromPersistence() {
+        syncQueue.async { [weak self] in
+            guard let self = self else { return }
+            let loadedChats = self.persistenceManager.loadChats()
+            
+            DispatchQueue.main.async {
+                self.chats = loadedChats
+            }
+        }
     }
     
     /// Cancella tutti i dati (solo per debug o reset manuale)
     //    func clearAllData() {
-//        CoreDataPersistenceManager.shared.clearAllData()
+//        persistenceManager.clearAllData()
 //        chats = []
 //    }
     
@@ -62,18 +79,42 @@ class ChatManager: ObservableObject {
             agentType: agentType,
             provider: provider,
             selectedModel: model,
-            n8nWorkflow: workflow
+            n8nWorkflow: workflow,
+            memoryManager: AgentMemoryManager.shared
         )
         
-        chats.append(newChat)
-        CoreDataPersistenceManager.shared.saveOrUpdateChat(chat: newChat)
+        // SOLUZIONE: Thread-safe chat creation
+        chatQueue.async(flags: .barrier) { [weak self] in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                self.chats.append(newChat)
+            }
+            
+            // Salva in background
+            self.syncQueue.async {
+                self.persistenceManager.saveOrUpdateChat(chat: newChat)
+            }
+        }
     }
     
     /// Crea una nuova chat basata su una configurazione di agente personalizzata.
     func createNewChat(with agentConfiguration: AgentConfiguration) {
-        let newChat = Chat(agentType: agentConfiguration.agentType, agentConfiguration: agentConfiguration)
-        chats.append(newChat)
-        CoreDataPersistenceManager.shared.saveOrUpdateChat(chat: newChat)
+        let newChat = Chat(agentType: agentConfiguration.agentType, agentConfiguration: agentConfiguration, memoryManager: AgentMemoryManager.shared)
+        
+        // SOLUZIONE: Thread-safe chat creation
+        chatQueue.async(flags: .barrier) { [weak self] in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                self.chats.append(newChat)
+            }
+            
+            // Salva in background
+            self.syncQueue.async {
+                self.persistenceManager.saveOrUpdateChat(chat: newChat)
+            }
+        }
     }
 
     /// Crea una nuova chat di gruppo a partire da un template di gruppo di agenti.
@@ -82,44 +123,99 @@ class ChatManager: ObservableObject {
             agentType: .group,
             chatType: .group,
             title: template.name,
-            groupTemplate: template
+            groupTemplate: template,
+            memoryManager: AgentMemoryManager.shared
         )
-        chats.append(newChat)
-        CoreDataPersistenceManager.shared.saveOrUpdateChat(chat: newChat)
+        
+        // SOLUZIONE: Thread-safe chat creation
+        chatQueue.async(flags: .barrier) { [weak self] in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                self.chats.append(newChat)
+            }
+            
+            // Salva in background
+            self.syncQueue.async {
+                self.persistenceManager.saveOrUpdateChat(chat: newChat)
+            }
+        }
     }
     
     /// Elimina una o più chat in base ai loro indici.
     func deleteChat(at offsets: IndexSet) {
         let idsToDelete = offsets.map { chats[$0].id }
-        for id in idsToDelete {
-            CoreDataPersistenceManager.shared.deleteChat(with: id)
+        
+        // SOLUZIONE: Thread-safe chat deletion
+        chatQueue.async(flags: .barrier) { [weak self] in
+            guard let self = self else { return }
+            
+            // Elimina dal persistence in background
+            self.syncQueue.async {
+                for id in idsToDelete {
+                    self.persistenceManager.deleteChat(with: id)
+                }
+            }
+            
+            // Aggiorna UI sul main thread
+            DispatchQueue.main.async {
+                self.chats.remove(atOffsets: offsets)
+            }
         }
-        chats.remove(atOffsets: offsets)
     }
 
     /// Aggiunge un nuovo messaggio a una chat esistente.
-    func addMessage(to chat: Chat, message: Message) {
+    func addMessage(to chat: Chat, message: Message) throws {
+        // Validazione dati pre-salvataggio
+        guard !message.content.isEmpty else {
+            print("[ERROR] Message content cannot be empty")
+            throw ChatServiceError.invalidMessage("Message content cannot be empty")
+        }
+        
+        guard chat.id != UUID(uuidString: "00000000-0000-0000-0000-000000000000") else {
+            print("[ERROR] Chat must have a valid ID")
+            throw ChatServiceError.invalidChat("Chat must have a valid ID")
+        }
+        
         guard let index = chats.firstIndex(where: { $0.id == chat.id }) else {
-            print("--- ERRORE FATALE in addMessage: Chat con ID \(chat.id) non trovata nell'array 'chats'. ---")
-            return
+            print("[ERROR] Chat with ID \(chat.id) not found in chats array")
+            throw ChatServiceError.chatNotFound("Chat with ID \(chat.id) not found")
         }
 
-        print("--- Inizio addMessage (logica semplificata) per chat ID: \(chat.id) ---")
+        print("--- Inizio addMessage (thread-safe) per chat ID: \(chat.id) ---")
         print("Messaggio da aggiungere: \(message.content) (Role: \(message.isUser ? "user" : "assistant"))")
         print("Numero messaggi prima dell'aggiunta: \(chats[index].messages.count)")
 
-        // Modifica diretta dell'oggetto nell'array.
-        // Poiché Chat è uno struct, la modifica crea una nuova copia che viene riassegnata all'indice.
-        chats[index].messages.append(message)
-        chats[index].updateLastActivity()
-
-        print("Numero messaggi dopo l'aggiunta: \(chats[index].messages.count)")
-        print("Chiamata a saveOrUpdateChat con la chat aggiornata.")
-
-        // Passa la chat aggiornata (che è una copia dello struct) per il salvataggio.
-        CoreDataPersistenceManager.shared.saveOrUpdateChat(chat: chats[index])
-        
-        print("--- Fine addMessage per chat ID: \(chat.id) ---")
+        // SOLUZIONE: Thread-safe message addition
+        chatQueue.async(flags: .barrier) { [weak self] in
+            guard let self = self else { return }
+            
+            // Aggiorna UI sul main thread
+            DispatchQueue.main.async {
+                if let currentIndex = self.chats.firstIndex(where: { $0.id == chat.id }) {
+                    self.chats[currentIndex].messages.append(message)
+                    self.chats[currentIndex].updateLastActivity()
+                    
+                    print("Numero messaggi dopo l'aggiunta: \(self.chats[currentIndex].messages.count)")
+                    
+                    // Salva in background
+                    let updatedChat = self.chats[currentIndex]
+                    self.syncQueue.async {
+                        self.persistenceManager.saveOrUpdateChat(chat: updatedChat)
+                        print("--- Fine addMessage per chat ID: \(chat.id) ---")
+                    }
+                }
+            }
+        }
+    }
+    
+    /// Salva una chat aggiornata nel persistence manager
+    func saveChat(_ chat: Chat) {
+        // SOLUZIONE: Thread-safe save operation
+        syncQueue.async { [weak self] in
+            guard let self = self else { return }
+            self.persistenceManager.saveOrUpdateChat(chat: chat)
+        }
     }
 
     // MARK: - Import/Export

@@ -39,7 +39,7 @@ class PerplexityAgentService: BaseAgentService {
         return [.textGeneration, .codeGeneration, .dataAnalysis]
     }
     
-    override init(configuration: AgentConfiguration? = nil) {
+    override init(configuration: AgentConfiguration? = nil, memoryManager: AgentMemoryManager? = nil) {
         let config = configuration ?? AgentConfiguration(
             id: UUID(),
             name: "Perplexity Assistant",
@@ -63,7 +63,7 @@ class PerplexityAgentService: BaseAgentService {
             responseParser: PerplexityResponseParser()
         )
         
-        super.init(configuration: config)
+        super.init(configuration: config, memoryManager: memoryManager)
     }
     
     override func sendMessage(_ message: String, model: String?) async throws -> String {
@@ -82,7 +82,7 @@ class PerplexityAgentService: BaseAgentService {
         
         // Save memory
         if let agentId = agentConfiguration?.id {
-            AgentMemoryManager.shared.saveMemory(
+            memoryManager.saveMemory(
                 for: agentId,
                 chatId: UUID(),
                 content: response.content,

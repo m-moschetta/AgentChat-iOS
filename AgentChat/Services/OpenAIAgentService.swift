@@ -116,7 +116,7 @@ class OpenAIAgentService: BaseAgentService {
     private let httpService: BaseHTTPService
     
     // MARK: - Initialization
-    init(configuration: AgentConfiguration? = nil, session: URLSession = .shared) {
+    init(configuration: AgentConfiguration? = nil, session: URLSession = .shared, memoryManager: AgentMemoryManager? = nil) {
         self.httpService = BaseHTTPService(
             configuration: .openAI,
             requestTransformer: OpenAIRequestTransformer(),
@@ -124,7 +124,7 @@ class OpenAIAgentService: BaseAgentService {
             session: session
         )
         
-        super.init(configuration: configuration)
+        super.init(configuration: configuration, memoryManager: memoryManager)
     }
     
     // MARK: - AgentServiceProtocol Implementation
@@ -320,7 +320,7 @@ struct OpenAIModelInfo {
 
 // MARK: - Factory Extension
 extension ServiceFactory {
-    func createOpenAIAgentService(with configuration: AgentConfiguration) -> OpenAIAgentService {
-        return OpenAIAgentService(configuration: configuration)
+    func createOpenAIAgentService(with configuration: AgentConfiguration, memoryManager: AgentMemoryManager? = nil) -> OpenAIAgentService {
+        return OpenAIAgentService(configuration: configuration, memoryManager: memoryManager)
     }
 }

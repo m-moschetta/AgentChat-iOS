@@ -26,10 +26,10 @@ class N8NService: ChatServiceProtocol {
         return "n8n"
     }
     
-    func sendMessage(_ message: String, model: String?) async throws -> String {
-        guard let workflowId = model,
-              let workflow = N8NWorkflowManager.shared.getWorkflow(withId: workflowId) else {
-            throw ChatServiceError.unsupportedModel(model ?? "unknown")
+    func sendMessage(_ message: String, configuration: AgentConfiguration) async throws -> String {
+        let workflowId = configuration.model
+        guard let workflow = N8NWorkflowManager.shared.getWorkflow(withId: workflowId) else {
+            throw ChatServiceError.unsupportedModel(workflowId)
         }
         
         guard workflow.isActive else {

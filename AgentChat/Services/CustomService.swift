@@ -25,9 +25,12 @@ class CustomService: ChatServiceProtocol {
         return "Custom"
     }
     
-    func sendMessage(_ message: String, model: String?) async throws -> String {
+    func sendMessage(_ message: String, configuration: AgentConfiguration) async throws -> String {
+        // Estrae il modello dalla configurazione
+        let model = configuration.model
+        
         // Verifica che il modello sia supportato
-        if let model = model, !supportedModels.contains(model) {
+        if !supportedModels.contains(model) {
             throw ChatServiceError.unsupportedModel(model)
         }
         

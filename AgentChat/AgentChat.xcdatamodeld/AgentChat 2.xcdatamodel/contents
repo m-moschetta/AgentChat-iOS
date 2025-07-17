@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22500" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift">
+    <entity name="ChatEntity" representedClassName="ChatEntity" syncable="YES">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="YES" optional="NO"/>
+        <attribute name="agentTypeString" attributeType="String" optional="NO"/>
+        <attribute name="providerJSON" attributeType="String" optional="YES"/>
+        <attribute name="selectedModel" attributeType="String" optional="YES"/>
+        <attribute name="n8nWorkflowJSON" attributeType="String" optional="YES"/>
+        <attribute name="agentConfigurationJSON" attributeType="String" optional="YES"/>
+        <attribute name="chatTypeString" attributeType="String" optional="NO"/>
+        <attribute name="title" attributeType="String" optional="NO"/>
+        <attribute name="isMemoryEnabled" attributeType="Boolean" usesScalarValueType="YES" optional="NO"/>
+        <attribute name="createdAt" attributeType="Date" optional="NO"/>
+        <attribute name="lastActivity" attributeType="Date" optional="NO"/>
+        <attribute name="groupTemplateJSON" attributeType="String" optional="YES"/>
+        <relationship name="messages" destinationEntity="MessageEntity" toMany="YES" deletionRule="Cascade" inverseName="chat" inverseEntity="MessageEntity"/>
+    </entity>
+    <entity name="MessageEntity" representedClassName="MessageEntity" syncable="YES">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="YES" optional="NO"/>
+        <attribute name="isUser" attributeType="Boolean" usesScalarValueType="YES" optional="NO"/>
+        <attribute name="content" attributeType="String" optional="NO"/>
+        <attribute name="timestamp" attributeType="Date" optional="NO"/>
+        <attribute name="isAwaitingResponse" attributeType="Boolean" usesScalarValueType="YES" optional="YES"/>
+        <relationship name="chat" destinationEntity="ChatEntity" toMany="NO" deletionRule="Nullify" inverseName="messages" inverseEntity="ChatEntity" optional="YES"/>
+    </entity>
+</model>

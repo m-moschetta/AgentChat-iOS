@@ -124,13 +124,13 @@ class BaseAgentService: AgentServiceProtocol {
     
     // MARK: - Properties
     var agentConfiguration: AgentConfiguration?
-    private let memoryManager: AgentMemoryManager
+    internal let memoryManager: AgentMemoryManager
     private let collaborationManager: AgentCollaborationManager
     
     // MARK: - Initialization
-    init(configuration: AgentConfiguration? = nil) {
+    init(configuration: AgentConfiguration? = nil, memoryManager: AgentMemoryManager? = nil) {
         self.agentConfiguration = configuration
-        self.memoryManager = AgentMemoryManager.shared
+        self.memoryManager = memoryManager ?? AgentMemoryManager()
         self.collaborationManager = AgentCollaborationManager.shared
     }
     
@@ -146,6 +146,19 @@ class BaseAgentService: AgentServiceProtocol {
     func sendMessage(_ message: String, model: String?) async throws -> String {
         // Implementazione base - da sovrascrivere nelle sottoclassi
         throw AgentServiceError.notImplemented
+    }
+    
+    // MARK: - ChatServiceProtocol Implementation
+    func sendMessage(_ message: String, configuration: AgentConfiguration) async throws -> String {
+        // Implementazione che utilizza la configurazione fornita
+        let previousConfig = self.agentConfiguration
+        self.agentConfiguration = configuration
+        
+        defer {
+            self.agentConfiguration = previousConfig
+        }
+        
+        return try await sendMessage(message, model: configuration.model)
     }
     
     func validateConfiguration() async throws {
@@ -173,7 +186,7 @@ class BaseAgentService: AgentServiceProtocol {
     func saveConversationContext(_ context: ConversationContext) async throws {
         // Save conversation context using memory manager
         for message in context.messages {
-            AgentMemoryManager.shared.saveMemory(
+            memoryManager.saveMemory(
                 for: context.agentId,
                 chatId: context.chatId,
                 content: message.content,
@@ -187,7 +200,7 @@ class BaseAgentService: AgentServiceProtocol {
             throw AgentServiceError.missingConfiguration
         }
         
-        let memories = AgentMemoryManager.shared.getMemories(for: agentId, type: .conversationContext)
+        let memories = memoryManager.getMemories(for: agentId, type: .conversationContext)
         let contextMessages = memories.compactMap { memory -> ContextMessage? in
             guard let role = memory.metadata["role"] else { return nil }
             return ContextMessage(role: role, content: memory.content, metadata: memory.metadata)
@@ -206,7 +219,7 @@ class BaseAgentService: AgentServiceProtocol {
         guard let agentId = agentConfiguration?.id else {
             throw AgentServiceError.missingConfiguration
         }
-        AgentMemoryManager.shared.clearMemories(for: agentId)
+        memoryManager.clearMemories(for: agentId)
     }
     
     func canCollaborateWith(_ otherAgent: AgentServiceProtocol) -> Bool {

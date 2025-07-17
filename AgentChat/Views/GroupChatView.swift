@@ -37,7 +37,7 @@ struct GroupChatView: View {
                     .padding(.horizontal, 16)
                     .padding(.vertical, 8)
                 }
-                .onChange(of: group.messages.count) { _ in
+                .onChange(of: group.messages.count) { _, _ in
                     // Auto-scroll all'ultimo messaggio
                     if let lastMessage = group.messages.last {
                         withAnimation(.easeInOut(duration: 0.3)) {
